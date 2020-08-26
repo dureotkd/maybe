@@ -159,6 +159,17 @@ html {
 }
 
 
+
+
+html, body {
+
+    margin: 0;
+
+    height: 100%;
+
+
+}
+
 ul, li {
 	list-style: none;
 }
@@ -258,6 +269,7 @@ ul, li {
 .logo {
 	font-family: 'Courgette', cursive;
 	color:#d81b60;
+	font-weight:normal;
 }
 
 h1 {
@@ -324,10 +336,10 @@ h1 {
 }
 
 
-.dropdown-menu.active {
+.dropdown-menu.open {
 	display:block;
 }
-.caret.active {
+.caret.open {
 	transform:rotate(180deg);
 }
 
@@ -340,7 +352,7 @@ h1 {
 	width:100%;
 }
 .myinfo {
-	z-index:1000;
+	z-index:10;
 	position:relative;
 	display:flex;
 	align-items:center;
@@ -369,6 +381,10 @@ h1 {
 	.top-bar {
 		justify-content:space-around;
 	}
+	
+	.logo {
+		font-size:25px;
+	}
 }
 
 /* 800px 이하면 안보이게 ( 모바일 버전 ) */
@@ -392,39 +408,20 @@ function btnToggleDropMenu__init() {
 	var $btnToggleDropMenu = $('.myinfo');
 
 	$btnToggleDropMenu.click(function() {
-		if ($(this).hasClass('active')) {
-			$(this).removeClass('active');
-			$('.dropdown-menu').removeClass('active');
-			$('.caret').removeClass('active');
+		if ($(this).hasClass('open')) {
+			$(this).removeClass('open');
+			$('.dropdown-menu').removeClass('open');
+			$('.caret').removeClass('open');
 		} else {
-			$(this).addClass('active');
-			$('.dropdown-menu').addClass('active');
-			$('.caret').addClass('active');
+			$(this).addClass('open');
+			$('.dropdown-menu').addClass('open');
+			$('.caret').addClass('open');
 		}	
 	});
 }
 $(function() {
 	btnToggleDropMenu__init();
 });
-
-function btnToggleMenu__init(){
-	var $btnToggleMenu = $('.menu-i');
-
-	$btnToggleMenu.click(function() {
-		if ($(this).hasClass('active')){
-			$(this).removeClass('active');
-		} else {
-			$(this).addClass('active');
-			}
-
-
-	});
-}
-
-$(function() {
-	btnToggleMenu__init();
-});
-
 
 </script>
 
@@ -463,7 +460,7 @@ $(function() {
 		 <c:if test="${isLogined}">
 		  <ul class="dropdown-menu">
 		 <li><a href="../article/register">글쓰기</a></li>
-		 <li><a href="../member/myInfo">회원정보</a></li>
+		 <li><a href="../member/showOther?id=${loginedMemberId}">프로필</a></li>
 		 <li><a href="../member/doLogout" onclick="logOutNotify()">로그아웃</a></li>
 		 </ul>
 		 </c:if>

@@ -12,8 +12,10 @@ import lombok.NoArgsConstructor;
 public class Member {
 	private int id;
 	private int mailStatus;
+	private int delStatus;
 	private String regDate;
 	private String updateDate;
+	private String delRegDate;
 	private String email;
 	private String nickname;
 	private String name;

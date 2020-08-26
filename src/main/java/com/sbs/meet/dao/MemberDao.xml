@@ -16,7 +16,8 @@
 		nickname = #{nickname},
 		loginPw = #{loginPw},
 		level = 1,
-		introduce = ""
+		introduce = "",
+		delStatus = 0
 	</insert>
 
 	<select id="getNicknameDupCount" resultType="int">

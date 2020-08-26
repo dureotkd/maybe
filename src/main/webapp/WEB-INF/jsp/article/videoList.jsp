@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 
 <%@ include file="../part/head.jspf"%>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 <script>
 	function callDoLike(el) {
@@ -22,10 +23,34 @@
 				}
 			}, 'json');
 		}
+
+
+
+
+	function btnToggleVideo__init(){
+		var $btnToggleVideo = $('.video');
+
+		$btnToggleVideo.hover(function() {
+			if ($(this).hasClass('autoplay')){
+			} else {
+				$(this).addClass('autoplay');
+				}
+		});
+	}
+
+	$(function() {
+		btnToggleVideo__init();
+	});
+		
+
+	
 </script>
 
 <style>
-
+  video[controls]::-webkit-media-controls-panel {
+        display:flex!important;
+        opacity:1!important;
+    }
 .articles-box {
 	max-width:1080px;
 	margin:0 auto;
@@ -123,6 +148,7 @@
 }
 .video {
 	width:500px;
+	outline:none;
 }
 .action {
 	color:#d81b60;

@@ -2,44 +2,51 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-  
+
 
 <mapper namespace="com.sbs.meet.dao.MessageDao">
-	<insert id="writeMessage" useGeneratedKeys="true" keyProperty="id">
+	<insert id="writeMessage" useGeneratedKeys="true"
+		keyProperty="id">
 		INSERT INTO message
 		SET regDate = NOW(),
 		body = #{body},
 		toId = #{toId},
-		fromId = #{loginedMemberId},
-		delStatus = 0
+		fromId = #{fromId},
+		delStatus = 0,
+		displayStatus = 0,
+		readStatus = 0
 	</insert>
-	
-	<select id="getForPrintMessagesAjax" resultMap="message" >
+
+	<select id="getForPrintMessagesAjax" resultMap="message">
 	<![CDATA[
-	SELECT MS.*,
-	M.nickname AS extra__writer
-	FROM message AS MS
-	INNER JOIN member AS M
-	ON MS.toId = M.id
-	AND MS.fromId = M.id
-	WHERE MS.toId = #{loginedMemberId}
-	AND MS.delStatus = 0,
-	AND MS.id >= #{from}
-	ORDER BY MS.id ASC
+	
+	SELECT MSG.*,
+	SND.nickname AS extra__fromMemberName
+	FROM message AS MSG
+	INNER JOIN `member` AS SND
+	ON MSG.fromId = SND.id
+	WHERE MSG.toId = #{toId}
+	AND MSG.delStatus = 0
+	AND MSG.id >= #{from}
+	ORDER BY id ASC
+
 	]]>
 	</select>
-	
 
-	
+
+
 	<resultMap type="Message" id="message">
 		<id property="id" column="id" />
 		<id property="regDate" column="regDate" />
 		<id property="delRegDate" column="delRegDate" />
+		<id property="displayStatus" column="displayStatus"></id>
+		<id property="delStatus" column="delStatus"></id>
+		<id property="readStatus" column="readStatus"></id>
 		<id property="body" column="body" />
 		<id property="fromId" column="fromId" />
 		<id property="toId" column="toId"></id>
 		<association property="extra" javaType="map">
-			<id property="writer" column="extra__writer"></id>
+			<id property="writer" column="extra__fromMemberName"></id>
 		</association>
 	</resultMap>
 

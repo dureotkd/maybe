@@ -2,17 +2,24 @@
 	pageEncoding="UTF-8"%>
 <%@ include file="../part/head.jspf"%>
 <style>
+
+html, body {
+
+    margin: 0;
+
+    height: 100%;
+
+}
+
 .reply-body {
 	width: 100%;
-	line-break:anywhere;
+	line-break: anywhere;
 	margin-left: 5%;
 }
 
 .total-wrap {
 	width: 100%;
-	height: 100vh;
 	background: #fafafa;
-	padding-top: 50px;
 }
 
 .reply-img-Avatar {
@@ -31,7 +38,7 @@
 	margin-left: 15px;
 	color: #262626;
 	font-weight: 600;
-	width:30%;
+	width: 30%;
 }
 
 .article-user-box {
@@ -69,12 +76,9 @@
 
 .article-body {
 	overflow: scroll;
-	height: 422px;
+	height: 380px;
 }
 
-.article-img {
-	height: 569px;
-}
 
 .abody {
 	line-height: 25px;
@@ -85,15 +89,15 @@
 	padding: 15px;
 	display: flex;
 	justify-content: space-between;
-	align-items:center;
+	align-items: center;
 }
 
 .textarea {
 	padding: 10px;
 	background: none;
-	border-top:none;
-	border-left:none;
-	border-right:none;
+	border-top: none;
+	border-left: none;
+	border-right: none;
 	border-bottom: 1px solid #ccc;
 	width: 500px;
 	outline: none;
@@ -110,9 +114,8 @@
 /* Slideshow container */
 .slideshow-container {
 	position: relative;
-	display:flex;
-	justify-content:space-between;
-		
+	display: flex;
+	justify-content: space-between;
 }
 
 /* Next & previous buttons */
@@ -130,8 +133,8 @@
 	border-radius: 0 3px 3px 0;
 }
 
-.prev:hover,.next:hover{
-	color:#d81b60;
+.prev:hover, .next:hover {
+	color: #d81b60;
 }
 
 /* Position the "next button" to the right */
@@ -168,10 +171,9 @@ to {
 }
 
 }
-
 .mySlides {
-	margin:0 auto;
-	overflow:hidden;
+	margin: 0 auto;
+	overflow: hidden;
 }
 /* On smaller screens, decrease text size */
 @media only screen and (max-width: 300px) {
@@ -195,16 +197,23 @@ to {
 	.reply-list-box {
 		width: 100%;
 	}
-	.total-wrap {
-		height: 100%;
+	.slideshow-container {
+		width: 100%;
+	}
+	.reply-write-box {
+		border-top:1px solid #eee;
+	}
+	.article-video {
+		height:270px;
 	}
 	
-	.slideshow-container {
-		width:100%;
+	.article-img {
+	height: 500px;
+	margin-top:20px;
 	}
+	
 }
 
-/* 800px 이하면 안보이게 ( 모바일 버전 ) */
 
 /* 800px 이상이면 안보이게 ( pc 버전 ) */
 @media ( min-width :800px ) {
@@ -216,6 +225,11 @@ to {
 	}
 	.total-wrap {
 		height: 100vh;
+		padding-top: 20px;
+	
+	}
+	.total-wrap {
+		padding-top: 20px;
 	}
 	.detail-box {
 		display: flex;
@@ -239,10 +253,17 @@ to {
 	.mySlides {
 		display: flex;
 	}
-	
 	.slideshow-container {
-		width:50%;
+		width: 50%;
 	}
+	
+	.article-video {
+		height:525px;
+	}
+	.article-img {
+	height: 525px;
+}
+	
 }
 
 .reply-btn {
@@ -256,8 +277,8 @@ to {
 button, submit {
 	cursor: pointer;
 }
-	
-	.recomend-box {
+
+.recomend-box {
 	display: none;
 	width: 100%;
 	justify-content: space-around;
@@ -273,10 +294,11 @@ button, submit {
 	padding-left: 15px;
 	align-items: baseline;
 	width: 50px;
-	margin-bottom:15px;
+	margin-bottom: 15px;
 }
-.like-point{
-	margin-left:15px;
+
+.like-point {
+	margin-left: 15px;
 }
 
 .like {
@@ -284,40 +306,64 @@ button, submit {
 }
 
 .level10 {
-	color:#ffb300;
-}
-.level5 {
-	color:#3949ab;
-}
-.tag {
-	color:#00376b;
-	padding:15px;
-}
-.article-video {
-	height:568px;
-	outline:none;
-	border:1px solid #eee;
-}
-.regDate {
-	color:#bdbdbd;
-	font-size:13px;
-	padding:15px;
-}
-.fa-smile {
-	color:#212121;
-	font-size:20px;
-	padding:10px;
+	color: #ffb300;
 }
 
+.level5 {
+	color: #3949ab;
+}
+
+.tag {
+	color: #00376b;
+	padding: 15px;
+}
+
+.article-video {
+	outline: none;
+	border: 1px solid #eee;
+}
+
+.regDate {
+	color: #bdbdbd;
+	font-size: 13px;
+	padding: 15px;
+}
+
+.fa-smile {
+	color: #212121;
+	font-size: 20px;
+	padding: 10px;
+}
+
+.dot {
+	cursor: pointer;
+	height: 7px;
+	width: 7px;
+	margin: 0 2px;
+	background-color: white;
+	border-radius: 50%;
+	display: inline-block;
+	transition: background-color 0.6s ease;
+}
+
+.dot-box {
+	position:absolute;
+	bottom:0;
+	left:50%;
+	transform:translate(-50%,-50%);
+}
+
+.active, .dot:hover {
+  background-color: #d81b60;
+}
 
 /* 800px 이하면 안보이게 ( 모바일 버전 ) */
 @media ( max-width :799px ) {
 	.visible-on-sm-up {
 		display: none !important;
 	}
-	
 	.article-video {
-		width:100%;
+		width: 100%;
 	}
 }
 
@@ -328,23 +374,20 @@ button, submit {
 	.visible-on-sm-down {
 		display: none !important;
 	}
-	
 	.article-video {
-		max-width:700px;
+		max-width: 700px;
 	}
 }
-
 </style>
 
 <script>
-var id = parseInt('${article.id}');
+	var id = parseInt('${article.id}');
 </script>
 
 <script>
-	function ViewArticle1__updateLikePoint(newLikePoint){
-		$('.like-point').empty().append(newLikePoint); 
+	function ViewArticle1__updateLikePoint(newLikePoint) {
+		$('.like-point').empty().append(newLikePoint);
 	}
-
 
 	function WriteReply__submitForm(form) {
 		form.body.value = form.body.value.trim();
@@ -371,123 +414,155 @@ var id = parseInt('${article.id}');
 	showSlides(slideIndex);
 
 	function plusSlides(n) {
-		showSlides(slideIndex += n);
+	  showSlides(slideIndex += n);
 	}
 
 	function currentSlide(n) {
-		showSlides(slideIndex = n);
+	  showSlides(slideIndex = n);
 	}
 
 	function showSlides(n) {
-		var i;
-		var slides = document.getElementsByClassName("mySlides");
-		if (n > slides.length) {
-			slideIndex = 1
-		}
-		if (n < 1) {
-			slideIndex = slides.length
-		}
-		for (i = 0; i < slides.length; i++) {
-			slides[i].style.display = "none";
-		}
-		slides[slideIndex - 1].style.display = "block";
-		dots[slideIndex - 1].className += " active";
+	  var i;
+	  var slides = document.getElementsByClassName("mySlides");
+	  var dots = document.getElementsByClassName("dot");
+	  if (n > slides.length) {slideIndex = 1}    
+	  if (n < 1) {slideIndex = slides.length}
+	  for (i = 0; i < slides.length; i++) {
+	      slides[i].style.display = "none";  
+	  }
+	  for (i = 0; i < dots.length; i++) {
+	      dots[i].className = dots[i].className.replace(" active", "");
+	  }
+	  slides[slideIndex-1].style.display = "block";  
+	  dots[slideIndex-1].className += " active";
 	}
 	
-
-function callDoLike(){
-	$.post(
-		'./doLike',
-		{
-			id:id
-		},
-		function(data){
-			if ( data.msg ) {
+	function callDoLike() {
+		$.post('./doLike', {
+			id : id
+		}, function(data) {
+			if (data.msg) {
 				alert(data.msg);
 			}
-			
-			if (data.resultCode.substr(0,2) == "S-"){
+
+			if (data.resultCode.substr(0, 2) == "S-") {
 				ViewArticle1__updateLikePoint(data.likePoint);
 			}
-		},
-		'json'
-	);
-	
-}
+		}, 'json');
+
+	}
+
+
+
+
+	function doFollowSubmit__form() {
+		$.post('../frined/doFollowAjax', {
+			followId : form.followId.value,
+			followerId : form.followerId.value
+		}, function(data) {
+			if (data.msg) {
+				alert(data.msg);
+			}
+		}, 'json');
+
+	}
 </script>
 <div class="total-wrap">
 	<div class="detail-box">
-			<c:if test="${article.extra.file__common__attachment['1'] == null}">
-	
-		<div class="slideshow-container">
+		<c:if test="${article.extra.file__common__attachment['1'] == null}">
 
-			<c:if test="${article.extra.file__common__attachment['3'] != null}">
-				<div class="mySlides fade">
-					<img class="article-img"
-						src="/file/showImg?id=${article.extra.file__common__attachment['3'].id}&updateDate=${article.extra.file__common__attachment['3'].updateDate}"
-						alt="" />
-				</div>
-			</c:if>
+			<div class="slideshow-container">
+
+				<c:if test="${article.extra.file__common__attachment['3'] != null}">
+					<div class="mySlides fade">
+						<img class="article-img"
+							src="/file/showImg?id=${article.extra.file__common__attachment['3'].id}&updateDate=${article.extra.file__common__attachment['3'].updateDate}"
+							alt="" />
+					</div>
+				</c:if>
 
 
-			<c:if test="${article.extra.file__common__attachment['4'] != null}">
-				<div class="mySlides fade" style="display: none;">
-					<img class="article-img"
-						src="/file/showImg?id=${article.extra.file__common__attachment['4'].id}&updateDate=${article.extra.file__common__attachment['4'].updateDate}" />
+				<c:if test="${article.extra.file__common__attachment['4'] != null}">
+					<div class="mySlides fade" style="display: none;">
+						<img class="article-img"
+							src="/file/showImg?id=${article.extra.file__common__attachment['4'].id}&updateDate=${article.extra.file__common__attachment['4'].updateDate}" />
+					</div>
+
+					<a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+					<a class="next" onclick="plusSlides(1)">&#10095;</a>
+
+				</c:if>
+
+				<c:if test="${article.extra.file__common__attachment['5'] != null}">
+					<div class="mySlides fade" style="display: none;">
+						<img class="article-img"
+							src="/file/showImg?id=${article.extra.file__common__attachment['5'].id}&updateDate=${article.extra.file__common__attachment['5'].updateDate}" />
+					</div>
+					
+					
+				</c:if>
+				
+				<c:if test="${article.extra.file__common__attachment['4'] != null}">
+				
+				
+				<div class="dot-box">
+					
+				<span class="dot active"  onclick="currentSlide(1)"></span>
+				<c:if test="${article.extra.file__common__attachment['4'] != null}">
+						<span class="dot" onclick="currentSlide(2)"></span> 
+					</c:if>
+				<c:if test="${article.extra.file__common__attachment['5'] != null}">
+				<span class="dot" onclick="currentSlide(3)"></span>
+				</c:if>		
 				</div>
 				
-				<a class="prev" onclick="plusSlides(-1)">&#10094;</a> <a class="next"
-				onclick="plusSlides(1)">&#10095;</a>
-			</c:if>
-			
-			<c:if test="${article.extra.file__common__attachment['5'] != null}">
-				<div class="mySlides fade" style="display: none;">
-					<img class="article-img"
-						src="/file/showImg?id=${article.extra.file__common__attachment['5'].id}&updateDate=${article.extra.file__common__attachment['5'].updateDate}" />
-				</div>
-			</c:if>
-			
-		</div>
-		
+				</c:if>
+
+			</div>
+
 		</c:if>
-		
-		
-		
+
+
+
 		<c:if test="${article.extra.file__common__attachment['1'] != null}">
 			<video controls
-				src="/file/streamVideo?id=${article.extra.file__common__attachment['1'].id}&updateDate=${article.extra.file__common__attachment['1'].updateDate}"  class="article-video"></video>
+				src="/file/streamVideo?id=${article.extra.file__common__attachment['1'].id}&updateDate=${article.extra.file__common__attachment['1'].updateDate}"
+				class="article-video"></video>
 		</c:if>
-	
+
 
 		<div class="table-box reply-list-box">
 			<div class="article-user-box">
 				<a href="../member/showOther?id=${article.memberId}"
 					class="writer-center"> <img class="article-writer-Avatar"
 					src="${article.extra.writerAvatarImgUrl}"> <span
-					class="writer">${article.extra.writer}</span></a> 
-					<c:if test="${member.level == 10 }">
+					class="writer">${article.extra.writer}</span></a>
+				<c:if test="${member.level == 10 }">
 					<i class="fas fa-crown level10"></i>
-					</c:if>
-					<c:if test="${member.level == 5 }">
+				</c:if>
+				<c:if test="${member.level == 5 }">
 					<i class="fas fa-certificate level5"></i>
-					</c:if>
-					<c:if test="${member.level < 5 }">
+				</c:if>
+				<c:if test="${member.level < 5 }">
 					<i class="fas fa-user-alt level"></i>
-					</c:if>
-					
-				<p>팔로우</p>
+				</c:if>
+
+				<form action="" onsubmit="doFollowSubmit__form(this); return false;">
+				<input type="hidden" name="followerId" value="${member.id}" />
+				<input type="hidden" name="followId" value="${loginedMemberId}" />
+				<input type="submit" value="팔로우" />
+				</form>
 				<i class="fas fa-ellipsis-h"></i>
 			</div>
 			<div class="article-body">
 				<p class="abody">${article.body}</p>
 				<p class="tag">#${article.tag}</p>
 				<div class="like-wrap">
-					<a href="#" 
-					onclick="callDoLike();"
-					>
-						<i class="fas fa-heart like"></i>
+					<a href="#" onclick="callDoLike();"> <i
+						class="fas fa-heart like"></i>
 					</a>
-					<p class="like-point">${article.extra.likePoint}</p>개
+					<p class="like-point">${article.extra.likePoint}</p>
+					개
 				</div>
 				<div class="reply-item"></div>
 			</div>
@@ -497,8 +572,8 @@ function callDoLike(){
 				<form action=""
 					onsubmit="WriteReply__submitForm(this); return false;">
 					<div class="reply-write-box">
-						<input type="hidden" name="articleId" value="${article.id}" />
-						<i class="far fa-smile"></i>
+						<input type="hidden" name="articleId" value="${article.id}" /> <i
+							class="far fa-smile"></i>
 						<textarea class="textarea" name="body" cols="30" rows="1"
 							placeholder="댓글 달기 " autofocus></textarea>
 						<button class="reply-btn">
@@ -514,7 +589,7 @@ function callDoLike(){
 			<a href="#">모두 보기</a>
 		</div>
 
-		
+
 
 
 		<script>
@@ -566,6 +641,8 @@ function callDoLike(){
 
 				html += '<td class="reply-writer">' + articleReply.extra.writer
 						+ '</td>';
+
+			
 
 				html += '<td>';
 				html += '<div class="reply-body">' + articleReply.body

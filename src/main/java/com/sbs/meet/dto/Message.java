@@ -15,6 +15,8 @@ public class Message {
 	private String delRegDate;
 	private int id;
 	private int delStatus;
+	private int displayStatus;
+	private int readStatus;
 	private int fromId;
 	private int toId;
 	

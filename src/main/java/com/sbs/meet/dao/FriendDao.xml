@@ -7,8 +7,8 @@
 	<insert id="applyToFollow" useGeneratedKeys="true" keyProperty="id">
 	INSERT INTO Friend
 	SET regDate = NOW(),
-	followId = #{loginedMemberId},
-	followerId = #{memberId}
+	followId = #{followId},
+	followerId = #{follwerId}
 	</insert>
 	
 </mapper>

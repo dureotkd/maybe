@@ -1,5 +1,7 @@
 package com.sbs.meet.service;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +12,7 @@ public class FriendService {
 	@Autowired
 	FriendDao friendDao;
 
-	public void applyToFollow(int loginedMemberId, int memberId) {
-		friendDao.applyToFollow(loginedMemberId,memberId);
+	public void applyToFollow(Map<String, Object> param) {
+		friendDao.applyToFollow(param);
 	}
 }

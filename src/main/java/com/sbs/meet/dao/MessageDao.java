@@ -11,7 +11,7 @@ import com.sbs.meet.dto.Message;
 @Mapper
 public interface MessageDao {
 
-	void writeMessage(@RequestParam Map<String, Object> param);
+	void writeMessage(Map<String, Object> param);
 
 	List<Message> getForPrintMessagesAjax(Map<String, Object> param);
 	

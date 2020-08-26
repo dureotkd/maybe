@@ -161,7 +161,46 @@ WHERE sessionKey = 'B7DA4F97E5101FAE151F85216DB70E9B';
 
 
 
+ALTER TABLE `member` ADD COLUMN delStatus TINYINT(1) NOT NULL;
 
+ALTER TABLE `member` ADD COLUMN delRegDate DATETIME;
+
+
+CREATE TABLE message (
+    id INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    regDate DATETIME NOT NULL,
+    delStatus TINYINT(1) UNSIGNED NOT NULL,
+    displayStatus TINYINT(1) UNSIGNED NOT NULL,
+    delRegDate DATETIME,
+    fromId INT(10) UNSIGNED NOT NULL,
+    toId INT(10) UNSIGNED NOT NULL,
+    `body` TEXT NOT NULL
+);
+
+
+
+SELECT MSG.*,
+SND.nickname AS extra__fromMemberName
+FROM message AS MSG
+INNER JOIN `member` AS SND
+ON MSG.fromId = SND.id
+WHERE MSG.toId = 10
+AND MSG.delStatus = 0
+ORDER BY id ASC
+
+ALTER TABLE message ADD COLUMN readStatus TINYINT(1) UNSIGNED NOT NULL;
+
+readStatus
+
+SELECT *
+FROM `member`
+
+SELECT * FROM `message`;
+
+
+
+SELECT * FROM `member`;
+SELECT * FROM `message`;
 
 
 
