@@ -1,5 +1,6 @@
 package com.sbs.meet.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,15 @@ public class ReplyService {
 	public List<ArticleReply> getForPrintArticleReplies(@RequestParam Map<String, Object> param) {
 		return replyDao.getForPrintArticleReplies(param);
 	}
+
+	public int getRepliesCount(int loginedMemberId) {
+		return replyDao.getRepliesCount(loginedMemberId);
+	}
+
+	public List<ArticleReply> getForPrintArticleRepliesByMyArticle(int loginedMemberId) {
+		return replyDao.getForPrintArticleRepliesByMyArticle(loginedMemberId);
+	}
+
 	
 	
 }	

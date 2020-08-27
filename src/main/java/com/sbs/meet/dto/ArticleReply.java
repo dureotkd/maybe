@@ -11,11 +11,12 @@ import lombok.NoArgsConstructor;
 @Data
 public class ArticleReply {
 	private int id;
-	private String regDate;
-	private String updateDate;
 	private int articleId;
 	private int memberId;
 	private int displayStatus;
+	private int readStatus;
+	private String regDate;
+	private String updateDate;
 	private String body;
 	private Map<String, Object> extra;
 }

@@ -9,10 +9,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Friend {
-	private int id;
-	private int readStatus;
-	private int followId;
-	private int followerId;
+public class ArticleLike {
 	private String regDate;
+	private int id;
+	private int articleId;
+	private int memberId;
+	private int point;
+	private int readStatus;
+	private Map<String, Object> extra;
+	
 }

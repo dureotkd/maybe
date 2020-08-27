@@ -7,6 +7,7 @@
 	<insert id="applyToFollow" useGeneratedKeys="true" keyProperty="id">
 	INSERT INTO Friend
 	SET regDate = NOW(),
+	readStatus = 0,
 	followId = #{followId},
 	followerId = #{follwerId}
 	</insert>

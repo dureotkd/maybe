@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.WebUtils;
 
 import com.sbs.meet.dto.Article;
@@ -46,25 +47,25 @@ public class MemberController {
 	@RequestMapping("/member/doJoin")
 	public String doJoin(@RequestParam Map<String, Object> param, Model model) {
 		Util.changeMapKey(param, "loginPwReal", "loginPw");
-		ResultData checkNicknameJoinableResultData = memberService
-				.checkNicknameJoinable(Util.getAsStr(param.get("nickname")));
-		ResultData checkEmailJoinableResultData = memberService.checkEmailJoinable(Util.getAsStr(param.get("email")));
-
-		// 회원가입 체크
-
-		if (checkEmailJoinableResultData.isFail()) {
-			model.addAttribute("historyBack", true);
-			model.addAttribute("alertMsg", checkEmailJoinableResultData.getMsg());
-			return "common/redirect";
-		}
-
-		// 닉네임 체크
-
-		if (checkNicknameJoinableResultData.isFail()) {
-			model.addAttribute("historyBack", true);
-			model.addAttribute("alertMsg", checkNicknameJoinableResultData.getMsg());
-			return "common/redirect";
-		}
+//		ResultData checkNicknameJoinableResultData = memberService
+//				.checkNicknameJoinable(Util.getAsStr(param.get("nickname")));
+//		ResultData checkEmailJoinableResultData = memberService.checkEmailJoinable(Util.getAsStr(param.get("email")));
+//
+//		// 회원가입 체크
+//
+//		if (checkEmailJoinableResultData.isFail()) {
+//			model.addAttribute("historyBack", true);
+//			model.addAttribute("alertMsg", checkEmailJoinableResultData.getMsg());
+//			return "common/redirect";
+//		}
+//
+//		// 닉네임 체크
+//
+//		if (checkNicknameJoinableResultData.isFail()) {
+//			model.addAttribute("historyBack", true);
+//			model.addAttribute("alertMsg", checkNicknameJoinableResultData.getMsg());
+//			return "common/redirect";
+//		}
 
 		int newMemberId = memberService.join(param);
 
@@ -77,6 +78,35 @@ public class MemberController {
 	@RequestMapping("/member/login")
 	public String login() {
 		return "member/login";
+	}
+	
+	@RequestMapping("/member/getEmailDup")
+	@ResponseBody
+	public String actionGetEmailDup(HttpServletRequest req, HttpServletResponse resp) {
+		String email = req.getParameter("email");
+		
+		boolean isJoinableEmail = memberService.checkEmailJoinable(email);
+		
+		if ( isJoinableEmail == false ) {
+			return "json:{\"msg\":\"사용가능 한 이메일 입니다.\", \"resultCode\": \"S-1\", \"Email\":\"" + email + "\"}"; 
+		}  else {
+			return "json:{\"msg\":\"이미 사용중인 이메일 입니다.\", \"resultCode\": \"F-1\", \"Email\":\"" + email + "\"}";
+		}
+	}
+	
+	
+	@RequestMapping("/member/getNicknameDup")
+	@ResponseBody
+	private String actionGetNicknameDup(HttpServletRequest req, HttpServletResponse resp) {
+		String nickname = req.getParameter("nickname");
+		
+		boolean isJoinableNickname = memberService.checkNicknameJoinable(nickname);
+		
+		if (isJoinableNickname == false) {
+			return "json:{\"msg\":\"사용가능 한 닉네임 입니다.\", \"resultCode\": \"S-1\", \"Nickname\":\"" + nickname + "\"}";
+		} else {
+			return "json:{\"msg\":\"이미 사용중인 닉네임 입니다.\", \"resultCode\": \"F-1\", \"Nickname\":\"" + nickname + "\"}";
+		}
 	}
 
 	@RequestMapping("/member/doLogin")

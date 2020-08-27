@@ -32,15 +32,19 @@ public class ArticleController {
 	@Autowired
 	private MemberService memberService;
 	
-	@RequestMapping("article/register")
-	public String register() {
-		return "article/register";
+	//  write.jsp 연결
+	
+	@RequestMapping("article/write")
+	public String showWriteForm() {
+		return "article/write";
 	}
 	
-	@RequestMapping("article/registered")
+	// form Action 으로 부터 파라미터 받아서 본격적으로 실행.
+	
+	@RequestMapping("article/doWriteArticle")
 	public String registered(Model model,@RequestParam Map<String, Object> param,HttpServletRequest req) {
 		
-		int newArticleId = articleService.register(param);
+		int newArticleId = articleService.doWriteArticle(param);
 		
 		String redirectUri = (String) param.get("redirectUri");
 		redirectUri = redirectUri.replace("#id", newArticleId + "");
@@ -48,14 +52,14 @@ public class ArticleController {
 		return "redirect:" + redirectUri;
 	}
 	
-	// 사진만 
+	// 
 	
-	@RequestMapping("/article/list")
-	public String showList(Model model,@RequestParam Map<String, Object> param) {
+	@RequestMapping("/article/imgList")
+	public String showImgList(Model model,@RequestParam Map<String, Object> param) {
+		
 		List<Article>  articles = articleService.getForPrintArticles();
 		
-		
-		List<ArticleReply> articleReply = articleService.getForPrintArticleReplies();
+		// 게시글 사진 불러오기 relid = article.getId()  
 		
 		for ( Article article : articles ) {
 			
@@ -69,40 +73,17 @@ public class ArticleController {
 		Util.putExtraVal(article, "file__common__attachment", filesMap);
 		}
 		
-
-		// 작성자
-		
-		for (Article article : articles) {
-			List<File> files = fileService.getFiles("member", article.getMemberId(), "common", "attachment");
-			if ( files.size() > 0 ) {
-				File file = files.get(0);
-				
-				if ( article.getExtra() == null ) {
-					article.setExtra(new HashMap<>());
-				}
-				
-				article.getExtra().put("writerAvatarImgUrl", "/file/showImg?id=" + file.getId() + "&updateDate=" + file.getUpdateDate());				
-			}
-			else {
-				article.getExtra().put("writerAvatarImgUrl", "/resource/img/avatar_no.jpg");
-			}
-			
-			Map<String, File> filesMap = new HashMap<>();
-
-			for (File file : files) {
-				filesMap.put(file.getFileNo() + "", file);
-			}
-		}
-		model.addAttribute("articleReply",articleReply);
 		model.addAttribute("articles",articles);
-		// model.addAttribute("ArticleInReplyCount",ArticleInReplyCount);
-		return "article/list";
+		return "article/imgList";
 	}
 	
 	// 비디오만 
 	@RequestMapping("article/videoList")
 	public String showVideoList(Model model,@RequestParam Map<String, Object> param) {
 		List<Article> articles = articleService.getForPrintArticles();
+		
+		
+		// 게시글 동영상 불러오기 relid = article.getId()  
 		
 		for ( Article article : articles ) {
 			
@@ -117,36 +98,14 @@ public class ArticleController {
 			Util.putExtraVal(article,"file__common__attachment",filesMap);
 		}
 		
-		for ( Article article : articles) {
-			List<File> files = fileService.getFiles("member",article.getMemberId(),"common","attachment");
-			
-			if ( files.size() > 0 ) {
-				File file = files.get(0);
-				
-				if ( article.getExtra() == null) {
-					article.setExtra(new HashMap<>());
-				}
-				article.getExtra().put("writerAvatarImgUrl","/file/showImg?id=" +file.getId() +"&updateDate ="+file.getUpdateDate());
-			} else {
-				article.getExtra().put("writerAvatarImgUrl","/resource/img/avatar_no.jpg");
-			}
-			
-			Map<String, File> filesMap = new HashMap<>();
-			
-			for (File file : files) {
-				filesMap.put(file.getFileNo() + "",file);
-			}
-		}
-		
 		model.addAttribute("articles",articles);
 		return "article/videoList";
 	}
 	
-
-	// 디테일 
+	// 게시글 디테일  
 	
 	@RequestMapping("article/detail")
-	public String showDetail(Model model,@RequestParam Map<String, Object> param) {
+	public String showArticlecDetail(Model model,@RequestParam Map<String, Object> param) {
 		
 		int id = Integer.parseInt((String) param.get("id"));
 
@@ -154,16 +113,6 @@ public class ArticleController {
 		// 게시글
 		int memberId = article.getMemberId();
 		Member member = memberService.getMemberById(memberId);
-		
-		int articleCount = articleService.getArticleCount(memberId);
-		
-		if ( articleCount >= 5 ) {
-			if ( member.getNickname().equals("관리자") == false ) {
-				memberService.doUpdateLevel(memberId);
-			}
-		}
-		
-		
 		
 		model.addAttribute("article",article);
 		model.addAttribute("member",member);
@@ -209,8 +158,7 @@ public class ArticleController {
 	public String showTextList(Model model) {
 		
 		List<Article> articles = articleService.getForPrintArticles();
-		
-		
+
 		model.addAttribute("articles",articles);
 		
 		return "article/textList";

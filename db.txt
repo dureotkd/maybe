@@ -204,7 +204,297 @@ SELECT * FROM `message`;
 
 
 
+ALTER TABLE `member` ADD COLUMN delStatus TINYINT(1) NOT NULL;
+
+ALTER TABLE `member` ADD COLUMN delRegDate DATETIME;
+
+
+CREATE TABLE message (
+    id INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    regDate DATETIME NOT NULL,
+    delStatus TINYINT(1) UNSIGNED NOT NULL,
+    displayStatus TINYINT(1) UNSIGNED NOT NULL,
+    delRegDate DATETIME,
+    fromId INT(10) UNSIGNED NOT NULL,
+    toId INT(10) UNSIGNED NOT NULL,
+    `body` TEXT NOT NULL
+);
 
 
 
+SELECT MSG.*,
+SND.nickname AS extra__fromMemberName
+FROM message AS MSG
+INNER JOIN `member` AS SND
+ON MSG.fromId = SND.id
+WHERE MSG.toId = 10
+AND MSG.delStatus = 0
+ORDER BY id ASC
+
+ALTER TABLE message ADD COLUMN readStatus TINYINT(1) UNSIGNED NOT NULL;
+
+readStatus
+
+SELECT *
+FROM `member`
+
+SELECT * FROM `message`;
+
+
+
+SELECT * FROM `member`;
+SELECT * FROM `message`;
+ALTER TABLE friend ADD COLUMN readStatus TINYINT(1) NOT NULL;
+
+
+WHERE toId ? -> 받은이가 = 10 번 인거
+WHERE `from` ? -> 보낸이가 = ~인거 
+
+
+
+	SELECT MSG.*,
+	SND.nickname AS extra__fromMemberName,
+	REC.nickname AS extra__toMemberName
+	FROM message AS MSG
+	INNER JOIN `member` AS SND
+	ON MSG.fromId = SND.id
+	INNER JOIN `member` AS `REC`
+	ON MSG.toId = `REC`.id
+	WHERE (MSG.toId = 7 OR MSG.fromId = 7)
+	AND MSG.delStatus = 0
+	AND MSG.id >= 1
+	ORDER BY id ASC
+	
+	
+	SELECT MSG.*,
+	SND.ni
+	
+	
+    SELECT MSG.*,
+	SND.nickname AS extra__fromMemberName
+	FROM message AS MSG
+	INNER JOIN `member` AS SND
+	ON MSG.fromId = SND.id
+	WHERE MSG.toId = #{toId}
+	AND MSG.delStatus = 0
+	AND MSG.id >= #{from}
+	ORDER BY id ASC
+
+SELECT * FROM message;
+
+TRUNCATE message;
+
+    ALTER TABLE articleLike ADD COLUMN readStatus TINYINT(1) NOT NULL;
+    ALTER TABLE articleReply  ADD COLUMN readStatus TINYINT(1) NOT NULL;
+    
+    
+    
+
+
+
+ALTER TABLE `member` ADD COLUMN sessionKey VARCHAR(50) NOT NULL DEFAULT 'none';
+ALTER TABLE `member` ADD COLUMN sessionLimit TIMESTAMP;
+
+SELECT * FROM `member`;
+
+INSERT INTO `member`
+	SET regDate=NOW(),
+	updateDate = NOW(),
+	email = 'dureotkd123@naver.com',
+	`name` = '안녕',
+	loginPw = SHA2('admin', 256),
+	mailStatus = '0',
+	introduce ='';
+
+
+SELECT A.*,
+M.nickname AS extra__writer
+FROM article AS A
+INNER JOIN MEMBER AS M
+ON A.memberId = M.id
+WHERE A.memberId = 5
+AND A.id = 
+
+SELECT * FROM MEMBER;
+
+SELECT * FROM FILE;
+
+
+TRUNCATE MEMBER;
+TRUNCATE article;
+TRUNCATE FILE;
+TRUNCATE attr;	
+TRUNCATE friend;
+TRUNCATE articleReply;
+
+SELECT * FROM FILE;
+SELECT * FROM attr;
+SELECT * FROM `member`;
+파일선택 3번쨰로 글올리면 오류남.
+SELECT * FROM articleReply;
+
+SELECT * FROM article;
+
+SELECT COUNT(*) AS
+	cnt FROM articleReply
+	WHERE articleId = 1;
+	
+CREATE TABLE `articleLike` (
+  id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY(id),
+  regDate DATETIME NOT NULL,
+  articleId INT(10) UNSIGNED NOT NULL,
+  memberId INT(10) UNSIGNED NOT NULL,
+  `point` TINYINT(1) UNSIGNED NOT NULL
+);	
+
+SELECT * FROM article;
+SELECT * FROM `member`;
+
+
+ALTER TABLE `member` ADD COLUMN `level` INT(10) NOT NULL;
+ALTER TABLE `article` ADD COLUMN tag CHAR(50) NOT NULL;
+
+
+CREATE TABLE message(
+	id INT(10) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+	regDate DATETIME NOT NULL,
+	delStatus TINYINT(1) NOT NULL,
+	delRegDate DATETIME, 
+	fromId INT(10) NOT NULL,
+	toId INT(10) NOT NULL
+)
+
+ALTER TABLE message ADD COLUMN `body` TEXT NOT NULL;
+
+
+
+
+SELECT MS.*,
+M.nickname AS extra__writer
+FROM message AS MS
+INNER JOIN MEMBER AS M
+ON MS.toId = M.id
+AND MS.fromId = M.id
+ORDER BY MS.id ASC;
+	
+SELECT COUNT(*), 
+A.body AS extra__body
+FROM articleReply AS AR
+INNER JOIN article AS A
+ON AR.articleId = A.id
+WHERE A.memberId = 3
+AND AR.readStatus = 0;
+
+SELECT * FROM `articleReply`;
+
+SELECT * FROM article;
+
+
+SELECT MSG.*,
+SND.nickname AS extra__fromMemberName
+FROM message AS MSG
+INNER JOIN `member` AS SND
+ON MSG.fromId = SND.id
+WHERE MSG.toId = 5
+AND MSG.delStatus = 0
+ORDER BY id ASC
+
+	
+SELECT * FROM `message`;
+
+ALTER TABLE message ADD COLUMN displayStatus TINYINT(1) NOT NULL;
+
+
+ALTER TABLE message ADD COLUMN readStatus TINYINT(1) UNSIGNED NOT NULL;
+
+SELECT * FROM `friend`;
+
+article.memberId 가 -> loginedMemberId 
+
+SELECT COUNT(*) AS cnt
+FROM articleLike
+WHERE memberId = 3
+AND readStatus = 0
+
+SELECT COUNT(*) AS cnt
+FROM articleReply
+WHERE articleId = 내가 쓴것만
+
+// 내가 쓴것만 -> 여기서 위에 주면되고.
+SELECT *
+FROM article 
+WHERE `memberId` = 3;
+
+	SELECT COUNT(*) AS cnt
+	FROM message 
+	WHERE toId = 3
+	AND readStatus = 0;
+UPDATE message
+SET readStatus = 1
+WHERE toId = 3;
+
+
+SELECT COUNT(*) AS
+cnt FROM articleReply
+WHERE articleId = #{articleId}
+AND displayStatus = 1
+AND readStatus = 0
+r
+
+SELECT * FROM articleReply;
+
+ALTER TABLE articleReply ADD COLUMN readStatus TINYINT(1) NOT NULL;
+
+ALTER TABLE articleLike ADD COLUMN readStatus TINYINT(1) NOT NULL;
+
+SELECT * FROM `message`;
+SELECT * FROM `member`;
+SELECT * FROM `articleReply`;
+
+
+
+SELECT * FROM `articleReply`
+INNER JOIN `member` AS M
+ON M.id = articleReply.articleId
+
+
+ALTER TABLE `member` ADD COLUMN delStatus TINYINT(1) NOT NULL;
+
+// ㅇ
+SELECT AR.*,
+M.nickname AS extra__writer
+FROM articleReply AS AR
+INNER JOIN article AS A
+ON AR.articleId =  A.id
+INNER JOIN `member` AS M
+ON M.id = AR.memberId
+WHERE A.memberId = 8
+AND AR.readStatus = 0		
+
+TRUNCATE articleReply;
+
+
+SELECT * FROM FILE;
+
+
+
+
+	SELECT AL.*,
+	M.nickname AS extra__writer
+	FROM articleLike AS AL
+	INNER JOIN
+	article AS A
+	ON AL.articleId = A.id
+	INNER JOIN `member` AS M
+	ON M.id =
+	AL.memberId
+	WHERE A.memberId = 8
+	AND AL.readStatus = 0
+	ORDER BY AL.id DESC
+
+
+TRUNCATE articleReply;
+	
+	SELECT * FROM articleLike;
 

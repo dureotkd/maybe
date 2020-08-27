@@ -32,7 +32,19 @@
 
 	]]>
 	</select>
-
+	
+	<update id="doUpdateReadStatus">
+	UPDATE message
+	SET readStatus = 1
+	WHERE toId =  #{loginedMemberId}
+	</update>
+	
+	<select id="getMsgNoticeCount">
+	SELECT COUNT(*) AS
+	cnt FROM message
+	WHERE toId = #{loginedmemberId}
+	AND readStatus = 0
+	</select>
 
 
 	<resultMap type="Message" id="message">

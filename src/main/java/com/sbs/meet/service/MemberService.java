@@ -31,14 +31,9 @@ public class MemberService {
 	@Value("${custom.siteName}")
 	private String siteName;
 
-	public ResultData checkNicknameJoinable(String nickname) {
-		int count = memberDao.getNicknameDupCount(nickname);
-
-		if (count == 0) {
-			return new ResultData("S-1", "가입가능한 닉네임 입니다.", "nickname", nickname);
-		}
-
-		return new ResultData("F-1", "이미 사용중인 닉네임 입니다.", "nickname", nickname);
+	public boolean checkNicknameJoinable(String nickname) {
+		
+		return memberDao.getNicknameDupCount(nickname);
 	}
 
 	public int join(Map<String, Object> param) {
@@ -116,15 +111,8 @@ public class MemberService {
 		return memberDao.doFindLoginId(nickname, name);
 	}
 
-	public ResultData checkEmailJoinable(String email) {
-
-		int joinCount = memberDao.getEmailDupCount(email);
-
-		if (joinCount == 0) {
-			return new ResultData("S-1", "가입가능한 이메일 입니다.", "email", email);
-		}
-
-		return new ResultData("F-1", "이미 사용중인 이메일 입니다.", "email", email);
+	public boolean checkEmailJoinable(String email) {
+		return memberDao.getEmailDupCount(email);
 	}
 
 	public Member getMemberByEmailForFindLoginPw(String email) {
@@ -189,6 +177,27 @@ public class MemberService {
 	public List<Member> getAllMember() {
 		return memberDao.getAllMember();
 	}
+
+	public int getMsgNoticeCount(int loginedMemberId) {
+		return memberDao.getMsgNoticeCount(loginedMemberId);
+	}
+
+	public int getLikePointCount(int id) {
+		return memberDao.getLikePointCount(id);
+	}
+
+	public int getRepliesCount(int loginedMemberId) {
+		return memberDao.getRepliesCount(loginedMemberId);
+	}
+
+	public int getMyLikePoint(int loginedMemberId) {
+		return memberDao.getMyLikePoint(loginedMemberId);
+	}
+
+	public int getRepliesCountByMe(int loginedMemberId) {
+		return memberDao.getRepliesCountByMe(loginedMemberId);
+	}
+
 
 	
 

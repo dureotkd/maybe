@@ -4,6 +4,7 @@
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.19/lodash.min.js"></script>
 <style>
 h1 {
 	text-align: center;
@@ -12,6 +13,7 @@ h1 {
 	background:#fafafa;
 	width:100%;
 	height:100%;
+	padding-top:50px;
 }
 </style>
 
@@ -102,14 +104,62 @@ function MemberJoinForm__submit(form) {
 		form.submit();
 
 	});
-	
-	
-
 }
 
+function JoinForm__checkEmailDup(input) {
+	
+	var form = input.form;
+	form.email.value = form.email.value.trim();
 
+	if (form.email.value.length == 0) {
+		return;
+	}
 
+	$.get('getEmailDup', {
+		email : form.email.value
+	}, function(data) {
+		var $message = $(form.email).next();
 
+		if (data.resultCode.substr(0, 2) == 'S-') {
+			$message.empty().append(
+					'<div style="color:green;">' + data.msg + '</div>');
+			JoinForm__validEmail = data.email;
+		} else {
+			$message.empty().append(
+					'<div style="color:red;">' + data.msg + '</div>');
+			JoinForm__validEmail = '';
+		}
+	}, 'json');
+}
+
+function JoinForm__checkNicknameDup(input) {
+
+	var form = input.form;
+	
+	form.nickname.value = form.nickname.value.trim();
+
+	if (form.nickname.value.length == 0) {
+		return;
+	}
+	$.get('getNicknameDup', {
+		nickname : form.nickname.value
+	}, function(data) {
+		var $message = $(form.nickname).next();
+
+		if (data.resultCode.substr(0, 2) == 'S-') {
+			$message.empty().append(
+					'<div style="color:green;">' + data.msg + '</div>');
+			JoinForm__validNickname = data.nickname;
+		} else {
+			$message.empty().append(
+					'<div style="color:red;">' + data.msg + '</div>');
+			JoinForm__validNickname = '';
+		}
+	}, 'json');
+}
+
+var JoinForm__checkNicknameDup__debounce = _.debounce(JoinForm__checkNicknameDup, 1000);
+var JoinForm__checkEmailDup__debounce = _.debounce(JoinForm__checkEmailDup, 1000);
 
 </script>
 <div class="total-wrap">
@@ -120,10 +170,11 @@ function MemberJoinForm__submit(form) {
 		<input type="hidden" name="fileIdsStr">
 		<input type="hidden" name="loginPwReal" /> 
 		<input type="file" class="login-input-box" placeholder="프로필" accept="image/*" name="file__member__0__common__attachment__1">
-		<input type="text" name="email"
-			class="login-input-box" placeholder="이메일" /> <input type="text"
-			name="name" class="login-input-box" placeholder="성명" /> <input
-			type="text" name="nickname" class="login-input-box" placeholder="활동명" />
+		<input onkeyup="JoinForm__checkEmailDup__debounce(this);" type="text" name="email" class="login-input-box" placeholder="이메일" /> 
+		<div class="message-msg"></div>
+		<input type="text" name="name" class="login-input-box" placeholder="성명" />
+		<input onkeyup="JoinForm__checkNicknameDup__debounce(this);" type="text" name="nickname" class="login-input-box" placeholder="활동명" />
+		<div class="message-msg"></div>
 		<input type="password" name="loginPw" class="login-input-box"
 			placeholder="비밀번호" /> <input type="submit" class="submit" value="Go" />
 	</form>

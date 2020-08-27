@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.sbs.meet.dao.ArticleDao;
 import com.sbs.meet.dto.Article;
+import com.sbs.meet.dto.ArticleLike;
 import com.sbs.meet.dto.ArticleReply;
 import com.sbs.meet.util.Util;
 import com.sbs.meet.dto.File;
@@ -22,9 +23,11 @@ public class ArticleService {
 	private ArticleDao articleDao;
 	@Autowired
 	private FileService fileService;
-
-	public int register(Map<String, Object> param) {
-		articleDao.register(param);
+	
+	// 게시글 쓰기
+	
+	public int doWriteArticle(Map<String, Object> param) {
+		articleDao.doWriteArticle(param);
 	int id = Util.getAsInt(param.get("id"));
 	
 	String fileIdsStr = (String) param.get("fileIdsStr");
@@ -41,10 +44,8 @@ public class ArticleService {
 	
 		return id;
 	} 	
-
-	public Article getForPrintPrison(String searchKeyword) {
-		return articleDao.getForPrintPrison(searchKeyword);
-	}
+	
+	
 
 	public List<Article> getForPrintArticles() {
 		List<Article> articles = articleDao.getForPrintArticles();
@@ -188,6 +189,12 @@ public class ArticleService {
 
 	public int getArticleLikeAvailableCount(int id, int loginedMemberId) {
 		return articleDao.getArticleLikeAvailableCount(id,loginedMemberId);
+	}
+
+
+
+	public List<ArticleLike> getForPrintArticleLikesByMyArticle(int loginedMemberId) {
+		return articleDao.getForPrintArticleLikesByMyArticle(loginedMemberId);
 	}
 
 	

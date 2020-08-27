@@ -13,7 +13,7 @@ import com.sbs.meet.dto.Member;
 @Mapper
 public interface MemberDao {
 
-	int getNicknameDupCount(String nickname);
+	boolean getNicknameDupCount(String nickname);
 
 	void join(Map<String, Object> param);
 
@@ -21,15 +21,15 @@ public interface MemberDao {
 
 	Member getMemberById(@Param("id") int id);
 
-	void doModifyPrivate(int id,String loginPw);
+	void doModifyPrivate(int id, String loginPw);
 
 	Member doFindLoginId(String nickname, String name);
 
-	int getEmailDupCount(String email);
+	boolean getEmailDupCount(String email);
 
 	Member getMemberByEmailForFindLoginPw(String email);
 
-	void doUpdateTempLoginPw(String loginPw,String email);
+	void doUpdateTempLoginPw(String loginPw, String email);
 
 	void doMyInfoEdit(Map<String, Object> param);
 
@@ -49,5 +49,14 @@ public interface MemberDao {
 
 	List<Member> getAllMember();
 
-	
+	int getMsgNoticeCount(int loginedMemberId);
+
+	int getLikePointCount(int id);
+
+	int getRepliesCount(int loginedMemberId);
+
+	int getMyLikePoint(int loginedMemberId);
+
+	int getRepliesCountByMe(int loginedMemberId);
+
 }

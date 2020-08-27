@@ -14,27 +14,29 @@
 		email = #{email},
 		name = #{name},
 		nickname = #{nickname},
-		loginPw = #{loginPw},
+		loginPw =
+		#{loginPw},
 		level = 1,
 		introduce = "",
 		delStatus = 0
 	</insert>
 
-	<select id="getNicknameDupCount" resultType="int">
-		SELECT COUNT(*) AS
-		cnt
-		FROM member
+	<select id="getNicknameDupCount" resultType="boolean">
+		SELECT COUNT(*)
+		FROM
+		member
 		WHERE nickname = #{nickname}
 	</select>
 
-	<select id="getMemberByEmail" resultType ="Member">
+	<select id="getMemberByEmail" resultType="Member">
 		SELECT * FROM member
 		WHERE email = #{email}
 	</select>
 
 	<select id="getMemberById" resultMap="member">
 		SELECT * FROM member
-		WHERE id = #{id}
+		WHERE
+		id = #{id}
 	</select>
 
 	<update id="doModifyPrivate">
@@ -45,31 +47,33 @@
 		</set>
 		WHERE id = #{id}
 	</update>
-	
+
 	<select id="doFindLoginId" resultType="Member">
-	SELECT * FROM member
-	WHERE nickname = #{nickname}
-	AND name = #{name}
-	</select>
-	
-	<select id="getEmailDupCount" resultType="int">
-	SELECT COUNT(*) AS cnt 
-	FROM member
-	WHERE email = #{email}
-	</select>	
-	
-	<select id="getMemberByEmailForFindLoginPw" resultType="Member">
 		SELECT * FROM member
+		WHERE nickname = #{nickname}
+		AND name = #{name}
+	</select>
+
+	<select id="getEmailDupCount" resultType="boolean">
+		SELECT COUNT(*)
+		FROM member
 		WHERE email = #{email}
 	</select>
-	
+
+	<select id="getMemberByEmailForFindLoginPw" resultType="Member">
+		SELECT *
+		FROM member
+		WHERE email = #{email}
+	</select>
+
 	<update id="doUpdateTempLoginPw">
 		UPDATE member
 		SET updateDate = NOW(),
-		loginPw = #{loginPw}
+		loginPw =
+		#{loginPw}
 		WHERE email = #{email}
 	</update>
-	
+
 	<update id="doMyInfoEdit">
 		UPDATE member
 		SET updateDate = NOW(),
@@ -77,66 +81,116 @@
 		email = #{email},
 		nickname = #{nickname},
 		introduce = #{introduce}
-		WHERE id = #{id}
+		WHERE
+		id = #{id}
 	</update>
-	
-	<select  id="getArticleCount" resultType="int">
+
+	<select id="getArticleCount" resultType="int">
 		SELECT COUNT(*) AS
-		cnt FROM article
+		cnt
+		FROM article
 		WHERE memberId = #{memberId}
 		AND displayStatus = 1
 	</select>
-	
+
 	<update id="actionUpdetaSessionKey">
-	UPDATE member
-	SET sessionKey = #{sessionId},
-	sessionLimit = #{sessionLimit}
-	WHERE email =#{email}
+		UPDATE member
+		SET sessionKey = #{sessionId},
+		sessionLimit = #{sessionLimit}
+		WHERE email =#{email}
 	</update>
-	
+
 	<select id="checkUseWithSessionKey" resultType="Member">
-	SELECT * FROM member
-	WHERE sessionKey = #{sessionId}
-	AND sessionLimit > NOW()
+		SELECT * FROM member
+		WHERE sessionKey = #{sessionId}
+		AND sessionLimit > NOW()
 	</select>
-	
+
 	<insert id="applyToFollow">
-	INSERT INTO friend
-	SET regDate = NOW(),
-	followId = #{loginedMemberId},
-	followerId = #{memberId}
+		INSERT INTO friend
+		SET regDate = NOW(),
+		followId = #{loginedMemberId},
+		followerId = #{memberId}
 	</insert>
-	
+
 	<select id="getUserAvatarImg" resultType="File">
-	SELECT * FROM file
-	WHERE relTypeCode = 'member'
-	AND relId = #{memberId}
+		SELECT * FROM file
+		WHERE relTypeCode = 'member'
+		AND relId = #{memberId}
 	</select>
-	
+
 	<update id="doUpdateLevel">
-	UPDATE member
-	SET updateDate = NOW(),
-	level = 5
-	WHERE id = #{memberId}
+		UPDATE member
+		SET updateDate = NOW(),
+		level = 5
+		WHERE id = #{memberId}
 	</update>
-	
+
 	<select id="getAllMember" resultMap="member">
-	SELECT * FROM member
-	ORDER BY id DESC
-	LIMIT 3;
+		SELECT * FROM member
+		ORDER BY id DESC
+		LIMIT 3;
+	</select>
+
+	<select id="getMsgNoticeCount" resultType="int">
+		SELECT COUNT(*) AS
+		cnt FROM message
+		WHERE toId = #{loginedMemberId}
+		AND readStatus = 0
+	</select>
+
+	<select id="getLikePointCount" resultType="int">
+		SELECT COUNT(*) AS
+		cnt FROM articleLike
+		WHERE articleId = #{id}
+		AND readStatus = 0
+	</select>
+
+	<select id="getRepliesCount" resultType="int">
+		SELECT COUNT(*),
+		A.body
+		AS extra__body
+		FROM articleReply AS AR
+		INNER JOIN article AS A
+		ON
+		AR.articleId = A.id
+		WHERE A.memberId = #{loginedMemberId}
+		AND
+		AR.displayStatus = 1
+		AND AR.readStatus = 0
 	</select>
 	
+	<select id="getMyLikePoint" resultType="int">
+		SELECT COUNT(*),
+		A.body AS extra__body
+		FROM articleLike AS AL
+		INNER JOIN article AS A
+		ON
+		AL.articleId = A.id
+		WHERE A.memberId = #{loginedMemberId}
+		AND AL.readStatus = 0
+	</select>
 	
-	
+	<select id="getRepliesCountByMe" resultType="int">
+		SELECT COUNT(*),
+		A.body AS extra__body
+		FROM articleReply AS AR
+		INNER JOIN article AS A
+		ON AR.articleId =  A.id
+		WHERE A.memberId = #{loginedMemberId}
+		AND AR.memberId = #{loginedMemberId}
+	</select>
+
+
 	<resultMap type="Member" id="member">
-		<id property="id" column="id"/>
-		<id property="regDate" column="regDate"/>
-		<id property="updateDate" column="updateDate"/>
-		<id property="email" column="email"/>
-		<id property="name" column="name"/>
-		<id property="nickname" column="nickname"/>
+		<id property="id" column="id" />
+		<id property="regDate" column="regDate" />
+		<id property="updateDate" column="updateDate" />
+		<id property="email" column="email" />
+		<id property="name" column="name" />
+		<id property="nickname" column="nickname" />
 		<id property="level" column="level"></id>
-		<id property="introduce" column="introduce"/>
+		<id property="introduce" column="introduce" />
 		<association property="extra" javaType="map">
 			<id property="writer" column="extra__writer" />
 		</association>

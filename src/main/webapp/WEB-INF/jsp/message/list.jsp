@@ -44,12 +44,12 @@
 <style>
 .msg-con {
 	max-width: 1080px;
-	background:#fff;
+	background: #fff;
 	border: 1px solid #eee;
 	display: flex;
 	max-width: 1080px;
 	border: 1px solid #eee;
-	border-radius: 20px;
+	border-radius: 2px;
 	box-shadow: 3px 3px 3px #ccc;
 	align-items: center;
 	justify-content: center;
@@ -61,7 +61,7 @@
 	display: flex;
 	height: 500px;
 	border-right: 1px solid #eee;
-	flex-direction:column;
+	flex-direction: column;
 }
 
 .msg-title {
@@ -374,8 +374,9 @@ select {
 	background: #fff;
 }
 
-input[type=tel], input[type=time], input[type=text], input[type=password], input[type=email], input[type=file], input[type=url],
-	input[type=number], input[type=date], textarea {
+input[type=tel], input[type=time], input[type=text], input[type=password],
+	input[type=email], input[type=file], input[type=url], input[type=number],
+	input[type=date], textarea {
 	width: 100%;
 	height: 48px;
 	font-size: 14px;
@@ -455,35 +456,53 @@ textarea[readonly], textarea[disabled] {
 	transition: all 0.5s;
 }
 
-.message-list-box {
-	padding:15px;
-	height:100%;
-	overflow:scroll;
+.message-list-box {s
+	height: 100%;
+	overflow: scroll;
 }
 
 .data {
-	vertical-align:middle;
-	margin-bottom:15px;
-	height:60px;
+	vertical-align: middle;
+	padding-bottom: 23px;
+	padding-top:23px;
+	padding-left:15px;
+	height: 60px;
+	align-items:center;
+	transition:all.4s;
+	cursor:pointer;
 }
+
+.data:hover {
+	background:#eee;
+}
+
 .-writer {
-	width:20%;
+	width: 20%;
 }
 
 .-avatar {
-	width:50px;
-	height:50px;
-	border-radius:50%;
-	margin-bottom:15px;
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	margin-right:15px;
+}
+.message-item {
+	display:flex;
+	flex-direction:column;
 }
 
 .message-list-box::-webkit-scrollbar {
-	display:none; /* Chrome, Safari, Opera*/
+	display: none; /* Chrome, Safari, Opera*/
 }
-
 
 .skip:focus {
 	top: 0;
+}
+.-body {
+	margin-left:15px;
+}
+.info-con {
+	width:50px;
 }
 </style>
 <div class="total-wrap">
@@ -494,96 +513,93 @@ textarea[readonly], textarea[disabled] {
 				<p>Direct</p>
 				<i class="far fa-edit"></i>
 			</div>
-			
+
 			<div class="table-box message-list-box">
-			<div class="message-item"></div>
-			
+				<div class="message-item"></div>
+
 			</div>
-			
+
 			<script>
-			var loginedMemberId = parseInt('${loginedMemberId}');
+				var loginedMemberId = parseInt('${loginedMemberId}');
 			</script>
-			
-				<script>
-			var MessageList__$box = $('.message-list-box');
-			var MessageList__$tbody = MessageList__$box.find('.message-item');
-			var MessageList__lastLodedId = 0;
 
-			// 1초 메시지 불러오기
-			MessageList__loadMoreInterval = 1 * 1000
+			<script>
+				var MessageList__$box = $('.message-list-box');
+				var MessageList__$tbody = MessageList__$box
+						.find('.message-item');
+				var MessageList__lastLodedId = 0;
 
-			function MessageList__loadMoreCallback(data) {
-				if (data.body.messages
-						&& data.body.messages.length > 0) {
-					MessageList__lastLodedId = data.body.messages[data.body.messages.length - 1].id;
-					MessageList__drawMessages(data.body.messages);
+				// 1초 메시지 불러오기
+				MessageList__loadMoreInterval = 1 * 1000
 
+				function MessageList__loadMoreCallback(data) {
+					if (data.body.messages && data.body.messages.length > 0) {
+						MessageList__lastLodedId = data.body.messages[data.body.messages.length - 1].id;
+						MessageList__drawMessages(data.body.messages);
+
+					}
+
+					setTimeout(MessageList__loadMore,
+							MessageList__loadMoreInterval);
 				}
 
-				setTimeout(MessageList__loadMore, MessageList__loadMoreInterval);
-			}
+				function MessageList__loadMore() {
 
-			function MessageList__loadMore() {
-
-				$.get('../message/getForPrintMessagesAjax', {
-					// 일단 냅둬보자.
-					toId : loginedMemberId,
-					from : MessageList__lastLodedId + 1
-				}, MessageList__loadMoreCallback, 'json');
-			}
-
-			function MessageList__drawMessages(messages) {
-				for (var i = 0; i < messages.length; i++) {
-					var message = messages[i];
-					MessageList__drawMessage(message);
+					$.get('../message/getForPrintMessagesAjax', {
+						// 일단 냅둬보자.
+						toId : loginedMemberId,
+						from : MessageList__lastLodedId + 1
+					}, MessageList__loadMoreCallback, 'json');
 				}
-			}
 
-			function MessageList__drawMessage(message) {
-				var html = '';
-				html += '<tr class="data" data-id="' + message.id + '">';
-				//	html += '<td>' + articleReply.id + '</td>';
-				//	html += '<td>' + articleReply.regDate + '</td>';
+				function MessageList__drawMessages(messages) {
+					for (var i = 0; i < messages.length; i++) {
+						var message = messages[i];
+						MessageList__drawMessage(message);
+					}
+				}
 
-				html += '<td>';
-				// 회원가입시 
-				html += '<a href="../member/showOther?id='
-						+ message.fromId
-						+ '"><img class="-avatar" src="' + message.extra.writerAvatarImgUrl + '"></a>';
-				html += '</td>';
-				
-				html += '<td class="-writer">' + message.extra.writer
-						+ '</td>';
+				function MessageList__drawMessage(message) {
+					var html = '';
+					html += '<tr class="data" data-id="' + message.id + '">';
+					//	html += '<td>' + articleReply.id + '</td>';
+					//	html += '<td>' + articleReply.regDate + '</td>';
 
-			
+					html += '<td class="info-con">';
+					// 회원가입시 
+					html += '<a href="#" class="message-open"><img class="-avatar" src="' + message.extra.writerAvatarImgUrl + '"></a>';
+					html += '</td>';
 
-				html += '<td>';
-				html += '<div class="-body">' + message.body
-						+ '</div>';
-				//	html += '<button type="button" onclick="ReplyList__delete(this);">삭제</button>';
+					html += '<td class="-writer">' + message.extra.writer
+							+ '</td>';
 
-				//	html += '<button type="button" onclick="ReplyList__showModifyFormModal(this);">수정</button>';
-				html += '</td>';
-				html += '</tr>';
-				var $tr = $(html);
-				MessageList__$tbody.prepend($tr);
-			}
+					html += '<td>';
+					html += '<div class="-body">' + message.body + '</div>';
+					//	html += '<button type="button" onclick="ReplyList__delete(this);">삭제</button>';
 
-			MessageList__loadMore();
-		</script>
-			
-			
+					//	html += '<button type="button" onclick="ReplyList__showModifyFormModal(this);">수정</button>';
+					html += '</td>';
+					html += '</tr>';
+					var $tr = $(html);
+					MessageList__$tbody.prepend($tr);
+				}
+
+				MessageList__loadMore();
+			</script>
+
+
 		</div>
 		<div class="msg-send">
+		<!--  -->
 			<div class="circle">
 				<i class="far fa-paper-plane"></i>
 			</div>
-			<div class="msg-text">
+					<div class="msg-text">
+						<p>내 메시지</p>
+						<span>친구나 그룹에 메시지를 보내보세요.</span> <a href="#" class="msgSubmit">메시지
+							보내기</a>
+					</div>
 
-				<p>내 메시지</p>
-				<span>친구나 그룹에 메시지를 보내보세요.</span> <a href="#" class="msgSubmit">메시지
-					보내기</a>
-			</div>
 		</div>
 	</div>
 
@@ -602,7 +618,8 @@ textarea[readonly], textarea[disabled] {
 					<tr>
 						<th><label for="txt2">받는사람</label><span>*<em
 								class="hide">필수입력</em></span></th>
-						<td><input type="text" id="txt2" placeholder=""  value="1" name="toId"></td>
+						<td><input type="text" id="txt2" placeholder="" value="1"
+							name="toId"></td>
 					</tr>
 					<tr>
 						<th><label for="txt3">내용</label><em>(0/300 byte)</em></th>

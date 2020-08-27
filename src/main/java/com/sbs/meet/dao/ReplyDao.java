@@ -1,5 +1,6 @@
 package com.sbs.meet.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -13,5 +14,9 @@ public interface ReplyDao {
 	void writeReply(Map<String, Object> param);
 
 	List<ArticleReply> getForPrintArticleReplies(@RequestParam Map<String, Object> param);
+
+	int getRepliesCount(int loginedMemberId);
+
+	List<ArticleReply> getForPrintArticleRepliesByMyArticle(int loginedMemberId);
 
 }

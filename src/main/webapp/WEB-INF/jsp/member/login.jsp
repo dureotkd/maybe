@@ -38,8 +38,16 @@
 	}
 </script>
 
+<style>
+.total-wrap {
+	background:#fafafa;
+	width:100%;
+	height:100%;
+	padding-top:50px;
+}
+</style>
 
-
+<div class="total-wrap">
 <div class="login-form-box">
 	<form action="doLogin" class="login-form"
 		onsubmit="MemberLoginForm__submit(this); return false;">
@@ -66,6 +74,6 @@
 		<a href="findLoginPw"><div class="join-item">비번찾기</div></a>
 	</div>
 </div>
-
+</div>
 
 <%@ include file="../part/foot.jspf"%>

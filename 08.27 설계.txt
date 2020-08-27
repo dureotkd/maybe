@@ -1,0 +1,15 @@
+
+계획 :
+
+articleReply,articleLike,message 
+
+readStatus 추가
+
+
+-> 기존에 readStatus  =  0  
+활동내역에 readStatus 가 0 인것들만 알림을 띄우는 형식으로 만들예정.
+
+-> 읽으면 1 이고
+활동내역에서 사라짐.
+
+readStatus 를 어떤 상황에서  없어지게 할 지는 아직 미지수. 집에가서 할 예정

@@ -14,5 +14,9 @@ public interface MessageDao {
 	void writeMessage(Map<String, Object> param);
 
 	List<Message> getForPrintMessagesAjax(Map<String, Object> param);
+
+	void doUpdateReadStatus(int loginedMemberId);
+
+	int getMsgNoticeCount(int loginedMemberId);
 	
 }

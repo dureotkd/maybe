@@ -10,8 +10,6 @@ h1 {
 }
 </style>
 
-<h1>비밀번호 찾기</h1>
-
 <script>
 	var doFindLoginPwForm__submitDone = false;
 	function doFindLoginPwForm__submit(form) {

@@ -19,5 +19,11 @@ public class MessageService {
 	public List<Message> getForPrintMessagesAjax(Map<String, Object> param) {
 		return messageDao.getForPrintMessagesAjax(param);
 	}
+	public void doUpdateReadStatus(int loginedMemberId) {
+		messageDao.doUpdateReadStatus(loginedMemberId);
+	}
+	public int getMsgNoticeCount(int loginedMemberId) {
+		return messageDao.getMsgNoticeCount(loginedMemberId);
+	}
 
 }
