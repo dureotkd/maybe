@@ -217,6 +217,14 @@ public class MemberService {
 		 memberDao.updateActReadStatusInReply(loginedMemberId);
 	}
 
+	public void doActionFollow(int followId, int followerId) {
+		memberDao.doActionFollow(followId,followerId);
+	}
+
+	public void doDeleteFollow(int followId, int followerId) {
+		memberDao.doDeleteFollow(followId,followerId);
+	}
+
 
 	
 

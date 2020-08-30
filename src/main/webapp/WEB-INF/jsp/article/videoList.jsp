@@ -59,6 +59,10 @@
 	box-shadow:3px 3px 3px #ccc;
 }
 
+.fa-compass {
+	color:#d81b60;
+}
+
 @media ( min-width:901px ) {
   .articles-box > ul > li {
     margin-top:20px;

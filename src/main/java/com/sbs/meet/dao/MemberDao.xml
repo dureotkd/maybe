@@ -108,15 +108,7 @@
 		WHERE sessionKey = #{sessionId}
 		AND sessionLimit > NOW()
 	</select>
-
-	<insert id="applyToFollow">
-		INSERT INTO friend
-		SET regDate = NOW(),
-		followId =
-		#{loginedMemberId},
-		followerId = #{memberId}
-	</insert>
-
+	
 	<select id="getUserAvatarImg" resultType="File">
 		SELECT * FROM file
 		WHERE relTypeCode = 'member'
@@ -221,6 +213,19 @@
 	SET AR.readStatus = 1
 	WHERE A.memberId = #{loginedMemberId}
 	</update>
+	
+	<insert id="doActionFollow">
+	INSERT INTO friend
+	SET regDate = NOW(),
+	followId = #{followId},
+	followerId = #{followerId}
+	</insert>
+	
+	<delete id="doDeleteFollow">
+	DELETE FROM friend
+	WHERE followId = #{followId}
+	AND followerId = #{followerId}
+	</delete>
 	
 
 

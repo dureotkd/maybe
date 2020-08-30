@@ -34,6 +34,19 @@
 		ORDER BY A.id DESC
 	</select>
 
+	<select id="getForPrintArticlesInFollow" resultMap="article">
+		SELECT A.*,
+		M.nickname AS extra__writer
+		FROM article AS A
+		INNER JOIN member AS M
+		ON M.id = A.memberId
+		INNER JOIN friend AS F
+		ON F.followId = M.id
+		WHERE F.followerId = #{loginedMemberId}
+		AND A.displayStatus = 1
+		ORDER BY A.id DESC
+	</select>
+
 
 	<select id="getForPrintArticles2" resultMap="article">
 		SELECT A.*,
@@ -44,7 +57,7 @@
 		A.memberId = M.id
 		WHERE displayStatus = 1
 		AND A.memberId = #{memberId}
-		ORDER BY A.id ASC
+		ORDER BY A.id DESC
 	</select>
 
 	<select id="getForPrintOneArticle" resultMap="article">
@@ -153,26 +166,30 @@
 		AL.readStatus = 0
 		ORDER BY AL.id DESC
 	</select>
-	
+
 	<select id="getLikeKing" resultMap="article">
 		SELECT A.*,
-		A.body AS extra__body
+		A.body AS
+		extra__body
 		FROM article AS A
 		INNER JOIN
 		articleLike AS AL
-		ON A.id = AL.articleId
+		ON A.id =
+		AL.articleId
 		WHERE A.displayStatus = 1
 		ORDER BY AL.point DESC
 		LIMIT 1;
 	</select>
-	
+
 	<select id="getLikeKingLimitFive" resultMap="article">
 		SELECT A.*,
-		A.body AS extra__body
+		A.body AS
+		extra__body
 		FROM article AS A
 		INNER JOIN
 		articleLike AS AL
-		ON A.id = AL.articleId
+		ON A.id =
+		AL.articleId
 		WHERE A.displayStatus = 1
 		ORDER BY AL.point DESC
 		LIMIT 5;
@@ -182,14 +199,14 @@
 		SELECT
 		IFNULL(SUM(AL.point), 0) AS point
 		FROM articleLike AS AL
-		WHERE AL.articleId = #{id}
+		WHERE
+		AL.articleId = #{id}
 	</select>
-	
+
 	<update id="updateReadStatus">
-	UPDATE articleLike
-	SET readStatus = 1
-	WHERE id = #{id}
-	
+		UPDATE articleLike
+		SET readStatus = 1
+		WHERE id = #{id}
 	</update>
 
 	<resultMap type="ArticleLike" id="articleLike">

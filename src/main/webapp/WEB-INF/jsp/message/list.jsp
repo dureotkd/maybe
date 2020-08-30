@@ -89,12 +89,14 @@
 	align-items: center;
 }
 
-.circle {
+.direct {
 	width: 100px;
 	height: 100px;
-	border: 1px solid;
 	border-radius: 50%;
 	position: relative;
+}
+.fa-envelope {
+	color:#d81b60;
 }
 
 .msgSubmit {
@@ -595,9 +597,7 @@ textarea[readonly], textarea[disabled] {
 		</div>
 		<div class="msg-send">
 		<!--  -->
-			<div class="circle">
-				<i class="far fa-paper-plane"></i>
-			</div>
+			<img class="direct" src="https://i.pinimg.com/originals/7b/66/ac/7b66ac2787335ebcb565960d482f0846.png" alt="" />
 					<div class="msg-text">
 						<p>내 메시지</p>
 						<span>친구나 그룹에 메시지를 보내보세요.</span> <a href="#" class="msgSubmit">메시지

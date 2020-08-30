@@ -7,6 +7,7 @@
 </script>
 
 <script>
+
 	var ProfileChangeForm__submitDone = false;
 
 	function ProfileChangeForm__submit(form) {
@@ -54,6 +55,26 @@
 			fileInput1.value = '';
 			form.submit();
 		});
+
+	}
+
+	function callDoLike(el) {
+		var $li = $(el).closest('li');
+		// 가장 가까운 li를 찾아라
+		var id = parseInt($li.attr('data-id'));
+		// 정수화 -> data-id
+
+		$.post('../article/doLike', {
+			id : id
+		}, function(data) {
+			if (data.msg) {
+				alert(data.msg);
+			}
+
+			if (data.resultCode.substr(0, 2) == "S-") {
+				ViewArticle1__updateLikePoint(data.likePoint);
+			}
+		}, 'json');
 
 	}
 
@@ -125,9 +146,8 @@
 <style>
 .other-show-box {
 	display: flex;
-	margin: 100px auto;
+	margin: 50px auto;
 	max-width: 940px;
-	margin-bottom: 60px;
 	justify-content: space-between;
 	align-items: center;
 }
@@ -136,7 +156,6 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	margin-left: 50px;
 	width: 400px;
 }
 
@@ -156,38 +175,29 @@
 	margin: 0 auto;
 }
 
-@media ( min-width :800px ) {
-	.articles-box>ul>li {
-		margin-top: 20px;
-		width: calc(100%/ 3 - ( 20px * ( 3 - 1)/3));
-		height: 300px;
-	}
-	.articles-box>ul {
-		margin-left: 20px;
-	}
-	.articles-box {
-		border: 1px solid #ccc;
-		box-shadow: 3px 3px 3px #ccc;
-	}
-	.images-wrap {
-		width: 90%;
-		height: 100%;
-		overflow: hidden;
-	}
+.images-wrap {
+	transition: all.3s;
+	position: relative;
 }
 
-@media ( max-width :799px ) {
-	.articles-box>ul>li {
-		height: 200px;
-		width: calc(100%/ 3 - ( 0px * ( 3 - 1)/3));
-	}
-	.images-wrap {
-		width: 99%;
-		height: 99%;
-		overflow: hidden;
-	}
+.good-item {
+	position: absolute;
+	color: #d81b60;
+	top: 10px;
+	left:10px;
+	transition: all.3s;
+	opacity: 0;
+	cursor: pointer;
+	transition: all.3s;
 }
 
+.fa-comment-dots {
+	position: absolute;
+	color: white;
+	top: 10px;
+	opacity: 0;
+	cursor: pointer;
+}
 .articles-box>ul {
 	display: flex;
 	flex-flow: row wrap;
@@ -198,6 +208,8 @@
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
+	transition: all.3s;
+	cursor:zoom-in;
 }
 
 .other-articleVideo {
@@ -220,27 +232,25 @@
 }
 
 .other-nick {
-	font-size: 1.5rem;
-}
-
-.other-img-box {
-	display: flex;
-	align-items: center;
+	font-size: 1.2rem;
 }
 
 .other-followBox {
 	display: flex;
-	justify-content: space-between;
+	justify-content: left;
 }
 
-.other-followBox>span {
-	padding-top: 10px;
+.other-followBox span {
+	margin-right: 30px;
+	margin-bottom: 20px;
+	margin-top: 20px;
 }
 
 .other-info-box {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	color: #262626;
 }
 
 .level10 {
@@ -260,7 +270,7 @@
 }
 
 .other-recomend-box {
-	display: flex;
+	display: none;
 	height: 200px;
 	width: 300px;
 	justify-content: space-around;
@@ -596,16 +606,15 @@ textarea[readonly], textarea[disabled] {
 }
 
 .edit-btn {
-	padding: 10px;
+	padding: 7px;
 	background: #0095f6;
 	border: none;
 	cursor: pointer;
 	color: white;
+	border-radius: 2px;
 }
 
 .other-img-wrap {
-	width: 150px;
-	height: 150px;
 	border-radius: 50%;
 	overflow: hidden;
 }
@@ -621,6 +630,95 @@ input[type="file"] {
 	overflow: hidden;
 	clip: rect(0, 0, 0, 0);
 }
+
+.images-wrap:hover .good-item {
+	opacity: 1;
+}
+
+.images-wrap:hover .fa-comment-dots {
+	opacity: 1;
+}
+
+.images-wrap:hover .other-articleImg {
+	opacity: 0.8;
+}
+
+
+@media ( min-width :800px ) {
+	.articles-box>ul>li {
+		margin-top: 20px;
+		width: calc(100%/ 3 - ( 20px * ( 3 - 1)/3));
+		height: 300px;
+	}
+	.articles-box>ul {
+		margin-left: 20px;
+	}
+	.articles-box {
+		border: 1px solid #ccc;
+		box-shadow: 3px 3px 3px #ccc;
+	}
+	.images-wrap {
+		width: 90%;
+		height: 100%;
+		overflow: hidden;
+	}
+	.fa-comment-dots {
+		left: 60px;
+	}
+	.good-item {
+		left: 20px;
+	}
+	.other-img-wrap {
+		width:150px;
+		height:150px;
+	}
+	.other-img-box {
+	display: flex;
+	margin-top:50px;
+	align-items: center;
+	}
+	.other-text-box {
+		margin-left:50px;
+	}
+	.other-show-box {
+		margin-bottom:50px;
+	}
+}
+
+@media ( max-width :799px ) {
+	.articles-box>ul>li {
+		height: 200px;
+		width: calc(100%/ 3 - ( 0px * ( 3 - 1)/3));
+	}
+	.images-wrap {
+		width: 99%;
+		height: 99%;
+		overflow: hidden;
+	}
+	.fa-comment-dots, .good-item {
+		font-size: 15px;
+	}
+	.fa-comment-dots {
+		left: 40px;
+	}
+	.other-img-wrap {
+		width:120px;
+		height:120px;
+	}
+	
+	.other-img-box {
+	display: flex;
+	flex-direction:column;
+	width:100%;
+	margin-top:50px;
+	justify-content:center;
+	align-items: center;
+}
+	.other-text-box {
+		margin-top:20px;
+	}
+}
+
 </style>
 
 
@@ -740,12 +838,16 @@ input[type="file"] {
 	 -->
 			<!--  이미지  	 -->
 			<c:if test="${article.extra.file__common__attachment['3'] != null}">
-				<li>
+				<li data-id="${article.id}">
 					<div class="images-wrap">
 						<a href="../article/detail?id=${article.id}"> <img
 							class="other-articleImg"
 							src="/file/showImg?id=${article.extra.file__common__attachment['3'].id}&updateDate=${article.extra.file__common__attachment['3'].updateDate}"
-							alt="" /></a>
+							alt="" /></a> <a onclick="callDoLike(this);"><i
+							class="fas fa-heart good-item "></i></a> <i
+							class="fas fa-comment-dots "></i> <img src="#" alt=""
+							usemap="#map" />
+
 					</div>
 				</li>
 			</c:if>

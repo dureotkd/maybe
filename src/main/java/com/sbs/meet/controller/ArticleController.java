@@ -109,10 +109,9 @@ public class ArticleController {
 	// 게시글 디테일  
 	
 	@RequestMapping("article/detail")
-	public String showArticlecDetail(Model model,@RequestParam Map<String, Object> param) {
+	public String showArticlecDetail(Model model,@RequestParam Map<String, Object> param,int id) {
 		
-		int id = Integer.parseInt((String) param.get("id"));
-
+		
 		Article article = articleService.getForPrintOneArticle(id);
 		// 게시글
 		int memberId = article.getMemberId();

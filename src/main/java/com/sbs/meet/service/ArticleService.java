@@ -221,6 +221,12 @@ public class ArticleService {
 		return articleDao.updateReadStatus(id);
 	}
 
+
+
+	public List<Article> getForPrintArticlesInFollow(int loginedMemberId){
+		return articleDao.getForPrintArticlesInFollow(loginedMemberId);
+	}
+
 	
 	
 }

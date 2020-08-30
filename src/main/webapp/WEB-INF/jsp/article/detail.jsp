@@ -14,14 +14,23 @@ html, body {
 }
 
 .reply-img-Avatar {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 50%;
+}
+
+.article-writer-Avatar-wrap {
 	width: 40px;
 	height: 40px;
+	overflow: hidden;
 	border-radius: 50%;
 }
 
 .article-writer-Avatar {
-	width: 40px;
-	height: 40px;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 	border-radius: 50%;
 }
 
@@ -222,7 +231,7 @@ to {
 		align-items: center;
 		padding: 20px;
 		justify-content: center;
-		margin: 60px auto;
+		margin: 100px auto;
 		margin-bottom: 50px;
 		overflow: scroll;
 	}
@@ -374,7 +383,6 @@ button, submit {
 	border: none;
 	color: #0d47a1;
 	cursor: pointer;
-	font-weight: 600;
 }
 
 .setting-box {
@@ -663,9 +671,22 @@ textarea[readonly], textarea[disabled] {
 
 <script>
 	var id = parseInt('${article.id}');
+	var followId = parseInt('${member.id}');
+	var followerId = parseInt('${loginedMemberId}');
 </script>
 
 <script>
+	function doFollow() {
+		$.post('../member/doActionFollow', {
+			followId : followId,
+			followerId : followerId
+		}, function(data) {
+			if (data.msg) {
+				alert(data.msg);
+			}
+		}, 'json');
+	}
+
 	$(document).ready(function() {
 
 		$(".msgSubmit").on('click', function() {
@@ -747,18 +768,6 @@ textarea[readonly], textarea[disabled] {
 			}
 		}, 'json');
 	}
-	function doFollowSubmit__form() {
-		$.post('../frined/doFollowAjax', {
-			followId : form.followId.value,
-			followerId : form.followerId.value
-		}, function(data) {
-			if (data.msg) {
-				alert(data.msg);
-			}
-		}, 'json');
-
-	}
-
 
 	function WriteMessage__submitForm(form) {
 		form.body.value = form.body.value.trim();
@@ -851,9 +860,10 @@ textarea[readonly], textarea[disabled] {
 		<div class="table-box reply-list-box">
 			<div class="article-user-box">
 				<a href="../member/showOther?id=${article.memberId}"
-					class="writer-center"> <img class="article-writer-Avatar"
-					src="${article.extra.writerAvatarImgUrl}"> <span
-					class="writer">${article.extra.writer}</span></a>
+					class="writer-center"><div class="article-writer-Avatar-wrap">
+						<img class="article-writer-Avatar"
+							src="${article.extra.writerAvatarImgUrl}">
+					</div> <span class="writer">${article.extra.writer}</span></a>
 				<c:if test="${member.level == 10 }">
 					<i class="fas fa-crown level10"></i>
 				</c:if>
@@ -864,11 +874,7 @@ textarea[readonly], textarea[disabled] {
 					<i class="fas fa-user-alt level"></i>
 				</c:if>
 
-				<form action="" onsubmit="doFollowSubmit__form(this); return false;">
-					<input type="hidden" name="followerId" value="${member.id}" /> <input
-						type="hidden" name="followId" value="${loginedMemberId}" /> <input
-						type="submit" value="팔로우" class="follow-btn" />
-				</form>
+				<a href="#" class="follow-btn" onclick="doFollow(this);">팔로우</a>
 				<ul class="setting-box">
 					<li><i class="fas fa-ellipsis-h"></i></li>
 					<ul class="setting-items">
@@ -985,11 +991,12 @@ textarea[readonly], textarea[disabled] {
 				// 회원가입시 
 				html += '<a href="../member/showOther?id='
 						+ articleReply.memberId
-						+ '"><img class="reply-img-Avatar" src="' + articleReply.extra.writerAvatarImgUrl + '"></a>';
+						+ '"><div class="article-writer-Avatar-wrap"><img class="reply-img-Avatar" src="' + articleReply.extra.writerAvatarImgUrl + '">';
+				html += '</div>';
 				html += '</td>';
 
 				html += '<td class="reply-writer">' + articleReply.extra.writer
-						+ '</td>';
+						+ '</td></a>';
 
 				html += '<td>';
 				html += '<div class="reply-body">' + articleReply.body

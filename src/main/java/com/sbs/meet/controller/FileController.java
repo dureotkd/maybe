@@ -144,7 +144,7 @@ public class FileController {
 				}
 			}
 		}
-
+		
 		Map<String, Object> rsDataBody = new HashMap<>();
 		rsDataBody.put("fileIdsStr", Joiner.on(",").join(fileIds));
 		rsDataBody.put("fileIds", fileIds);

@@ -496,14 +496,14 @@ public class MemberController {
 		return "member/showOther";
 	}
 
-	@RequestMapping("/member/follow")
-	public String doActionFollow(HttpServletRequest req, int id) {
-
-		Member member = memberService.getMemberById(id);
-		Member loginedMember = (Member) req.getAttribute("loginedMember");
-		int loginedMemberId = loginedMember.getId();
-
-		return "common/redirect";
+	@RequestMapping("/member/doActionFollow")
+	public void doActionFollow(HttpServletRequest req,int followId,int followerId) {
+		memberService.doActionFollow(followId,followerId);
+	}
+	
+	@RequestMapping("/member/doDeleteFollow")
+	public void doDeleteFollow(int followId,int followerId) {
+		memberService.doDeleteFollow(followId,followerId);
 	}
 	
 	@RequestMapping("/member/changeProfile")

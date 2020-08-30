@@ -51,5 +51,7 @@ public interface ArticleDao  {
 	List<Article> getLikeKingLimitFive();
 
 	Map<String, Object> updateReadStatus(int loginedMemberId);
+
+	List<Article> getForPrintArticlesInFollow(int loginedMemberId);
 	
 }

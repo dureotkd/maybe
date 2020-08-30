@@ -61,6 +61,9 @@
 .other-articleVideo {
 	height: 300px;
 }
+.fa-compass {
+	color:#d81b60;
+}
 
 .img-wrap {
 	text-align: center;

@@ -555,7 +555,7 @@ h1 {
 	width:50px;
 	height:50px;
 	border-radius:50%;	
-	over-flow:hidden;
+	overflow:hidden;
 }
 </style>
 
