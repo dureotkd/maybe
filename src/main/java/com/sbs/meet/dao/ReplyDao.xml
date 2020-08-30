@@ -51,6 +51,13 @@
 		AND AR.readStatus = 0
 		ORDER BY AR.id DESC
 	</select>
+	
+	<update id="updateReadStatus">
+	UPDATE articleReply
+	SET updateDate = NOW(),
+	readStatus = 1
+	WHERE id = #{id}
+	</update>
 
 
 	<resultMap type="ArticleReply" id="articleReply">

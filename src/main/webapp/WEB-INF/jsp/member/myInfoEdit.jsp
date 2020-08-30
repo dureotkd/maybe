@@ -2,7 +2,13 @@
     pageEncoding="UTF-8"%>
 <%@ include file="../part/head.jspf"%>
 
-<h1>프로필 편집</h1>
+<style>
+.temp {
+	margin-top:100px;
+}
+</style>
+
+<h1 class="temp">프로필 편집</h1>
 
 <form action="doMyInfoEdit" method="POST" onsubmit="">
 <input type="hidden" name="redirectUri" value="myInfoEdit" />

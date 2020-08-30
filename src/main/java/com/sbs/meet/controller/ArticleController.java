@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sbs.meet.dto.Article;
+import com.sbs.meet.dto.ArticleLike;
 import com.sbs.meet.dto.ArticleReply;
 import com.sbs.meet.dto.File;
 import com.sbs.meet.dto.Member;
 import com.sbs.meet.service.ArticleService;
 import com.sbs.meet.service.FileService;
 import com.sbs.meet.service.MemberService;
+import com.sbs.meet.service.ReplyService;
 import com.sbs.meet.util.Util;
 
 
@@ -31,6 +33,8 @@ public class ArticleController {
 	private FileService fileService;
 	@Autowired
 	private MemberService memberService;
+	@Autowired
+	private ReplyService replyService;
 	
 	//  write.jsp 연결
 	
@@ -151,6 +155,44 @@ public class ArticleController {
 
 		return rs;
 	}
+	
+	@RequestMapping("article/getLikeCount")
+	@ResponseBody
+	public Map<String, Object> getLikeCount(Model model,int id){
+		
+		int articlesLikeCount = articleService.getArticlesLikeCount(id);
+		
+		Map<String, Object> rs = new HashMap<>();
+		rs.put("articleLikeCount", articlesLikeCount);
+		return rs;
+	}
+	
+	@RequestMapping("article/readAct")
+	@ResponseBody
+	public void readAct(Model model,HttpServletRequest request) {
+		
+		int loginedMemberId = (int) request.getAttribute("loginedMemberId");
+			
+		memberService.updateActReadStatus(loginedMemberId);		
+	    memberService.updateActReadStatusInReply(loginedMemberId);		
+
+//		List<ArticleReply> articleReplies = replyService.getForPrintArticleRepliesByMyArticle(loginedMemberId);
+		
+//		for ( ArticleReply articleReply : articleReplies ) {
+//			Map<String, Object> updateReadStatusInReply = replyService.updateReadStatus(articleReply.getId());
+//			
+//			return updateReadStatusInReply;
+//		}
+//		List<ArticleLike> articleLikes = articleService.getForPrintArticleLikesByMyArticle(loginedMemberId);
+//		
+//		for ( ArticleLike articleLike : articleLikes ) {
+//			Map<String, Object> updateReadStatusInLike = articleService.updateReadStatus(articleLike.getId());
+//			
+//			return updateReadStatusInLike;
+//		}
+//	
+	}
+	
 	
 	// text 만 할지 안할지 고민중.
 	

@@ -35,7 +35,7 @@
 
 <style>
 .articles-box {
-	max-width: 1108px;
+	max-width: 940px;
 	margin: 0 auto;
 	border: 1px solid #ccc;
 	box-shadow: 3px 3px 3px #ccc;
@@ -64,7 +64,7 @@
 }
 
 .other-articleImg {
-	width: 300px;
+	width: 280px;
 	transition: all.3s;
 }
 

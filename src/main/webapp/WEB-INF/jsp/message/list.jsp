@@ -43,18 +43,16 @@
 
 <style>
 .msg-con {
-	max-width: 1080px;
+	max-width: 940px;
 	background: #fff;
 	border: 1px solid #eee;
 	display: flex;
-	max-width: 1080px;
 	border: 1px solid #eee;
 	border-radius: 2px;
 	box-shadow: 3px 3px 3px #ccc;
 	align-items: center;
 	justify-content: center;
-	margin: 0 auto;
-	margin-bottom: 50px;
+	margin: 60px auto;
 }
 
 .msg-box {
@@ -481,11 +479,13 @@ textarea[readonly], textarea[disabled] {
 }
 
 .-avatar {
-	width: 50px;
-	height: 50px;
+	width: 100%;
+	height: 100%;
 	border-radius: 50%;
 	margin-right:15px;
+	object-fit:cover;
 }
+
 .message-item {
 	display:flex;
 	flex-direction:column;
@@ -503,6 +503,10 @@ textarea[readonly], textarea[disabled] {
 }
 .info-con {
 	width:50px;
+	height:50px;
+	border-radius:50%;
+	overflow:hidden;
+	margin-right:10px;
 }
 </style>
 <div class="total-wrap">

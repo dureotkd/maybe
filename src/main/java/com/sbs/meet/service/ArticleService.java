@@ -197,6 +197,30 @@ public class ArticleService {
 		return articleDao.getForPrintArticleLikesByMyArticle(loginedMemberId);
 	}
 
+
+
+	public int getArticlesLikeCount(int id) {
+		return articleDao.getArticlesLikeCount(id);
+	}
+
+
+
+	public Article getLikeKing() {
+		return articleDao.getLikeKing();
+	}
+
+
+
+	public List<Article> getLikeKingLimitFive() {
+		return articleDao.getLikeKingLimitFive();
+	}
+
+
+
+	public Map<String, Object> updateReadStatus(int id) {
+		return articleDao.updateReadStatus(id);
+	}
+
 	
 	
 }

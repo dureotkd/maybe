@@ -50,13 +50,15 @@
 
 	<select id="doFindLoginId" resultType="Member">
 		SELECT * FROM member
-		WHERE nickname = #{nickname}
+		WHERE
+		nickname = #{nickname}
 		AND name = #{name}
 	</select>
 
 	<select id="getEmailDupCount" resultType="boolean">
 		SELECT COUNT(*)
-		FROM member
+		FROM
+		member
 		WHERE email = #{email}
 	</select>
 
@@ -101,7 +103,8 @@
 	</update>
 
 	<select id="checkUseWithSessionKey" resultType="Member">
-		SELECT * FROM member
+		SELECT * FROM
+		member
 		WHERE sessionKey = #{sessionId}
 		AND sessionLimit > NOW()
 	</select>
@@ -109,7 +112,8 @@
 	<insert id="applyToFollow">
 		INSERT INTO friend
 		SET regDate = NOW(),
-		followId = #{loginedMemberId},
+		followId =
+		#{loginedMemberId},
 		followerId = #{memberId}
 	</insert>
 
@@ -123,25 +127,29 @@
 		UPDATE member
 		SET updateDate = NOW(),
 		level = 5
-		WHERE id = #{memberId}
+		WHERE id
+		= #{memberId}
 	</update>
 
 	<select id="getAllMember" resultMap="member">
 		SELECT * FROM member
-		ORDER BY id DESC
+		ORDER BY
+		id DESC
 		LIMIT 3;
 	</select>
 
 	<select id="getMsgNoticeCount" resultType="int">
 		SELECT COUNT(*) AS
-		cnt FROM message
+		cnt
+		FROM message
 		WHERE toId = #{loginedMemberId}
 		AND readStatus = 0
 	</select>
 
 	<select id="getLikePointCount" resultType="int">
 		SELECT COUNT(*) AS
-		cnt FROM articleLike
+		cnt
+		FROM articleLike
 		WHERE articleId = #{id}
 		AND readStatus = 0
 	</select>
@@ -155,31 +163,65 @@
 		ON
 		AR.articleId = A.id
 		WHERE A.memberId = #{loginedMemberId}
-		AND
-		AR.displayStatus = 1
+		AND AR.memberId != #{loginedMemberId}
+		AND AR.displayStatus = 1
 		AND AR.readStatus = 0
 	</select>
-	
+
 	<select id="getMyLikePoint" resultType="int">
 		SELECT COUNT(*),
-		A.body AS extra__body
+		A.body AS
+		extra__body
 		FROM articleLike AS AL
 		INNER JOIN article AS A
 		ON
 		AL.articleId = A.id
 		WHERE A.memberId = #{loginedMemberId}
-		AND AL.readStatus = 0
+		AND
+		AL.readStatus = 0
 	</select>
-	
+
 	<select id="getRepliesCountByMe" resultType="int">
 		SELECT COUNT(*),
 		A.body AS extra__body
 		FROM articleReply AS AR
 		INNER JOIN article AS A
-		ON AR.articleId =  A.id
+		ON
+		AR.articleId = A.id
 		WHERE A.memberId = #{loginedMemberId}
-		AND AR.memberId = #{loginedMemberId}
+		AND
+		AR.memberId = #{loginedMemberId}
 	</select>
+
+	<select id="isNeedToChangePwPass3Months" resultType="String">
+	<![CDATA[ 
+		SELECT * FROM `member`
+		WHERE id = #{loginedMemberId}
+		AND delStatus = 0
+		AND updateDate <= DATE_ADD(NOW(), INTERVAL -3 MONTH);
+	]]>
+	</select>
+	
+	<update id="updateActReadStatus">
+	UPDATE articleLike AS AL
+	INNER JOIN article AS A
+	ON AL.articleId = A.id 
+	INNER JOIN member AS M
+	ON M.id = AL.memberId
+	SET AL.readStatus = 1
+	WHERE A.memberId = #{loginedMemberId}
+	</update>
+	
+	<update id="updateActReadStatusInReply">
+	UPDATE articleReply AS AR
+	INNER JOIN article AS A
+	ON AR.articleId = A.id
+	INNER JOIN member AS M
+	ON M.id = AR.memberId
+	SET AR.readStatus = 1
+	WHERE A.memberId = #{loginedMemberId}
+	</update>
+	
 
 
 	<resultMap type="Member" id="member">

@@ -25,7 +25,6 @@ import org.springframework.web.util.WebUtils;
 import com.sbs.meet.dto.Article;
 import com.sbs.meet.dto.File;
 import com.sbs.meet.dto.Member;
-import com.sbs.meet.dto.ResultData;
 import com.sbs.meet.service.ArticleService;
 import com.sbs.meet.service.FileService;
 import com.sbs.meet.service.MemberService;
@@ -39,8 +38,32 @@ public class MemberController {
 	private ArticleService articleService;
 	@Autowired
 	private FileService fileService;
+
 	@RequestMapping("/member/join")
-	public String join() {
+	public String join(Model model) {
+
+		List<Article> articles = articleService.getLikeKingLimitFive();
+
+		for (Article article : articles) {
+			List<File> files = fileService.getFiles("article", article.getId(), "common", "attachment");
+			if (files.size() > 0) {
+				File file = files.get(0);
+
+				if (article.getExtra() == null) {
+					article.setExtra(new HashMap<>());
+				}	
+
+				article.getExtra().put("articleImgUrl",
+						"/file/showImg?id=" + file.getId() + "&updateDate=" + file.getUpdateDate());
+			}
+			Map<String, File> filesMap = new HashMap<>();
+
+			for (File file : files) {
+				filesMap.put(file.getFileNo() + "", file);
+			}
+		}
+
+		model.addAttribute("articles", articles);
 		return "member/join";
 	}
 
@@ -76,32 +99,47 @@ public class MemberController {
 	}
 
 	@RequestMapping("/member/login")
-	public String login() {
+	public String login(Model model) {
+
+		Article article = articleService.getLikeKing();
+		
+		if ( article != null ) {
+			
+		List<File> files = fileService.getFiles("article", article.getId(), "common", "attachment");
+		Map<String, File> filesMap = new HashMap<>();
+
+		for (File file : files) {
+			filesMap.put(file.getFileNo() + "", file);
+		}
+		Util.putExtraVal(article, "file__common__attachment", filesMap);
+		}
+
+		model.addAttribute("article", article);	
+
 		return "member/login";
 	}
-	
+
 	@RequestMapping("/member/getEmailDup")
 	@ResponseBody
 	public String actionGetEmailDup(HttpServletRequest req, HttpServletResponse resp) {
 		String email = req.getParameter("email");
-		
+
 		boolean isJoinableEmail = memberService.checkEmailJoinable(email);
-		
-		if ( isJoinableEmail == false ) {
-			return "json:{\"msg\":\"사용가능 한 이메일 입니다.\", \"resultCode\": \"S-1\", \"Email\":\"" + email + "\"}"; 
-		}  else {
+
+		if (isJoinableEmail == false) {
+			return "json:{\"msg\":\"사용가능 한 이메일 입니다.\", \"resultCode\": \"S-1\", \"Email\":\"" + email + "\"}";
+		} else {
 			return "json:{\"msg\":\"이미 사용중인 이메일 입니다.\", \"resultCode\": \"F-1\", \"Email\":\"" + email + "\"}";
 		}
 	}
-	
-	
+
 	@RequestMapping("/member/getNicknameDup")
 	@ResponseBody
 	private String actionGetNicknameDup(HttpServletRequest req, HttpServletResponse resp) {
 		String nickname = req.getParameter("nickname");
-		
+
 		boolean isJoinableNickname = memberService.checkNicknameJoinable(nickname);
-		
+
 		if (isJoinableNickname == false) {
 			return "json:{\"msg\":\"사용가능 한 닉네임 입니다.\", \"resultCode\": \"S-1\", \"Nickname\":\"" + nickname + "\"}";
 		} else {
@@ -111,7 +149,7 @@ public class MemberController {
 
 	@RequestMapping("/member/doLogin")
 	public String doLogin(String email, String loginPwReal, String redirectUri, Model model, HttpSession session,
-			HttpServletResponse response,String loginChk) {
+			HttpServletResponse response, String loginChk) {
 
 		String loginPw = loginPwReal;
 		Member member = memberService.getMemberByEmail(email);
@@ -127,46 +165,39 @@ public class MemberController {
 			model.addAttribute("alertMsg", "비밀번호가 일치하지 않습니다.");
 			return "common/redirect";
 		}
-		
-		// 기존에 세션 값이 존재한다면
-		if ( session.getAttribute("logiendMemberId") != null ) {
-			// 제거해준다.
-			session.removeAttribute("loginedMemberId");
-		}
-
+	
 		session.setAttribute("loginedMemberId", member.getId());
-		
+
 		String sessionId = session.getId();
 
 		// 로그인 성공시 로그인 폼에서 쿠키가 체크된 상태로 로그인 요청이 있는지 확인.
-		if ( loginChk != null) {
+		if (loginChk != null) {
 			// 쿠키를 생성하고 현재 로그인 되어있을떄 세션의 id를 쿠키에 저장
 			Cookie cookie = new Cookie("loginCookie", sessionId);
-			
+
 			// 쿠키를 찾을 경를 컨테스트 경로로 변경해주고???
-			//이때, 사용자 PC에서 쿠키를 보내는 경로가 "/" 로 설정함으로써 
-			//contextPath 이하의 모든 요청에 대해서 쿠키를 전송할 수 있다
+			// 이때, 사용자 PC에서 쿠키를 보내는 경로가 "/" 로 설정함으로써
+			// contextPath 이하의 모든 요청에 대해서 쿠키를 전송할 수 있다
 			cookie.setPath("/");
-			
+
 			cookie.setMaxAge(60 * 60 * 24 * 7);
 			// 쿠키 적용
 			response.addCookie(cookie);
 			// 불러와주고
-			int	setMaxAge = cookie.getMaxAge();
+			int setMaxAge = cookie.getMaxAge();
 			// 쿠키 유효시간 7일정도
-			Date sessionLimit = new Date(System.currentTimeMillis() + (1000*setMaxAge));
-			
-			memberService.actionUpdetaSessionKey(sessionId,sessionLimit,email);
+			Date sessionLimit = new Date(System.currentTimeMillis() + (1000 * setMaxAge));
+
+			memberService.actionUpdetaSessionKey(sessionId, sessionLimit, email);
 		}
-		
-		// 로그인 된 경우 해당 세션 id와 유효시간을 Member테이블에  세팅..
-		
-		
-		//이때, 가장 중요하게 볼 부분이 쿠키에 Member 객체를 저장하는 것이 아니고!!!!
-		
-		//(사실 쿠키는 문자열만 저장되기 때문에 가능하지도 않습니다.)
-		
-		//현재 브라우저의 세션 id를 저장해 놓는 겁니다.
+
+		// 로그인 된 경우 해당 세션 id와 유효시간을 Member테이블에 세팅..
+
+		// 이때, 가장 중요하게 볼 부분이 쿠키에 Member 객체를 저장하는 것이 아니고!!!!
+
+		// (사실 쿠키는 문자열만 저장되기 때문에 가능하지도 않습니다.)
+
+		// 현재 브라우저의 세션 id를 저장해 놓는 겁니다.
 
 //		이후, AuthenticationInterceptor의 preHandle() 부분에서 
 //
@@ -174,7 +205,6 @@ public class MemberController {
 //
 //		null이지만, 쿠키가 null이 아닌 경우 쿠키에서 sessionId를 꺼내와서 사용자 객체를 반환받도록 작업할 것이다.
 
-		
 		if (redirectUri == null || redirectUri.length() == 0) {
 			redirectUri = "home/main";
 		}
@@ -183,6 +213,15 @@ public class MemberController {
 
 		// nullPointer
 		//
+		boolean isNeedToChangePwPass3Months = memberService.isNeedToChangePwPass3Months(loginedMemberId);
+
+		// boolean int 는 null 을 담을수 없다. 그러니 Strng으로 담아주자..
+
+		if (isNeedToChangePwPass3Months) {
+			model.addAttribute("redirectUri", redirectUri);
+			model.addAttribute("alertMsg", "비밀번호를 변경안한지 3개월이 되었습니다. 변경해주세요^^");
+			return "common/redirect";
+		}
 
 		boolean isNeedToChangePasswordForTemp = memberService.isNeedToChangeaPasswordForTemp(loginedMemberId);
 
@@ -198,26 +237,25 @@ public class MemberController {
 	}
 
 	@RequestMapping("/member/doLogout")
-	public String doLogout(HttpSession session,HttpServletResponse response,HttpServletRequest request, Model model, String redirectUri) {
-		
-		
-		
+	public String doLogout(HttpSession session, HttpServletResponse response, HttpServletRequest request, Model model,
+			String redirectUri) {
+
 		Cookie loginCookie = WebUtils.getCookie(request, "loginCookie");
 		System.out.println("쿠키 잘왔나 ? : " + loginCookie);
-		
+
 		session.invalidate();
-		
-		if ( loginCookie != null ) {
-			loginCookie.setPath("/"); 
+
+		if (loginCookie != null) {
+			loginCookie.setPath("/");
 			loginCookie.setMaxAge(0);
 			response.addCookie(loginCookie);
-			
+
 			Date date = new Date(System.currentTimeMillis());
-		 //	memberService.actionUpdetaSessionKey(session.getId(),date,email);
+			// memberService.actionUpdetaSessionKey(session.getId(),date,email);
 		}
-		
+
 		if (redirectUri == null || redirectUri.length() == 0) {
-			redirectUri = "../home/main";
+			redirectUri = "../member/login";
 		}
 
 		model.addAttribute("redirectUri", redirectUri);
@@ -413,10 +451,10 @@ public class MemberController {
 	// 다른 회원 화면 보여주기
 
 	@RequestMapping("/member/showOther")
-	public String showOther(@RequestParam Map<String, Object> param, Model model, int id,HttpServletRequest req) {
+	public String showOther(@RequestParam Map<String, Object> param, Model model, int id, HttpServletRequest req) {
 
 		Member member = memberService.getMemberById(id);
-	
+
 		if (member == null) {
 			model.addAttribute("historyBack", true);
 			model.addAttribute("alertMsg", String.format("탈퇴한 회원이거나 존재하지 않는 회원입니다."));
@@ -429,43 +467,54 @@ public class MemberController {
 
 		// 회원이 쓴 게시글
 		List<Article> articles = articleService.getForPrintArticles2(memberId);
-		
+
 		// File userAvatarImg = memberService.getUserAvatarImg(memberId);
-		
-		List<File> files = fileService.getFiles("member", memberId , "common", "attachment");
-		if ( files.size() > 0 ) {
+
+		List<File> files = fileService.getFiles("member", memberId, "common", "attachment");
+		if (files.size() > 0) {
 			File file = files.get(0);
-			
-			if ( member.getExtra() == null ) {
+
+			if (member.getExtra() == null) {
 				member.setExtra(new HashMap<>());
 			}
-			
-			member.getExtra().put("writerAvatarImgUrl", "/file/showImg?id=" + file.getId() + "&updateDate=" + file.getUpdateDate());				
-		}
-		else {
+
+			member.getExtra().put("writerAvatarImgUrl",
+					"/file/showImg?id=" + file.getId() + "&updateDate=" + file.getUpdateDate());
+		} else {
 			member.getExtra().put("writerAvatarImgUrl", "/resource/img/avatar_no.jpg");
 		}
-		
+
 		Map<String, File> filesMap = new HashMap<>();
 
 		for (File file : files) {
 			filesMap.put(file.getFileNo() + "", file);
 		}
-		
-	
+
 		model.addAttribute("articleCount", articleCount);
 		model.addAttribute("member", member);
 		model.addAttribute("articles", articles);
 		return "member/showOther";
 	}
-	
+
 	@RequestMapping("/member/follow")
-	public String doActionFollow(HttpServletRequest req,int id) {
-		
+	public String doActionFollow(HttpServletRequest req, int id) {
+
 		Member member = memberService.getMemberById(id);
 		Member loginedMember = (Member) req.getAttribute("loginedMember");
 		int loginedMemberId = loginedMember.getId();
 
 		return "common/redirect";
+	}
+	
+	@RequestMapping("/member/changeProfile")
+	@ResponseBody
+	public void changeProfile(@RequestParam Map<String, Object> param,HttpServletRequest request) {
+		
+		
+		Map<String, Object> newParam = Util.getNewMapOf(param, "fileIdsStr", "id");
+
+		int loginedMemberId = (int) request.getAttribute("loginedMemberId");
+		
+
 	}
 }

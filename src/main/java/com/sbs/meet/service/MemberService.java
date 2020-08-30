@@ -198,6 +198,25 @@ public class MemberService {
 		return memberDao.getRepliesCountByMe(loginedMemberId);
 	}
 
+	public boolean isNeedToChangePwPass3Months(int loginedMemberId) {
+		
+		String test =memberDao.isNeedToChangePwPass3Months(loginedMemberId); 
+		
+		if ( test == null ) {
+			return false;
+		}
+		
+		return test != null;
+	}
+
+	public void updateActReadStatus(int loginedMemberId) {
+		 memberDao.updateActReadStatus(loginedMemberId);
+	}
+
+	public void updateActReadStatusInReply(int loginedMemberId) {
+		 memberDao.updateActReadStatusInReply(loginedMemberId);
+	}
+
 
 	
 

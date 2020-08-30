@@ -154,16 +154,13 @@ public class BeforeActionInterceptor implements HandlerInterceptor {
 		// 0개 뜨는 이유 -> int article.getId()가 하나밖에 담지못한다 내가 슨글은 여러개인데
 		
 		//  나의 게시글 댓글 카운트 + 좋아요 카운트 + 내 게시글에 내가 댓글쓴건 카운트x
-		int myActivityCount = myReplyCount + myLikePointCount - myRepliesInMyArticle;
+		int myActivityCount = myReplyCount + myLikePointCount;
 		
 		// 댓글  
 		List<ArticleReply> articleReplies = replyService.getForPrintArticleRepliesByMyArticle(loginedMemberId);
 		// 좋아요
 		List<ArticleLike> articleLikes = articleService.getForPrintArticleLikesByMyArticle(loginedMemberId);
-		
-		
-		
-		// 왜 사진이 안뜨찌?
+			
 		for (ArticleReply articleReply : articleReplies) {
 			List<File> files = fileService.getFiles("member", articleReply.getMemberId(), "common", "attachment");
 			if ( files.size() > 0 ) {
@@ -171,9 +168,8 @@ public class BeforeActionInterceptor implements HandlerInterceptor {
 				
 				if ( articleReply.getExtra() == null ) {
 					articleReply.setExtra(new HashMap<>());
-				}
-				
-				articleReply.getExtra().put("replyWriterAvatarImgUrl", "/file/showImg?id=" + file.getId() + "&updateDate=" + file.getUpdateDate());				
+				}	
+				articleReply.getExtra().put("replyWriterAvatarImgUrl", "/file/showImg?id=" + file.getId() + "&updateDate=" + file.getUpdateDate());		
 			}
 			else {
 				articleReply.getExtra().put("replyWriterAvatarImgUrl", "/resource/img/avatar_no.jpg");
@@ -185,6 +181,29 @@ public class BeforeActionInterceptor implements HandlerInterceptor {
 				filesMap.put(file.getFileNo() + "", file);
 			}
 		}
+		
+		for (ArticleLike articleLike : articleLikes ) {
+			List<File> files = fileService.getFiles("member",articleLike.getMemberId(),"common","attachment");
+			if (files.size() > 0) {
+				File file = files.get(0);
+				
+				if ( articleLike.getExtra() == null) {
+					articleLike.setExtra(new HashMap<>());
+				}
+				articleLike.getExtra().put("likeSenderAvatarImgUrl", "/file/showImg?id=" + file.getId() + "&updateDate=" + file.getUpdateDate());
+			}
+			else {
+				articleLike.getExtra().put("likeSenderAvatarImgUrl", "/resource/img/avatar_no.jpg");
+			}
+			
+			Map<String, File> filesMap = new HashMap<>();
+			
+			for ( File file : files ) {
+				filesMap.put(file.getFileNo() + "" , file);
+			}
+		}
+		
+
 		request.setAttribute("articleLikes",articleLikes);
 		request.setAttribute("articleReplies",articleReplies);
 		request.setAttribute("myActivityCount",myActivityCount);	

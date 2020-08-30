@@ -59,4 +59,12 @@ public interface MemberDao {
 
 	int getRepliesCountByMe(int loginedMemberId);
 
+	String isNeedToChangePwPass3Months(int loginedMemberId);
+
+	void updateActReadStatus(int loginedMemberId);
+
+	void updateActReadStatusInReply(int loginedMemberId);
+
+	void doChangeProfile(int loginedMemberId);
+
 }

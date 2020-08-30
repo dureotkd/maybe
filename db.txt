@@ -498,3 +498,76 @@ TRUNCATE articleReply;
 	
 	SELECT * FROM articleLike;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT * FROM `member`;
+
+SELECT DATE_ADD(NOW(), INTERVAL 1 MONTH);
+
+UPDATE `member`
+SET updateDate = DATE_ADD(NOW(), INTERVAL -3 MONTH);
+
+SELECT * FROM `member`;
+
+ADD COLUMN `member` 
+
+SELECT * FROM `member`
+WHERE updateDate = DATE_ADD(NOW(), INTERVAL -3 MONTH)
+AND delStatus = 0;
+
+
+UPDATE `member`
+SET deadLine = DATE_ADD(NOW(), INTERVAL 3 MONTH);
+
+
+// 비밀번호 변경이 3개월보다 
+SELECT * FROM `member`
+WHERE delStatus = 0
+AND id = 13
+AND updateDate <= DATE_ADD(NOW(), INTERVAL -3 MONTH);
+;
+
+ALTER TABLE `member` ADD COLUMN deadLine DATETIME NOT NULL;
+ALTER TABLE `member` DROP COLUMN deadLine;
+updateDate -> 3개월전인거.
+
+TRUNCATE articleReply;
+TRUNCATE articleLike
+
+
+SELECT * FROM `file`
+WHERE id = 60;
+
+
+
+
+SELECT * FROM `member`;
+
+
+SELECT AR.*,
+		M.nickname AS extra__writer
+		FROM articleReply AS AR
+		INNER JOIN
+		article AS A
+		ON AR.articleId = A.id
+		INNER JOIN MEMBER AS M
+		ON M.id =
+		AR.memberId
+		WHERE A.memberId = 7
+		AND AR.displayStatus =
+		1
+		AND AR.readStatus = 0
+		ORDER BY AR.id DESC
+
+

@@ -33,6 +33,10 @@ public class ReplyService {
 		return replyDao.getForPrintArticleRepliesByMyArticle(loginedMemberId);
 	}
 
+	public Map<String, Object> updateReadStatus(int id) {
+		return replyDao.updateReadStatus(id);
+	}
+
 	
 	
 }	

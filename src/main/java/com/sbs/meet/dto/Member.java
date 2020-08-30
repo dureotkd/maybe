@@ -2,6 +2,8 @@ package com.sbs.meet.dto;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +15,8 @@ public class Member {
 	private int id;
 	private int mailStatus;
 	private int delStatus;
+	private HttpSession session;
+	private String sessionId;
 	private String regDate;
 	private String updateDate;
 	private String delRegDate;

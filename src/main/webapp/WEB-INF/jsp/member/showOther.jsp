@@ -2,10 +2,62 @@
 	pageEncoding="UTF-8"%>
 <%@ include file="../part/head.jspf"%>
 
+<script>
+	var id = parseInt('${loginedMemberId}');
+</script>
 
 <script>
-	$(document).ready(function() {
+	var ProfileChangeForm__submitDone = false;
 
+	function ProfileChangeForm__submit(form) {
+
+		var fileInput1 = form["file__member__" + id
+				+ "__common__attachment__1"];
+
+		if (ProfileChangeForm__submitDone) {
+			alert('처리중입니다.');
+			return;
+		}
+
+		var maxSizeMb = 50;
+		var maxSize = maxSizeMb * 1024 * 1024 //50MB
+		if (fileInput1.value) {
+			if (fileInput1.files[0].size > maxSize) {
+				alert(maxSizeMb + "MB 이하의 파일을 업로드 해주세요.");
+				return;
+			}
+		}
+
+		var startUploadFiles = function(onSuccess) {
+			if (fileInput1.value.length == 0) {
+				onSuccess();
+				return;
+			}
+			var fileUploadFormData = new FormData(form);
+			$.ajax({
+				url : './../file/doUploadAjax',
+				data : fileUploadFormData,
+				processData : false,
+				contentType : false,
+				dataType : "json",
+				type : 'POST',
+				success : onSuccess
+			});
+		}
+		ProfileChangeForm__submitDone = true;
+		startUploadFiles(function(data) {
+			var fileIdsStr = '';
+			if (data && data.body && data.body.fileIdsStr) {
+				fileIdsStr = data.body.fileIdsStr;
+			}
+			form.fileIdsStr.value = fileIdsStr;
+			fileInput1.value = '';
+			form.submit();
+		});
+
+	}
+
+	$(document).ready(function() {
 		$(".msgSubmit").on('click', function() {
 			$(".popup").show();
 			$(".dim").show();
@@ -15,8 +67,6 @@
 			$(".dim").hide();
 		});
 	});
-
-	
 
 	function WriteMessage__submitForm(form) {
 		form.body.value = form.body.value.trim();
@@ -40,6 +90,32 @@
 		}, 'json');
 		form.body.value = '';
 	}
+
+	var sel_file;
+
+	$(document).ready(function() {
+		$("#ex_file").on("change", handleImgFileSelect);
+	});
+
+	function handleImgFileSelect(e) {
+		var files = e.target.files;
+		var filesArr = Array.prototype.slice.call(files);
+
+		filesArr.forEach(function(f) {
+			if (!f.type.match("image.*")) {
+				alert("확장자는 이미지 확장자만 가능합니다.");
+				return;
+			}
+			sel_file = f;
+
+			var reader = new FileReader();
+
+			reader.onload = function(e) {
+				$("#img").attr("src", e.target.result);
+			}
+			reader.readAsDataURL(f);
+		});
+	}
 </script>
 
 
@@ -49,8 +125,9 @@
 <style>
 .other-show-box {
 	display: flex;
-	margin: 50px auto;
-	max-width: 1080px;
+	margin: 100px auto;
+	max-width: 940px;
+	margin-bottom: 60px;
 	justify-content: space-between;
 	align-items: center;
 }
@@ -68,46 +145,49 @@
 }
 
 .other-img {
-	width: 200px;
-	height: 200px;
+	width: 100%;
+	height: 100%;
 	border-radius: 50%;
+	object-fit: cover;
 }
 
 .articles-box {
-	max-width: 1080px;
+	max-width: 940px;
 	margin: 0 auto;
-	border: 1px solid #ccc;
-	box-shadow: 3px 3px 3px #ccc;
 }
 
-@media ( min-width :901px ) {
+@media ( min-width :800px ) {
 	.articles-box>ul>li {
 		margin-top: 20px;
 		width: calc(100%/ 3 - ( 20px * ( 3 - 1)/3));
+		height: 300px;
 	}
-	.articles-box
-	>
-	ul
-	>
-	li
-	:not
-	 
-	(
-	:nth-child(3n)
-	 
-	)
-	{
-	margin-right
-	:
-	 
-	20
-	px
-	;
-	
-	
+	.articles-box>ul {
+		margin-left: 20px;
+	}
+	.articles-box {
+		border: 1px solid #ccc;
+		box-shadow: 3px 3px 3px #ccc;
+	}
+	.images-wrap {
+		width: 90%;
+		height: 100%;
+		overflow: hidden;
+	}
 }
 
+@media ( max-width :799px ) {
+	.articles-box>ul>li {
+		height: 200px;
+		width: calc(100%/ 3 - ( 0px * ( 3 - 1)/3));
+	}
+	.images-wrap {
+		width: 99%;
+		height: 99%;
+		overflow: hidden;
+	}
 }
+
 .articles-box>ul {
 	display: flex;
 	flex-flow: row wrap;
@@ -115,8 +195,9 @@
 }
 
 .other-articleImg {
-	width: 300px;
-	height: 300px;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 
 .other-articleVideo {
@@ -144,6 +225,7 @@
 
 .other-img-box {
 	display: flex;
+	align-items: center;
 }
 
 .other-followBox {
@@ -198,15 +280,6 @@ html {
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}
-
-body {
-	width: 100%;
-	background: #fff;
-	min-width: 320px;
-	-webkit-text-size-adjust: none;
-	word-wrap: break-word;
-	word-break: break-all;
 }
 
 ul, ol, li {
@@ -521,12 +594,49 @@ textarea[readonly], textarea[disabled] {
 .img-wrap2>span {
 	color: #bdbdbd;
 }
+
+.edit-btn {
+	padding: 10px;
+	background: #0095f6;
+	border: none;
+	cursor: pointer;
+	color: white;
+}
+
+.other-img-wrap {
+	width: 150px;
+	height: 150px;
+	border-radius: 50%;
+	overflow: hidden;
+}
+
+#img {
+	cursor: pointer;
+}
+
+input[type="file"] {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+}
 </style>
 
 
 <nav class="other-show-box">
 	<div class="other-img-box">
-		<img class="other-img" src="${member.extra.writerAvatarImgUrl}" alt="" />
+		<div class="other-img-wrap">
+			<label for="ex_file" class="file-upload"> <img id="img"
+				class="other-img" src="${member.extra.writerAvatarImgUrl}" alt="" />
+			</label>
+			<form action="changeProfile"
+				onsubmit="ProfileChangeForm__submit(this); return false;">
+				<input type="file" id="ex_file" class="login-input-box"
+					placeholder="프로필" accept="image/*"
+					name="file__member__${loginedMemberId}__common__attachment__1">
+			</form>
+		</div>
 		<div class="other-text-box">
 			<div class="other-info-box">
 				<div class="other-nick">${member.nickname}</div>
@@ -542,8 +652,11 @@ textarea[readonly], textarea[disabled] {
 
 				<c:if test="${loginedMemberId != member.id }">
 					<a href="#" class="msgSubmit">메시지 보내기</a>
-
 					<input type="submit" value="팔로우" class="submit-item" />
+				</c:if>
+
+				<c:if test="${loginedMemberId == member.id }">
+					<a href="./myInfoEdit" class="edit-btn">프로필 편집</a>
 				</c:if>
 
 				<i class="fas fa-ellipsis-h"></i>
@@ -575,8 +688,8 @@ textarea[readonly], textarea[disabled] {
 	<form class="con" action=""
 		onsubmit="WriteMessage__submitForm(this); return false;">
 		<input type="hidden" value="${loginedMemberId}" name="fromId">
-		<input type="hidden" value="${member.id}" name="toId" />
-		<input type="hidden" value="../message/list" name="redirectUri" />
+		<input type="hidden" value="${member.id}" name="toId" /> <input
+			type="hidden" value="../message/list" name="redirectUri" />
 		<table class="type1">
 			<colgroup>
 				<col style="width: 111px">
@@ -628,7 +741,7 @@ textarea[readonly], textarea[disabled] {
 			<!--  이미지  	 -->
 			<c:if test="${article.extra.file__common__attachment['3'] != null}">
 				<li>
-					<div class="img-wrap">
+					<div class="images-wrap">
 						<a href="../article/detail?id=${article.id}"> <img
 							class="other-articleImg"
 							src="/file/showImg?id=${article.extra.file__common__attachment['3'].id}&updateDate=${article.extra.file__common__attachment['3'].updateDate}"

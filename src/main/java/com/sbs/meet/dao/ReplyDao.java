@@ -19,4 +19,6 @@ public interface ReplyDao {
 
 	List<ArticleReply> getForPrintArticleRepliesByMyArticle(int loginedMemberId);
 
+	Map<String, Object> updateReadStatus(int id);
+
 }

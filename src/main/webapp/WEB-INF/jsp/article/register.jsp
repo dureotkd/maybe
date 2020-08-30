@@ -113,17 +113,18 @@ function ArticleWriteForm__submit(form) {
 	width:100%;
 	height:100vh;
 	background:#fafafa;
+	padding-top:50px;
+	over-flow:hidden;
 }
 .write-wrap {
 	display:flex;
 	justify-content:center;
 	align-items:center;
+	max-width:940px;
+	border:1px solid #bdbdbd;
 }
 .form-box {
 	display:flex;
-	padding:50px;
-	border:1px solid #bdbdbd;
-	margin-top:50px;
 	flex-direction:column;
 }
 textarea {
