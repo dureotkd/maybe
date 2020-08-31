@@ -29,7 +29,10 @@
 <!-- rotobo(400/700/900), notosanskr(400/600/900) -->
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
 
-
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
+<script
+	src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
 
 
 <script>
@@ -163,7 +166,7 @@ $(function(){
 });
 
 function readAct(){
-	$.post('../article/readAct',{
+	$.post('../member/readAct',{
 	
 	}, function (data) {
 		
@@ -400,6 +403,7 @@ h1 {
 .menu-i {
 	font-size:20px;
 	padding:15px;
+	color:#9e9e9e;
 }
 
 .down-box {
@@ -499,6 +503,46 @@ h1 {
 }
 
 
+
+.setting-box {
+	position: relative;
+}
+
+.setting-items.opnbox {
+	position: absolute;
+	border-radius: 10px;
+	width: 150px;
+	margin-top: 10px;
+	left: 50%;
+	right: 50%;
+	transform: translate(-50%, 0%);
+	text-align: center;
+	box-shadow: 1px 1px 1px #ccc;
+	border: 1px solid #ccc;
+	display: block;
+	background: #fff;
+}
+
+.setting-items {
+	display: none;
+}
+
+.red {
+	color: red;
+}
+
+.setting-box ul li {
+	display: flex;
+	border-bottom: 1px solid #ccc;
+}
+
+.setting-box ul li a {
+	padding: 10px;
+	width: 100%;
+	height: 100%;
+}
+
+
 /* 800px 이하면 안보이게 ( 모바일 버전 ) */
 @media ( max-width :799px ) {
 	.visible-on-sm-up {
@@ -573,8 +617,10 @@ h1 {
 	</div>
 	
 	<div class="menu-box">
+	<a href="../home/main"><i class="fas fa-home menu-i"></i></a>
+
 	<a href="../message/list" class="msg-notice-box">
-	<i class="far fa-envelope menu-i"></i>
+	<i class="fas fa-envelope menu-i"></i>
 	<c:if test="${isLogined}">
 	<c:if test="${myMsgCount > 0 }">
 	<p class="msg-notice">${myMsgCount}</p>
@@ -621,6 +667,17 @@ h1 {
 		<a href="../article/detail?id=${articleLike.articleId}">
 		<img src="${articleLike.extra.likeSenderAvatarImgUrl}" class="act-profile" alt="" />
 		<li>${articleLike.extra.writer}님이 좋아요를 남겼습니다.</li>
+		</a>
+		</ul>
+		</c:forEach>
+	</c:if>
+	
+	<c:if test="${myActivityCount > 0 }">
+		<c:forEach items="${friends}" var="friend">
+		<ul class="activity-box">
+		<a href="../member/showOther?id=${friend.followerId}">
+		<img src="${friend.extra.followSenderAvatarImgUrl}" class="act-profile" alt="" />
+		<li>${friend.extra.writer}님이 팔로우 중입니다.</li>
 		</a>
 		</ul>
 		</c:forEach>

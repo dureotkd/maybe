@@ -502,9 +502,27 @@ public class MemberController {
 	}
 	
 	@RequestMapping("/member/doDeleteFollow")
-	public void doDeleteFollow(int followId,int followerId) {
+	public String doDeleteFollow(int followId,int followerId,String redirectUri,Model model) {
+		
+		redirectUri = "..home/main";
 		memberService.doDeleteFollow(followId,followerId);
+		model.addAttribute("redirectUri", redirectUri);
+
+		return "common/redirect";
 	}
+	
+	@RequestMapping("/member/readAct")
+	@ResponseBody
+	public void readAct(Model model,HttpServletRequest request) {
+		
+		int loginedMemberId = (int) request.getAttribute("loginedMemberId");
+			
+		memberService.updateActReadStatus(loginedMemberId);		
+	    memberService.updateActReadStatusInReply(loginedMemberId);	
+	    memberService.updateActReadStatusInFollow(loginedMemberId);
+
+	}
+	
 	
 	@RequestMapping("/member/changeProfile")
 	@ResponseBody

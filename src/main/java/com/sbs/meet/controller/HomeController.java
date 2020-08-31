@@ -36,7 +36,6 @@ public class HomeController {
 		
 		List<Article> articles = articleService.getForPrintArticlesInFollow(loginedMemberId);
 		
-		
 		for (Article article : articles) {
 			List<File> files = fileService.getFiles("member", article.getMemberId(), "common", "attachment");
 			if ( files.size() > 0 ) {

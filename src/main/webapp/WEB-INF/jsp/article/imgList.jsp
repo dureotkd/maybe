@@ -62,7 +62,7 @@
 	height: 300px;
 }
 .fa-compass {
-	color:#d81b60;
+	color:#484848;
 }
 
 .img-wrap {
@@ -87,7 +87,7 @@
 	border-radius: 50%;
 	margin: 20px;
 	box-shadow: 0 10px 10px -12px rgba(0, 0, 0, 0.56), 0 4px 10px 0px
-		rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
+		rgba(0, 0, 0, 0.12), 0 8px 10px -10px rgba(0, 0, 0, 0.2);
 }
 
 .good-item {
@@ -152,8 +152,7 @@
 	.articles-box {
 		max-width: 940px;
 		margin: 0 auto;
-		border: 1px solid #ccc;
-		box-shadow: 3px 3px 3px #ccc;
+		box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 20px 0px;
 	}
 	.articles-box>ul {
 		margin-left: 20px; } .fa-comment-dots , .good-item {

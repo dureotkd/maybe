@@ -166,33 +166,6 @@ public class ArticleController {
 		return rs;
 	}
 	
-	@RequestMapping("article/readAct")
-	@ResponseBody
-	public void readAct(Model model,HttpServletRequest request) {
-		
-		int loginedMemberId = (int) request.getAttribute("loginedMemberId");
-			
-		memberService.updateActReadStatus(loginedMemberId);		
-	    memberService.updateActReadStatusInReply(loginedMemberId);		
-
-//		List<ArticleReply> articleReplies = replyService.getForPrintArticleRepliesByMyArticle(loginedMemberId);
-		
-//		for ( ArticleReply articleReply : articleReplies ) {
-//			Map<String, Object> updateReadStatusInReply = replyService.updateReadStatus(articleReply.getId());
-//			
-//			return updateReadStatusInReply;
-//		}
-//		List<ArticleLike> articleLikes = articleService.getForPrintArticleLikesByMyArticle(loginedMemberId);
-//		
-//		for ( ArticleLike articleLike : articleLikes ) {
-//			Map<String, Object> updateReadStatusInLike = articleService.updateReadStatus(articleLike.getId());
-//			
-//			return updateReadStatusInLike;
-//		}
-//	
-	}
-	
-	
 	// text 만 할지 안할지 고민중.
 	
 	@RequestMapping("article/textList")

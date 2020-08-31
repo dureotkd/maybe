@@ -49,7 +49,6 @@ function MemberLoginForm__submit(form) {
 	if (form.loginPw.value.length == 0) {
 		form.loginPw.focus();
 		alert('비밀번호를 입력해주세요.');
-
 		return;
 	}
 
@@ -184,7 +183,7 @@ ul, li {
 <body>
 	<div class="total-wrap">
 	<div class="best-img-box visible-none">
-	<img class="articleImg" src="/file/showImg?id=${article.extra.file__common__attachment['3'].id}&updateDate=${article.extra.file__common__attachment['3'].updateDate}" alt="" />
+	<img class="articleImg" src="http://localhost:8088/file/showImg?id=31&updateDate=2020-08-31%2018:20:51" alt="" />
 	<h1 class="logo">Meet In here</h1>
 	<p>사진,동영상 SNS 사이트</p>
 	</div>

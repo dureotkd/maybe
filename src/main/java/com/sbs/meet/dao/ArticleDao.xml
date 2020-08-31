@@ -45,6 +45,7 @@
 		WHERE F.followerId = #{loginedMemberId}
 		AND A.displayStatus = 1
 		ORDER BY A.id DESC
+		LIMIT 10
 	</select>
 
 

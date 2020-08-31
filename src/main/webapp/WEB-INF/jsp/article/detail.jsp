@@ -385,44 +385,6 @@ button, submit {
 	cursor: pointer;
 }
 
-.setting-box {
-	position: relative;
-}
-
-.setting-items.opnbox {
-	position: absolute;
-	border-radius: 10px;
-	width: 150px;
-	margin-top: 10px;
-	left: 50%;
-	right: 50%;
-	transform: translate(-50%, 0%);
-	text-align: center;
-	box-shadow: 1px 1px 1px #ccc;
-	border: 1px solid #ccc;
-	display: block;
-	background: #fff;
-}
-
-.setting-items {
-	display: none;
-}
-
-.red {
-	color: red;
-}
-
-.setting-box ul li {
-	display: flex;
-	border-bottom: 1px solid #ccc;
-}
-
-.setting-box ul li a {
-	padding: 10px;
-	width: 100%;
-	height: 100%;
-}
-
 /* Form */
 .popup {
 	display: none;

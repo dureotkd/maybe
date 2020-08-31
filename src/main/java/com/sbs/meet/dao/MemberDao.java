@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.sbs.meet.dto.File;
+import com.sbs.meet.dto.Friend;
 import com.sbs.meet.dto.Member;
 
 @Mapper
@@ -70,5 +71,11 @@ public interface MemberDao {
 	void doActionFollow(int followId, int followerId);
 
 	void doDeleteFollow(int followId, int followerId);
+
+	int getMyFollowerCount(int loginedMemberId);
+
+	List<Friend> getForPrintMyFollow(int loginedMemberId);
+
+	void updateActReadStatusInFollow(int loginedMemberId);
 
 }

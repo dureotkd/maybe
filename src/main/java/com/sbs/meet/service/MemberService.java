@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.sbs.meet.dao.MemberDao;
 import com.sbs.meet.dto.File;
+import com.sbs.meet.dto.Friend;
 import com.sbs.meet.dto.Member;
 import com.sbs.meet.dto.ResultData;
 import com.sbs.meet.util.Util;
@@ -225,7 +226,17 @@ public class MemberService {
 		memberDao.doDeleteFollow(followId,followerId);
 	}
 
+	public int getMyFollowerCount(int loginedMemberId) {
+		return memberDao.getMyFollowerCount(loginedMemberId);
+	}
 
-	
+	public List<Friend> getForPrintMyFollow(int loginedMemberId) {
+		return memberDao.getForPrintMyFollow(loginedMemberId);
+	}
+
+	public void updateActReadStatusInFollow(int loginedMemberId) {
+		memberDao.updateActReadStatusInFollow(loginedMemberId);
+	}
+
 
 }

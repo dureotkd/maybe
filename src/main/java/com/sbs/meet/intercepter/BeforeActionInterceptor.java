@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sbs.meet.dto.ArticleLike;
 import com.sbs.meet.dto.ArticleReply;
 import com.sbs.meet.dto.File;
+import com.sbs.meet.dto.Friend;
 import com.sbs.meet.dto.Member;
 import com.sbs.meet.service.ArticleService;
 import com.sbs.meet.service.FileService;
@@ -150,17 +151,47 @@ public class BeforeActionInterceptor implements HandlerInterceptor {
 		int myLikePointCount = memberService.getMyLikePoint(loginedMemberId);
 		// replyCount articleId
 		
+		// 팔로워 카운트
+		int myFollowerCount = memberService.getMyFollowerCount(loginedMemberId);
+		
 		// 좋아요 받은거 카운트
 		// 0개 뜨는 이유 -> int article.getId()가 하나밖에 담지못한다 내가 슨글은 여러개인데
 		
 		//  나의 게시글 댓글 카운트 + 좋아요 카운트 + 내 게시글에 내가 댓글쓴건 카운트x
-		int myActivityCount = myReplyCount + myLikePointCount;
+		int myActivityCount = myReplyCount + myLikePointCount + myFollowerCount;
 		
 		// 댓글  
 		List<ArticleReply> articleReplies = replyService.getForPrintArticleRepliesByMyArticle(loginedMemberId);
 		// 좋아요
 		List<ArticleLike> articleLikes = articleService.getForPrintArticleLikesByMyArticle(loginedMemberId);
+		// 팔로우
+		List<Friend> friends = memberService.getForPrintMyFollow(loginedMemberId);
+		
+		for ( Friend friend : friends ) {
+			System.out.println("실험" + friends);
+		}
+		
+		for (Friend friend : friends) {
+			List<File> files = fileService.getFiles("member", friend.getFollowerId(), "common", "attachment");
+			if ( files.size() > 0 ) {
+				File file = files.get(0);
+				
+				if ( friend.getExtra() == null ) {
+					friend.setExtra(new HashMap<>());
+				}	
+				friend.getExtra().put("followSenderAvatarImgUrl", "/file/showImg?id=" + file.getId() + "&updateDate=" + file.getUpdateDate());		
+			}
+			else {
+				friend.getExtra().put("followSenderAvatarImgUrl", "/resource/img/avatar_no.jpg");
+			}
 			
+			Map<String, File> filesMap = new HashMap<>();
+
+			for (File file : files) {
+				filesMap.put(file.getFileNo() + "", file);
+			}
+		}
+		
 		for (ArticleReply articleReply : articleReplies) {
 			List<File> files = fileService.getFiles("member", articleReply.getMemberId(), "common", "attachment");
 			if ( files.size() > 0 ) {
@@ -203,7 +234,7 @@ public class BeforeActionInterceptor implements HandlerInterceptor {
 			}
 		}
 		
-
+		request.setAttribute("friends",friends);
 		request.setAttribute("articleLikes",articleLikes);
 		request.setAttribute("articleReplies",articleReplies);
 		request.setAttribute("myActivityCount",myActivityCount);	

@@ -96,7 +96,7 @@
 	position: relative;
 }
 .fa-envelope {
-	color:#d81b60;
+	color:#484848;
 }
 
 .msgSubmit {

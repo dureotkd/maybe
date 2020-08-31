@@ -60,7 +60,7 @@
 }
 
 .fa-compass {
-	color:#d81b60;
+	color:#484848;
 }
 
 @media ( min-width:901px ) {

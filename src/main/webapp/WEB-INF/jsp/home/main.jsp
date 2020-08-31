@@ -3,6 +3,14 @@
 <%@ include file="../part/head.jspf"%>
 
 <script>
+	var followId = parseInt('${article.memberId}');
+	var followerId = parseInt('${loginedMemberId}');
+
+	alert(data-id);
+</script>
+
+
+<script>
 $(document).ready(function() {
 	$(".direct").on('click', function() {
 		$(".popup").show();
@@ -37,9 +45,42 @@ function WriteMessage__submitForm(form) {
 	form.body.value = '';
 }
 
+
+function doDeleteFollow(el) {
+	if ( confirm ("팔로우를 취소하시겠습니까 ?") == true ){
+	var $div = $(el).closest('.articles-item');
+	// 가장 가까운 li를 찾아라
+	var followId = parseInt($div.attr('data-id'));
+	// 정수화 -> data-id
+	
+	$.post('../member/doDeleteFollow', {
+		followId : followId,
+		followerId : followerId
+	}, function(data) {
+		if (data.msg) {
+			alert(data.msg);
+		}
+
+		}, 'json');
+	} else {
+		return;
+	}
+}
+
+$(document).ready(function() {
+	$('.slider').bxSlider({
+		mode : 'fade'
+	});
+});
+
 </script>
 
 <style>
+.fa-home {
+	color:#484848;
+}
+
+
 .popup {
 	display: none;
 	position: fixed;
@@ -293,22 +334,9 @@ textarea[readonly], textarea[disabled] {
 .article-img {
 	width:300px;
 }
-.articles-item {
-	display:flex;
-	border: 1px solid #eee;
-	border-radius: 10px;
-	box-shadow: 3px 3px 3px #ccc;
-	align-items: center;
-	width: 100%;
-	margin-bottom:50px;
-}
+
 .articles-box {
 	width:100%;
-}
-.article-img-box {
-	width:500px;
-	height:500px;
-	overflow:hidden;
 }
 .article-img {
 	object-fit:cover;
@@ -335,8 +363,6 @@ textarea[readonly], textarea[disabled] {
 .article-info-wrap {
 	display:flex;
 	flex-direction:column;
-	width:50%;
-	height:500px;
 }
 .writer-center > span {
 	margin-left:15px;
@@ -382,12 +408,53 @@ textarea[readonly], textarea[disabled] {
 	border-radius:50%;
 	cursor:pointer;
 }
+
+@media ( max-width:800px ){
+	.articles-item {
+		display:flex;
+		flex-direction:column;
+		border-radius:10px;
+		align-items:center;
+		width:100%;
+		margin-bottom:50px;
+	}
+	.article-info-wrap {
+		width:100%;
+		height:300px;
+	}
+	.article-img-box {
+	height:400px;
+	overflow:hidden;
+	}
+}
+
+@media ( min-width:801px ){
+	.articles-item {
+	display:flex;
+	border-radius: 10px;
+	box-shadow:rgba(0, 0, 0, 0.1) 0px 1px 20px 0px;
+	align-items: center;
+	width: 100%;
+	margin-bottom:50px;
+	}
+	
+	.article-info-wrap {
+		width:50%;
+		height:500px;
+	}
+	
+	.article-img-box {
+	width:500px;
+	height:500px;
+	overflow:hidden;
+	}
+}
 </style>
 
 <nav class="total-box">
 	<div class="articles-box">
 		<c:forEach items="${articles}" var="article">
-			<div class="articles-item ">
+			<div class="articles-item" data-id="${article.memberId}">
 				<div class="article-img-box">
 					<img class="article-img"
 						src="/file/showImg?id=${article.extra.file__common__attachment['3'].id}&updateDate=${article.extra.file__common__attachment['3'].updateDate}"
@@ -403,9 +470,16 @@ textarea[readonly], textarea[disabled] {
 							</div>
 						<span>${article.extra.writer}</span>
 				</a>
-				<a href="../member/doDeleteFollow?followId=${article.memberId}&?followerId=${loginedMemberId}"onsubmit="callDoLike();" onclick="if ( confirm( '팔로우를 취소하시겠습니까 ? \n팔로우를 취소하면 소식을 접할 수 없습니다.') == false ) { return false; }" >팔로잉</a>
+				<a href="#" onclick="doDeleteFollow(this);" >언팔로우</a>
 				<img class="direct" src="https://i.pinimg.com/originals/7b/66/ac/7b66ac2787335ebcb565960d482f0846.png" alt="" />
-				<i class="fas fa-ellipsis-h"></i>
+				<ul class="setting-box">
+					<li><i class="fas fa-ellipsis-h"></i></li>
+					<ul class="setting-items">
+						<li><a href="#" class="red">사용자 차단</a></li>
+						<li><a href="../article/detail?id=${article.id}" class="msgSubmit">게시물로 이동하기</a></li>
+						<li><a href="#">공유하기</a></li>
+					</ul>
+				</ul>
 				</div>
 				<div class="article-body-box">
 				<p class="article-body">${article.body}</p>
@@ -415,8 +489,6 @@ textarea[readonly], textarea[disabled] {
 				<i class="fas fa-heart like"></i>	
 				<i class="far fa-comment-dots"></i>
 				</div>
-				
-				<a href="../article/detail?id=${article.id}" class="gogo">게시물로 이동하기</a>
 				</nav>
 			</div>
 		</c:forEach>

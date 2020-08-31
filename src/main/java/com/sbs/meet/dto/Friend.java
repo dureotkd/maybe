@@ -15,4 +15,5 @@ public class Friend {
 	private int followId;
 	private int followerId;
 	private String regDate;
+	private Map<String, Object> extra;
 }

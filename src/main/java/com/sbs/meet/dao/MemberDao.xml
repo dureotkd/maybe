@@ -108,7 +108,7 @@
 		WHERE sessionKey = #{sessionId}
 		AND sessionLimit > NOW()
 	</select>
-	
+
 	<select id="getUserAvatarImg" resultType="File">
 		SELECT * FROM file
 		WHERE relTypeCode = 'member'
@@ -155,9 +155,11 @@
 		ON
 		AR.articleId = A.id
 		WHERE A.memberId = #{loginedMemberId}
-		AND AR.memberId != #{loginedMemberId}
+		AND
+		AR.memberId != #{loginedMemberId}
 		AND AR.displayStatus = 1
-		AND AR.readStatus = 0
+		AND
+		AR.readStatus = 0
 	</select>
 
 	<select id="getMyLikePoint" resultType="int">
@@ -193,40 +195,74 @@
 		AND updateDate <= DATE_ADD(NOW(), INTERVAL -3 MONTH);
 	]]>
 	</select>
-	
+
 	<update id="updateActReadStatus">
-	UPDATE articleLike AS AL
-	INNER JOIN article AS A
-	ON AL.articleId = A.id 
-	INNER JOIN member AS M
-	ON M.id = AL.memberId
-	SET AL.readStatus = 1
-	WHERE A.memberId = #{loginedMemberId}
+		UPDATE articleLike AS AL
+		INNER JOIN article AS A
+		ON AL.articleId = A.id
+		INNER JOIN member AS M
+		ON M.id = AL.memberId
+		SET AL.readStatus = 1
+		WHERE A.memberId = #{loginedMemberId}
 	</update>
-	
+
 	<update id="updateActReadStatusInReply">
-	UPDATE articleReply AS AR
-	INNER JOIN article AS A
-	ON AR.articleId = A.id
-	INNER JOIN member AS M
-	ON M.id = AR.memberId
-	SET AR.readStatus = 1
-	WHERE A.memberId = #{loginedMemberId}
+		UPDATE articleReply AS AR
+		INNER JOIN article AS A
+		ON AR.articleId = A.id
+		INNER JOIN member AS M
+		ON M.id = AR.memberId
+		SET AR.readStatus = 1
+		WHERE A.memberId = #{loginedMemberId}
+	</update>
+
+	<insert id="doActionFollow">
+		INSERT INTO friend
+		SET regDate = NOW(),
+		followId = #{followId},
+		followerId = #{followerId},
+		readStatus = 0
+	</insert>
+
+	<delete id="doDeleteFollow">
+		DELETE FROM friend
+		WHERE followId = #{followId}
+		AND followerId = #{followerId}
+	</delete>
+
+	<select id="getMyFollowerCount" resultType="int">
+		SELECT COUNT(*) AS cnt
+		FROM friend
+		WHERE followId = #{loginedMemberId}
+		AND readStatus = 0
+	</select>
+
+	<select id="getForPrintMyFollow" resultMap="friend">
+		SELECT F.*,
+		M.nickname AS extra__writer
+		FROM friend AS F
+		INNER JOIN `member` AS M
+		ON M.id = F.followerId
+		WHERE F.followId = #{loginedMemberId}
+		AND F.readStatus = 0
+	</select>
+	
+	<update id="updateActReadStatusInFollow">
+	UPDATE friend 
+	SET readStatus = 1
+	WHERE followId = #{loginedMemberId}
 	</update>
 	
-	<insert id="doActionFollow">
-	INSERT INTO friend
-	SET regDate = NOW(),
-	followId = #{followId},
-	followerId = #{followerId}
-	</insert>
-	
-	<delete id="doDeleteFollow">
-	DELETE FROM friend
-	WHERE followId = #{followId}
-	AND followerId = #{followerId}
-	</delete>
-	
+	<resultMap type="Friend" id="friend">
+		<id property="id" column="id" />
+		<id property="regDate" column="regDate" />
+		<id property="followId" column="followId" />
+		<id property="followerId" column="followerId" />
+		<id property="readStatus" column="readStatus" />
+		<association property="extra" javaType="map">
+			<id property="writer" column="extra__writer" />
+		</association>
+	</resultMap>
 
 
 	<resultMap type="Member" id="member">
