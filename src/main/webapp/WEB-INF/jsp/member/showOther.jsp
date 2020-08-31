@@ -4,16 +4,26 @@
 
 <script>
 	var id = parseInt('${loginedMemberId}');
+	var followId = parseInt('${member.id}');
+	var followerId = parseInt('${loginedMemberId}');
 </script>
 
 <script>
-
+	function doFollow() {
+		$.post('../member/doActionFollow', {
+			followId : followId,
+			followerId : followerId
+		}, function(data) {
+			if (data.msg) {
+				alert(data.msg);
+			}
+		}, 'json');
+	}
 	var ProfileChangeForm__submitDone = false;
 
 	function ProfileChangeForm__submit(form) {
 
-		var fileInput1 = form["file__member__" + id
-				+ "__common__attachment__1"];
+		var fileInput1 = form["file__member__" + id + "__common__attachment__1"];
 
 		if (ProfileChangeForm__submitDone) {
 			alert('처리중입니다.');
@@ -184,7 +194,7 @@
 	position: absolute;
 	color: #d81b60;
 	top: 10px;
-	left:10px;
+	left: 10px;
 	transition: all.3s;
 	opacity: 0;
 	cursor: pointer;
@@ -198,6 +208,7 @@
 	opacity: 0;
 	cursor: pointer;
 }
+
 .articles-box>ul {
 	display: flex;
 	flex-flow: row wrap;
@@ -209,7 +220,7 @@
 	height: 100%;
 	object-fit: cover;
 	transition: all.3s;
-	cursor:zoom-in;
+	cursor: zoom-in;
 }
 
 .other-articleVideo {
@@ -264,9 +275,11 @@
 .submit-item, .msgSubmit {
 	padding: 10px;
 	background: #0095f6;
+	border-radius: 3px;
 	border: none;
 	cursor: pointer;
 	color: white;
+	font-size: 15px;
 }
 
 .other-recomend-box {
@@ -643,7 +656,6 @@ input[type="file"] {
 	opacity: 0.8;
 }
 
-
 @media ( min-width :800px ) {
 	.articles-box>ul>li {
 		margin-top: 20px;
@@ -654,8 +666,7 @@ input[type="file"] {
 		margin-left: 20px;
 	}
 	.articles-box {
-		border: 1px solid #ccc;
-		box-shadow: 3px 3px 3px #ccc;
+		box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 20px 0px;
 	}
 	.images-wrap {
 		width: 90%;
@@ -669,19 +680,19 @@ input[type="file"] {
 		left: 20px;
 	}
 	.other-img-wrap {
-		width:150px;
-		height:150px;
+		width: 150px;
+		height: 150px;
 	}
 	.other-img-box {
-	display: flex;
-	margin-top:50px;
-	align-items: center;
+		display: flex;
+		margin-top: 50px;
+		align-items: center;
 	}
 	.other-text-box {
-		margin-left:50px;
+		margin-left: 50px;
 	}
 	.other-show-box {
-		margin-bottom:50px;
+		margin-bottom: 50px;
 	}
 }
 
@@ -702,23 +713,21 @@ input[type="file"] {
 		left: 40px;
 	}
 	.other-img-wrap {
-		width:120px;
-		height:120px;
+		width: 120px;
+		height: 120px;
 	}
-	
 	.other-img-box {
-	display: flex;
-	flex-direction:column;
-	width:100%;
-	margin-top:50px;
-	justify-content:center;
-	align-items: center;
-}
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		margin-top: 50px;
+		justify-content: center;
+		align-items: center;
+	}
 	.other-text-box {
-		margin-top:20px;
+		margin-top: 20px;
 	}
 }
-
 </style>
 
 
@@ -750,19 +759,23 @@ input[type="file"] {
 
 				<c:if test="${loginedMemberId != member.id }">
 					<a href="#" class="msgSubmit">메시지 보내기</a>
-					<input type="submit" value="팔로우" class="submit-item" />
+					<a href="#" class="submit-item" onclick="doFollow(this);">팔로우</a>
 				</c:if>
 
 				<c:if test="${loginedMemberId == member.id }">
 					<a href="./myInfoEdit" class="edit-btn">프로필 편집</a>
 				</c:if>
 
-				<i class="fas fa-ellipsis-h"></i>
-
+				<ul class="setting-box">
+						<li><i class="fas fa-ellipsis-h"></i></li>
+						<ul class="setting-items">
+							<li><a href="#" class="red">사용자 차단</a></li>
+						</ul>
+					</ul>
 			</div>
 			<div class="other-followBox">
 				<span class="article-count">게시글 ${articleCount}</span> <span
-					class="">팔로우 2</span> <span> 팔로워 2</span>
+					class="">팔로워 ${followerCount}</span> <span> 팔로우 ${followCount}</span>
 			</div>
 			<div class="other-introduce">
 				<p>${member.introduce}</p>

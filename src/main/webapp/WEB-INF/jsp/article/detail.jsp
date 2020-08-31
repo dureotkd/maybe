@@ -752,9 +752,32 @@ textarea[readonly], textarea[disabled] {
 		}, 'json');
 		form.body.value = '';
 	}
+
+
+
+	function doDeleteFollow(el) 	{
+		if ( confirm ("팔로우를 취소하시겠습니까 ?") == true ){
+		var $div = $(el).closest('.detail-box');
+		// 가장 가까운 li를 찾아라
+		var followId = parseInt($div.attr('data-id'));
+		// 정수화 -> data-id
+		
+		$.post('../member/doDeleteFollow', {
+			followId : followId,
+			followerId : followerId
+		}, function(data) {
+			if (data.msg) {
+				alert(data.msg);
+			}
+
+			}, 'json');
+		} else {
+			return;
+		}
+	}
 </script>
 <div class="total-wrap">
-	<div class="detail-box">
+	<div class="detail-box" data-id="${article.memberId}">
 		<c:if test="${article.extra.file__common__attachment['1'] == null}">
 
 			<div class="slideshow-container">
@@ -835,16 +858,21 @@ textarea[readonly], textarea[disabled] {
 				<c:if test="${member.level < 5 }">
 					<i class="fas fa-user-alt level"></i>
 				</c:if>
-
+				
+				<c:if test="${following == 0}">
 				<a href="#" class="follow-btn" onclick="doFollow(this);">팔로우</a>
-				<ul class="setting-box">
-					<li><i class="fas fa-ellipsis-h"></i></li>
-					<ul class="setting-items">
-						<li><a href="#" class="red">사용자 차단</a></li>
-						<li><a href="#" class="msgSubmit">메시지 보내기</a></li>
-						<li><a href="#">공유하기</a></li>
+				</c:if>
+				<c:if test="${following == 1}">
+				<a href="#" class="follow-btn" onclick="doDeleteFollow(this);">언팔로우</a>
+				</c:if>		
+					<ul class="setting-box">
+						<li><i class="fas fa-ellipsis-h"></i></li>
+						<ul class="setting-items">
+							<li><a href="#" class="red">사용자 차단</a></li>
+							<li><a href="#" class="msgSubmit">메시지 보내기</a></li>
+							<li><a href="#">공유하기</a></li>
+						</ul>
 					</ul>
-				</ul>
 			</div>
 			<div class="article-body">
 				<p class="abody">${article.body}</p>

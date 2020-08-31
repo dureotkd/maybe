@@ -253,6 +253,22 @@
 	WHERE followId = #{loginedMemberId}
 	</update>
 	
+	<select id="getFollowCount" resultType="int">
+	SELECT COUNT(*) AS cnt
+	FROM friend WHERE followId = #{memberId}
+	</select>
+	
+	<select id="getFollowerCount" resultType="int">
+	SELECT COUNT(*) AS cnt
+	FROM friend WHERE followerId = #{memberId}
+	</select>
+	
+	<select id="getFollowingConfirm" resultType="int">
+	SELECT COUNT(*) AS cnt
+	FROM friend WHERE followerId = #{loginedMemberId}
+	AND followId = #{memberId}
+ 	</select>
+	
 	<resultMap type="Friend" id="friend">
 		<id property="id" column="id" />
 		<id property="regDate" column="regDate" />

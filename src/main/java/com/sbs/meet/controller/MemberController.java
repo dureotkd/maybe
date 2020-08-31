@@ -70,25 +70,6 @@ public class MemberController {
 	@RequestMapping("/member/doJoin")
 	public String doJoin(@RequestParam Map<String, Object> param, Model model) {
 		Util.changeMapKey(param, "loginPwReal", "loginPw");
-//		ResultData checkNicknameJoinableResultData = memberService
-//				.checkNicknameJoinable(Util.getAsStr(param.get("nickname")));
-//		ResultData checkEmailJoinableResultData = memberService.checkEmailJoinable(Util.getAsStr(param.get("email")));
-//
-//		// 회원가입 체크
-//
-//		if (checkEmailJoinableResultData.isFail()) {
-//			model.addAttribute("historyBack", true);
-//			model.addAttribute("alertMsg", checkEmailJoinableResultData.getMsg());
-//			return "common/redirect";
-//		}
-//
-//		// 닉네임 체크
-//
-//		if (checkNicknameJoinableResultData.isFail()) {
-//			model.addAttribute("historyBack", true);
-//			model.addAttribute("alertMsg", checkNicknameJoinableResultData.getMsg());
-//			return "common/redirect";
-//		}
 
 		int newMemberId = memberService.join(param);
 
@@ -464,6 +445,10 @@ public class MemberController {
 		int memberId = member.getId();
 		// 회원이 쓴 게시글 카운트
 		int articleCount = articleService.getArticleCount(memberId);
+		// 회원 팔로우 카운트
+		int followCount = memberService.getFollowCount(memberId);
+		// 회원 팔로워 카운트
+		int followerCount = memberService.getFollowerCount(memberId);
 
 		// 회원이 쓴 게시글
 		List<Article> articles = articleService.getForPrintArticles2(memberId);
@@ -490,6 +475,8 @@ public class MemberController {
 			filesMap.put(file.getFileNo() + "", file);
 		}
 
+		model.addAttribute("followerCount",followerCount);
+		model.addAttribute("followCount",followCount);
 		model.addAttribute("articleCount", articleCount);
 		model.addAttribute("member", member);
 		model.addAttribute("articles", articles);
@@ -520,8 +507,9 @@ public class MemberController {
 		memberService.updateActReadStatus(loginedMemberId);		
 	    memberService.updateActReadStatusInReply(loginedMemberId);	
 	    memberService.updateActReadStatusInFollow(loginedMemberId);
-
 	}
+	
+	
 	
 	
 	@RequestMapping("/member/changeProfile")

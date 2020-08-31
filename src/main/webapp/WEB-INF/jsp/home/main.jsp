@@ -408,12 +408,14 @@ textarea[readonly], textarea[disabled] {
 	border-radius:50%;
 	cursor:pointer;
 }
+.following {
+	color:#0d47a1;
+}
 
 @media ( max-width:800px ){
 	.articles-item {
 		display:flex;
 		flex-direction:column;
-		border-radius:10px;
 		align-items:center;
 		width:100%;
 		margin-bottom:50px;
@@ -423,7 +425,7 @@ textarea[readonly], textarea[disabled] {
 		height:300px;
 	}
 	.article-img-box {
-	height:400px;
+	height:500px;
 	overflow:hidden;
 	}
 }
@@ -431,7 +433,6 @@ textarea[readonly], textarea[disabled] {
 @media ( min-width:801px ){
 	.articles-item {
 	display:flex;
-	border-radius: 10px;
 	box-shadow:rgba(0, 0, 0, 0.1) 0px 1px 20px 0px;
 	align-items: center;
 	width: 100%;
@@ -470,7 +471,7 @@ textarea[readonly], textarea[disabled] {
 							</div>
 						<span>${article.extra.writer}</span>
 				</a>
-				<a href="#" onclick="doDeleteFollow(this);" >언팔로우</a>
+				<a href="#" onclick="doDeleteFollow(this);" class="following" >언팔로우</a>
 				<img class="direct" src="https://i.pinimg.com/originals/7b/66/ac/7b66ac2787335ebcb565960d482f0846.png" alt="" />
 				<ul class="setting-box">
 					<li><i class="fas fa-ellipsis-h"></i></li>

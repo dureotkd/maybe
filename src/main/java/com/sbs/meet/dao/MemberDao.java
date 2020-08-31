@@ -78,4 +78,10 @@ public interface MemberDao {
 
 	void updateActReadStatusInFollow(int loginedMemberId);
 
+	int getFollowCount(int memberId);
+
+	int getFollowerCount(int memberId);
+
+	int getFollowingConfirm(int memberId, int loginedMemberId);
+
 }

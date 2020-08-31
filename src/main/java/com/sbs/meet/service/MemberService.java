@@ -238,5 +238,17 @@ public class MemberService {
 		memberDao.updateActReadStatusInFollow(loginedMemberId);
 	}
 
+	public int getFollowCount(int memberId) {
+		return memberDao.getFollowCount(memberId);
+	}
+
+	public int getFollowerCount(int memberId) {
+		return memberDao.getFollowerCount(memberId);
+	}
+
+	public int getFollowingConfirm(int memberId,int loginedMemberId) {
+		return memberDao.getFollowingConfirm(memberId,loginedMemberId);
+	}
+
 
 }

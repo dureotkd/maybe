@@ -173,8 +173,6 @@ function readAct(){
 	},
 	'json');
 }
-
-
 </script>
 
 <%="<script>"%>
@@ -415,7 +413,7 @@ h1 {
 .top-line{
 	height:60px;
 	width:100%;
-	border-bottom: 1px solid #ccc;
+	border-bottom:1px solid #e0e0e0;
 	position:fixed;
 	top:0;
 	z-index:50;

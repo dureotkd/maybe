@@ -109,14 +109,24 @@ public class ArticleController {
 	// 게시글 디테일  
 	
 	@RequestMapping("article/detail")
-	public String showArticlecDetail(Model model,@RequestParam Map<String, Object> param,int id) {
+	public String showArticlecDetail(Model model,@RequestParam Map<String, Object> param,int id,HttpServletRequest request) {
 		
 		
 		Article article = articleService.getForPrintOneArticle(id);
+		
+		
+	
+		int loginedMemberId = (int) request.getAttribute("loginedMemberId");
 		// 게시글
 		int memberId = article.getMemberId();
+		
+		// 팔로잉중인지 확인
+		int following = memberService.getFollowingConfirm(memberId,loginedMemberId);
+		
+		
 		Member member = memberService.getMemberById(memberId);
 		
+		model.addAttribute("following",following);
 		model.addAttribute("article",article);
 		model.addAttribute("member",member);
 		return "article/detail";

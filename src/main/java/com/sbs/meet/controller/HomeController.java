@@ -12,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.sbs.meet.dto.Article;
-import com.sbs.meet.dto.ArticleReply;
 import com.sbs.meet.dto.File;
 import com.sbs.meet.service.ArticleService;
 import com.sbs.meet.service.FileService;
@@ -22,17 +21,17 @@ import com.sbs.meet.util.Util;
 @Controller
 public class HomeController {
 	@Autowired
-	ArticleService articleService;
+	private ArticleService articleService;
 	@Autowired
-	MemberService memberService;
+	private MemberService memberService;
 	@Autowired
-	FileService fileService;
+	private FileService fileService;
 	
 	@RequestMapping("/home/main")
 	public String showMain(Model model,HttpServletRequest request) {
 		
 		int loginedMemberId = (int) request.getAttribute("loginedMemberId");
-			
+		
 		
 		List<Article> articles = articleService.getForPrintArticlesInFollow(loginedMemberId);
 		
@@ -74,6 +73,7 @@ public class HomeController {
 		model.addAttribute("articles",articles);
 		return "home/main";
 	}
+	
 	
 		
 }
