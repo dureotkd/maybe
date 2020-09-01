@@ -209,6 +209,11 @@
 		SET readStatus = 1
 		WHERE id = #{id}
 	</update>
+	
+	<delete id="doDeleteReplyAjax">
+		DELETE FROM articleReply
+		WHERE id = #{id}
+	</delete>
 
 	<resultMap type="ArticleLike" id="articleLike">
 		<id property="id" column="id" />

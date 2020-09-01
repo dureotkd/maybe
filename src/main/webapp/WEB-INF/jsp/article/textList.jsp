@@ -162,28 +162,45 @@
 .cursor1 {
 	cursor:zoom-in;
 }
+.writer-imgwrap {
+	width:50px;
+	height:50px;
+	overflow:hidden;
+	border-radius:50%;
+}
+.article-writer-Avatar {
+	width:100%;
+	height:100%;
+	object-fit:cover;
+}
 </style>
 <div class="total-wrap">
 	<div class="board-bar">
 	<a class="board" href="imgList"><i class="fas fa-image"></i></a>
-	<a class="board action " href="videoList"><i class="fas fa-video"></i></a>
-	<a class="board" href="textList"><i class="fas fa-quote-left"></i></a>
+	<a class="board" href="videoList"><i class="fas fa-video"></i></a>
+	<a class="board action" href="textList"><i class="fas fa-quote-left"></i></a>
 	</div>
 <div class="articles-box">
 	<ul>
 	<c:forEach items="${articles}" var="article">
-		<c:if test="${article.extra.file__common__attachment['1'] != null}">
+	<c:if test="${article.extra.file__common__attachment['1'] == null}">
+		<c:if test="${article.extra.file__common__attachment['3'] == null}">
+		<div class="writer-imgwrap">
+		<img class="article-writer-Avatar"
+							src="${article.extra.writerAvatarImgUrl}">
+							</div>
+		<img src="" alt="" />
 		<li data-id="${article.id}">
 		<div class="img-wrap">
 		<a class="cursor1"  href="../article/detail?id=${article.id}">
-		<video class="video"  controls
-				src="/file/streamVideo?id=${article.extra.file__common__attachment['1'].id}&updateDate=${article.extra.file__common__attachment['1'].updateDate}"></video>
+		<span>${article.body}</span>
 		</a>
 		<a onclick="callDoLike(this);">
 		<i class="fas fa-heart good-item "></i>
 		</a>
 		<i class="fas fa-comment-dots"></i>
 		</div>
+		
 		</li>
 		<!--<c:set var="articleReplyCount" value="0"/>
 		<c:forEach var="articleReply" items="${articleReply}" >
@@ -192,7 +209,9 @@
 		</c:forEach>
 		</div>
 		</li> !-->
-	</c:if>
+		</c:if>
+		</c:if>
+	
 	</c:forEach>
 	</ul>
 	</div>

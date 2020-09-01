@@ -53,5 +53,7 @@ public interface ArticleDao  {
 	Map<String, Object> updateReadStatus(int loginedMemberId);
 
 	List<Article> getForPrintArticlesInFollow(int loginedMemberId);
+
+	void doDeleteReplyAjax(int id);
 	
 }

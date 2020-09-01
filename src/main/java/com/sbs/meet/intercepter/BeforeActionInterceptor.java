@@ -118,9 +118,15 @@ public class BeforeActionInterceptor implements HandlerInterceptor {
 			int memberId = member.getId();
 			int articleCount = articleService.getArticleCount(memberId);
 			
-			if ( articleCount >= 5) {
+			if ( articleCount >= 5 && articleCount < 10) {
 				if ( member.getNickname().equals("관리자") == false ) {
-					memberService.doUpdateLevel(memberId);
+					memberService.doUpdateLevel5(memberId);
+				}
+			}
+			
+			if ( articleCount >= 10 ) {
+				if (member.getNickname().equals("관리자") == false ) {
+					memberService.doUpdateLevel10(memberId);
 				}
 			}
 		}
@@ -166,10 +172,6 @@ public class BeforeActionInterceptor implements HandlerInterceptor {
 		List<ArticleLike> articleLikes = articleService.getForPrintArticleLikesByMyArticle(loginedMemberId);
 		// 팔로우
 		List<Friend> friends = memberService.getForPrintMyFollow(loginedMemberId);
-		
-		for ( Friend friend : friends ) {
-			System.out.println("실험" + friends);
-		}
 		
 		for (Friend friend : friends) {
 			List<File> files = fileService.getFiles("member", friend.getFollowerId(), "common", "attachment");

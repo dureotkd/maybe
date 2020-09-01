@@ -113,8 +113,6 @@ public class ArticleController {
 		
 		
 		Article article = articleService.getForPrintOneArticle(id);
-		
-		
 	
 		int loginedMemberId = (int) request.getAttribute("loginedMemberId");
 		// 게시글
@@ -122,10 +120,12 @@ public class ArticleController {
 		
 		// 팔로잉중인지 확인
 		int following = memberService.getFollowingConfirm(memberId,loginedMemberId);
-		
+		int followCross = memberService.getFollowCross(memberId,loginedMemberId);
+
 		
 		Member member = memberService.getMemberById(memberId);
 		
+		model.addAttribute("followCross",followCross);
 		model.addAttribute("following",following);
 		model.addAttribute("article",article);
 		model.addAttribute("member",member);
@@ -146,7 +146,6 @@ public class ArticleController {
 		Map<String, Object> articleLikeAvailableRs = articleService.getArticleLikeAvailable(id,loginedMemberId);
 		
 		if (((String) articleLikeAvailableRs.get("resultCode")).startsWith("F-")) {
-			
 			rs.put("resultCode",articleLikeAvailableRs.get("resultCode"));
 			rs.put("msg",articleLikeAvailableRs.get("msg"));
 			
@@ -176,17 +175,73 @@ public class ArticleController {
 		return rs;
 	}
 	
+	@RequestMapping("article/doDeleteReplyAjax")
+	public void doDeleteReplyAjax(int id, HttpServletRequest request){		
+		articleService.doDeleteReplyAjax(id);
+	}
+	
+	
+	
 	// text 만 할지 안할지 고민중.
 	
 	@RequestMapping("article/textList")
 	public String showTextList(Model model) {
 		
 		List<Article> articles = articleService.getForPrintArticles();
+		
+		for ( Article article : articles ) {
+			
+			List<File> files = fileService.getFiles("article", article.getId(), "common", "attachment");
+			Map<String, File> filesMap = new HashMap<>();
 
+			for (File file : files) {
+				filesMap.put(file.getFileNo() + "", file);
+			}
+
+			Util.putExtraVal(article, "file__common__attachment", filesMap);
+			}
+		
+		for ( Article article : articles ) {
+			
+			List<File> files = fileService.getFiles("article",article.getId(),"common","attachment");
+			 
+			Map<String, File> filesMap = new HashMap<>();
+			
+			for (File file : files) {
+				filesMap.put(file.getFileNo() + "",file);
+			}
+			
+			Util.putExtraVal(article,"file__common__attachment",filesMap);
+		}
+		
+
+		for (Article article : articles) {
+			List<File> files = fileService.getFiles("member", article.getMemberId(), "common", "attachment");
+			if ( files.size() > 0 ) {
+				File file = files.get(0);
+				
+				if ( article.getExtra() == null ) {
+					article.setExtra(new HashMap<>());
+				}
+				article.getExtra().put("writerAvatarImgUrl", "/file/showImg?id=" + file.getId() + "&updateDate=" + file.getUpdateDate());				
+			}
+			else {
+				article.getExtra().put("writerAvatarImgUrl", "/resource/img/avatar_no.jpg");
+			}
+			
+			Map<String, File> filesMap = new HashMap<>();
+
+			for (File file : files) {
+				filesMap.put(file.getFileNo() + "", file);
+			}
+		}
+		
+		
 		model.addAttribute("articles",articles);
 		
 		return "article/textList";
 	}
+
 	
 	
 	

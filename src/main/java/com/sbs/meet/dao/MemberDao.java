@@ -84,4 +84,12 @@ public interface MemberDao {
 
 	int getFollowingConfirm(int memberId, int loginedMemberId);
 
+	void doUpdateLevel5(int memberId);
+
+	void doUpdateLevel10(int memberId);
+
+	List<Member> getForPrintNotFollow(int loginedMemberId);
+
+	int getFollowCross(int memberId, int loginedMemberId);
+
 }

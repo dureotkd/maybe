@@ -10,7 +10,14 @@ html, body {
 .reply-body {
 	width: 100%;
 	line-break: anywhere;
-	margin-left: 5%;
+}
+
+
+.delete-btn {
+	position:absolute;
+	border:none;
+	background:none;
+	color:#bdbdbd;
 }
 
 .reply-img-Avatar {
@@ -106,6 +113,7 @@ html, body {
 	display: flex;
 	jusitfy-content: space-between;
 	align-items: center;
+	position:relative;
 	margin-bottom: 15px;
 	font-size: 14px;
 }
@@ -174,6 +182,7 @@ to {
 	margin: 0 auto;
 	overflow: hidden;
 }
+
 /* On smaller screens, decrease text size */
 @media only screen and (max-width: 300px) {
 	.prev, .next, .text {
@@ -228,6 +237,7 @@ to {
 		border: 1px solid #eee;
 		border-radius: 20px;
 		box-shadow: 3px 3px 3px #ccc;
+		box-sizing:border-box;
 		align-items: center;
 		padding: 20px;
 		justify-content: center;
@@ -239,7 +249,7 @@ to {
 		display: none; /* Chrome, Safari, Opera*/
 	}
 	.reply-list-box {
-		width: 350px;
+		width: 400px;
 	}
 	.mySlides {
 		display: flex;
@@ -320,6 +330,14 @@ button, submit {
 	padding: 15px;
 }
 
+.replyRegDate {
+	color: #bdbdbd;
+	font-size:13px;
+	left:55px;
+	position:absolute;
+	
+}
+
 .fa-smile {
 	color: #212121;
 	font-size: 20px;
@@ -370,7 +388,7 @@ button, submit {
 		display: none !important;
 	}
 	.article-video {
-		max-width: 600px;
+		max-width: 500px;
 	}
 	.total-wrap {
 		width: 100%;
@@ -775,6 +793,21 @@ textarea[readonly], textarea[disabled] {
 			return;
 		}
 	}
+
+	function ArticleReply__delete(obj) 	{
+		if ( confirm ("댓글을 삭제하시겠습니까 ?") == true ){
+			var $clickedBtn = $(obj);
+			var $tr = $clickedBtn.closest('tr');
+			var id = parseInt($tr.attr('data-id'));
+			$tr.remove();
+		$.post('../article/doDeleteReplyAjax', {
+			id : id
+		}, 'json');
+		} else {
+			return;
+		}
+	}
+
 </script>
 <div class="total-wrap">
 	<div class="detail-box" data-id="${article.memberId}">
@@ -860,23 +893,47 @@ textarea[readonly], textarea[disabled] {
 				</c:if>
 				
 				<c:if test="${following == 0}">
+				<c:if test="${followCross == 0 }">
+				<c:if test="${loginedMemberId != member.id }">
 				<a href="#" class="follow-btn" onclick="doFollow(this);">팔로우</a>
 				</c:if>
+				</c:if>
+				</c:if>
+				
+				<c:if test="${following == 0 }">
+				<c:if test="${followCross == 1 }">
+				<c:if test="${loginedMemberId != member.id }">
+						<a href="#" class="follow-btn" onclick="doFollow(this);">맞팔로우</a>
+						</c:if>
+					</c:if>
+					</c:if>
+					
+					
 				<c:if test="${following == 1}">
 				<a href="#" class="follow-btn" onclick="doDeleteFollow(this);">언팔로우</a>
 				</c:if>		
+				
 					<ul class="setting-box">
 						<li><i class="fas fa-ellipsis-h"></i></li>
+						<c:if test="${loginedMemberId != article.memberId }">
 						<ul class="setting-items">
 							<li><a href="#" class="red">사용자 차단</a></li>
 							<li><a href="#" class="msgSubmit">메시지 보내기</a></li>
 							<li><a href="#">공유하기</a></li>
 						</ul>
+						</c:if>
+						<c:if test="${loginedMemberId == article.memberId }">
+						<ul class="setting-items">
+							<li><a href="#" class="red">게시글 삭제</a></li>
+							<li><a href="#" class="msgSubmit">게시글 수정</a></li>
+						</ul>
+						</c:if>
 					</ul>
 			</div>
 			<div class="article-body">
 				<p class="abody">${article.body}</p>
 				<p class="tag">#${article.tag}</p>
+				<p class="regDate">${article.regDateFormat}</p>
 				<div class="like-wrap">
 					<a href="#" onclick="callDoLike();"> <i
 						class="fas fa-heart like"></i>
@@ -938,6 +995,8 @@ textarea[readonly], textarea[disabled] {
 
 
 		<script>
+			
+			var id = parseInt('${loginedMemberId}');
 			var ReplyList__$box = $('.reply-list-box');
 			var ReplyList__$tbody = ReplyList__$box.find('.reply-item');
 			var ReplyList__lastLodedId = 0;
@@ -985,16 +1044,22 @@ textarea[readonly], textarea[disabled] {
 				html += '</div>';
 				html += '</td>';
 
+				html += '<td>';
+				html += '</td>';
+
 				html += '<td class="reply-writer">' + articleReply.extra.writer
-						+ '</td></a>';
+						+ '</td></a>';						
 
 				html += '<td>';
-				html += '<div class="reply-body">' + articleReply.body
-						+ '</div>';
-				//	html += '<button type="button" onclick="ReplyList__delete(this);">삭제</button>';
+				html += '<div class="reply-body">' + articleReply.body +  '</div>';
 
-				//	html += '<button type="button" onclick="ReplyList__showModifyFormModal(this);">수정</button>';
+				html += '<p class="replyRegDate">' + articleReply.regDateFormat + '</p>';
+
+				if ( id == articleReply.memberId ){
+				html += '<button class="delete-btn" type="button" onclick="ArticleReply__delete(this);">삭제</button>';
+				}
 				html += '</td>';
+				
 				html += '</tr>';
 				var $tr = $(html);
 				ReplyList__$tbody.prepend($tr);

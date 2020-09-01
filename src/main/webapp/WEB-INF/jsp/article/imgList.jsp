@@ -169,9 +169,9 @@
 </style>
 <div class="total-wrap">
 	<div class="board-bar">
-		<a class="board action" href="list"><i class="fas fa-image"></i></a> <a
+		<a class="board action" href="imgList"><i class="fas fa-image"></i></a> <a
 			class="board" href="videoList"><i class="fas fa-video"></i></a> <a
-			class="board" href="#"><i class="fas fa-quote-left"></i></a>
+			class="board" href="textList"><i class="fas fa-quote-left"></i></a>
 	</div>
 	<div class="articles-box">
 		<ul>

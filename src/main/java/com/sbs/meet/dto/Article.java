@@ -2,7 +2,6 @@ package com.sbs.meet.dto;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
@@ -23,36 +22,51 @@ public class Article {
 	private String title;
 	private String body;
 	private Map<String, Object> extra;
-	
-	private String getCustomDate() {
-		
-		// 오늘
-		Date today = new Date();
-	    SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
-	    String toDay = date.format(today);
-	    
-	    Calendar cal = Calendar.getInstance();
-	    
-	    String dateFormat = this.getRegDate();
-	    
-	  
-	    // 모르것다 담에하자
-	    
-	    return toDay;
+
+	private static class TIME_MAXIMUM {
+		public static final int SEC = 60;
+		public static final int MIN = 60;
+		public static final int HOUR = 24;
+		public static final int DAY = 30;
+		public static final int MONTH = 12;
 	}
 
-	public String getRegDateFormat2() {
-		String startTime = this.getRegDate();
-		// This could be MM/dd/yyyy, you original value is ambiguous
-		SimpleDateFormat input = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	public String getRegDateFormat() {
+
+		SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date to = null;
 		try {
-			Date dateValue = input.parse(startTime);
-			SimpleDateFormat transFormat = new SimpleDateFormat("MM.dd,EEE");
-			String to = transFormat.format(dateValue);
-			return to;
+			to = transFormat.parse(this.regDate);
 		} catch (ParseException e) {
-			return this.getRegDate();
 		}
-	}
 
+		long curTime = System.currentTimeMillis();
+		long regTime = to.getTime();
+		long diffTime = (curTime - regTime) / 1000;
+
+		String msg = null;
+
+		if (diffTime < TIME_MAXIMUM.SEC) {
+			// sec
+			msg = diffTime + "초전";
+		} else if ((diffTime /= TIME_MAXIMUM.MIN) < TIME_MAXIMUM.MIN) {
+			// min
+			msg = diffTime + "분전";
+		} else if ((diffTime /= TIME_MAXIMUM.HOUR) < TIME_MAXIMUM.HOUR) {
+			// hour
+			msg = diffTime + "시간전";
+		} else if ((diffTime /= TIME_MAXIMUM.DAY) < TIME_MAXIMUM.DAY) {
+			// day
+			msg = diffTime + "일전";
+		} else if ((diffTime /= TIME_MAXIMUM.MONTH) < TIME_MAXIMUM.MONTH) {
+			// month
+			msg = diffTime + "달전";
+		} else {
+			msg = (diffTime /= TIME_MAXIMUM.MONTH) + "년 전";
+		}
+		
+		
+		return msg;
+
+	}
 }

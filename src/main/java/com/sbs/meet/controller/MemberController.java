@@ -51,7 +51,7 @@ public class MemberController {
 
 				if (article.getExtra() == null) {
 					article.setExtra(new HashMap<>());
-				}	
+				}
 
 				article.getExtra().put("articleImgUrl",
 						"/file/showImg?id=" + file.getId() + "&updateDate=" + file.getUpdateDate());
@@ -62,7 +62,6 @@ public class MemberController {
 				filesMap.put(file.getFileNo() + "", file);
 			}
 		}
-
 		model.addAttribute("articles", articles);
 		return "member/join";
 	}
@@ -83,19 +82,19 @@ public class MemberController {
 	public String login(Model model) {
 
 		Article article = articleService.getLikeKing();
-		
-		if ( article != null ) {
-			
-		List<File> files = fileService.getFiles("article", article.getId(), "common", "attachment");
-		Map<String, File> filesMap = new HashMap<>();
 
-		for (File file : files) {
-			filesMap.put(file.getFileNo() + "", file);
-		}
-		Util.putExtraVal(article, "file__common__attachment", filesMap);
+		if (article != null) {
+
+			List<File> files = fileService.getFiles("article", article.getId(), "common", "attachment");
+			Map<String, File> filesMap = new HashMap<>();
+
+			for (File file : files) {
+				filesMap.put(file.getFileNo() + "", file);
+			}
+			Util.putExtraVal(article, "file__common__attachment", filesMap);
 		}
 
-		model.addAttribute("article", article);	
+		model.addAttribute("article", article);
 
 		return "member/login";
 	}
@@ -146,7 +145,7 @@ public class MemberController {
 			model.addAttribute("alertMsg", "비밀번호가 일치하지 않습니다.");
 			return "common/redirect";
 		}
-	
+
 		session.setAttribute("loginedMemberId", member.getId());
 
 		String sessionId = session.getId();
@@ -436,19 +435,20 @@ public class MemberController {
 
 		Member member = memberService.getMemberById(id);
 
-		if (member == null) {
-			model.addAttribute("historyBack", true);
-			model.addAttribute("alertMsg", String.format("탈퇴한 회원이거나 존재하지 않는 회원입니다."));
-			return "common/redirect";
-		}
-
 		int memberId = member.getId();
+		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
+
+		int following = memberService.getFollowingConfirm(memberId, loginedMemberId);
+		
+		int followCross = memberService.getFollowCross(memberId,loginedMemberId);
+
 		// 회원이 쓴 게시글 카운트
 		int articleCount = articleService.getArticleCount(memberId);
 		// 회원 팔로우 카운트
 		int followCount = memberService.getFollowCount(memberId);
 		// 회원 팔로워 카운트
 		int followerCount = memberService.getFollowerCount(memberId);
+		// 맞팔 확인
 
 		// 회원이 쓴 게시글
 		List<Article> articles = articleService.getForPrintArticles2(memberId);
@@ -475,38 +475,61 @@ public class MemberController {
 			filesMap.put(file.getFileNo() + "", file);
 		}
 
-		model.addAttribute("followerCount",followerCount);
-		model.addAttribute("followCount",followCount);
+		boolean usePrivateAccount = memberService.usePrivateAccount(memberId);
+		model.addAttribute("usePrivateAccount",usePrivateAccount);
+		model.addAttribute("following", following);
+		model.addAttribute("followerCount", followerCount);
+		model.addAttribute("followCount", followCount);
 		model.addAttribute("articleCount", articleCount);
+		model.addAttribute("followCross",followCross);
 		model.addAttribute("member", member);
 		model.addAttribute("articles", articles);
 		return "member/showOther";
 	}
 
 	@RequestMapping("/member/doActionFollow")
-	public void doActionFollow(HttpServletRequest req,int followId,int followerId) {
-		memberService.doActionFollow(followId,followerId);
+	public void doActionFollow(HttpServletRequest req, int followId, int followerId) {
+		memberService.doActionFollow(followId, followerId);
 	}
-	
+
 	@RequestMapping("/member/doDeleteFollow")
-	public String doDeleteFollow(int followId,int followerId,String redirectUri,Model model) {
-		
+	public String doDeleteFollow(int followId, int followerId, String redirectUri, Model model) {
+
 		redirectUri = "..home/main";
-		memberService.doDeleteFollow(followId,followerId);
+		memberService.doDeleteFollow(followId, followerId);
 		model.addAttribute("redirectUri", redirectUri);
 
 		return "common/redirect";
 	}
-	
+
 	@RequestMapping("/member/readAct")
 	@ResponseBody
-	public void readAct(Model model,HttpServletRequest request) {
-		
+	public void readAct(Model model, HttpServletRequest request) {
+
 		int loginedMemberId = (int) request.getAttribute("loginedMemberId");
-			
-		memberService.updateActReadStatus(loginedMemberId);		
-	    memberService.updateActReadStatusInReply(loginedMemberId);	
-	    memberService.updateActReadStatusInFollow(loginedMemberId);
+
+		memberService.updateActReadStatus(loginedMemberId);
+		memberService.updateActReadStatusInReply(loginedMemberId);
+		memberService.updateActReadStatusInFollow(loginedMemberId);
+	}
+
+	@RequestMapping("/member/usePrivateMode")
+	@ResponseBody
+	public void usePrivateMode(Model model,int id) {
+		memberService.setValueForPrivateMode(id);
+	}
+	
+	@RequestMapping("/member/disAblePrivateMode")
+	@ResponseBody
+	public void disAblePrivateMode(int id) {
+		memberService.disAblePrivateMode(id);
+	}
+	
+	@RequestMapping("/member/blockWhoClickUsers")
+	@ResponseBody
+	public void blockWhoClickUsers(int id,HttpServletRequest request) {
+		int loginedMemberId = (int) request.getAttribute("loginedMemberId");
+		//memberService.blockWhoClickUsers(id,loginedMemberId);
 	}
 	
 	
@@ -514,13 +537,11 @@ public class MemberController {
 	
 	@RequestMapping("/member/changeProfile")
 	@ResponseBody
-	public void changeProfile(@RequestParam Map<String, Object> param,HttpServletRequest request) {
-		
-		
+	public void changeProfile(@RequestParam Map<String, Object> param, HttpServletRequest request) {
+
 		Map<String, Object> newParam = Util.getNewMapOf(param, "fileIdsStr", "id");
 
 		int loginedMemberId = (int) request.getAttribute("loginedMemberId");
-		
 
 	}
 }

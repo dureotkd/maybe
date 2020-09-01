@@ -227,6 +227,12 @@ public class ArticleService {
 		return articleDao.getForPrintArticlesInFollow(loginedMemberId);
 	}
 
+
+
+	public void doDeleteReplyAjax(int id) {
+		 articleDao.doDeleteReplyAjax(id);
+	}
+
 	
 	
 }

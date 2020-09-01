@@ -73,6 +73,14 @@ $(document).ready(function() {
 	});
 });
 
+function blockWhoClickedUser(){
+	if (confirm('사용자를 차단하시겠습니까? \n차단하면 팔로우가 끊기며 피드를 접할 수 없습니다.') == true ){
+	}
+	else {
+		return;
+	}
+}
+
 </script>
 
 <style>
@@ -325,7 +333,6 @@ textarea[readonly], textarea[disabled] {
 	transition: all 0.5s;
 }
 .total-box {
-	display: flex;
 	max-width: 940px;
 	align-items: center;
 	justify-content: center;
@@ -384,7 +391,7 @@ textarea[readonly], textarea[disabled] {
 	line-height:25px;
 }
 .article-sub {
-	font-size:24px;
+	font-size:15px;
 	padding:20px;
 }
 .like {
@@ -412,6 +419,37 @@ textarea[readonly], textarea[disabled] {
 	color:#0d47a1;
 }
 
+.regDate {
+	color:#bdbdbd;
+	margin-top:10px;
+	font-size:12px;
+}
+
+.recomend-con {
+	display:flex;
+	flex-direction:column;
+	box-shadow:rgba(0, 0, 0, 0.1) 0px 1px 20px 0px;
+	box-sizing: border-box;
+	width:50%;
+	margin-bottom:50px;
+	position:relative;
+}
+
+.recomend-text {
+	display:flex;
+	justify-content:space-between;
+}
+.recomend-text > p {
+	padding:15px;
+}
+.recomend-text > a {
+	padding:15px;
+}
+	.video {
+	width:483px;
+	height:500px;
+	outline:none;
+}
 @media ( max-width:800px ){
 	.articles-item {
 		display:flex;
@@ -426,6 +464,7 @@ textarea[readonly], textarea[disabled] {
 	}
 	.article-img-box {
 	height:500px;
+	width:500px;
 	overflow:hidden;
 	}
 }
@@ -449,6 +488,7 @@ textarea[readonly], textarea[disabled] {
 	height:500px;
 	overflow:hidden;
 	}
+	
 }
 </style>
 
@@ -456,11 +496,20 @@ textarea[readonly], textarea[disabled] {
 	<div class="articles-box">
 		<c:forEach items="${articles}" var="article">
 			<div class="articles-item" data-id="${article.memberId}">
+				<c:if test="${article.extra.file__common__attachment['3'] != null}">
 				<div class="article-img-box">
 					<img class="article-img"
 						src="/file/showImg?id=${article.extra.file__common__attachment['3'].id}&updateDate=${article.extra.file__common__attachment['3'].updateDate}"
 						alt="" />
 				</div>
+				</c:if>
+				<c:if test="${article.extra.file__common__attachment['1'] != null}">
+				<div class="article-img-box">
+				<video class="video" controls
+				src="/file/streamVideo?id=${article.extra.file__common__attachment['1'].id}&updateDate=${article.extra.file__common__attachment['1'].updateDate}"
+				class="article-video"></video>
+				</div>
+				</c:if>
 				<nav class="article-info-wrap">
 				<div class="article-info-box">
 				<a href="../member/showOther?id=${article.memberId}"
@@ -476,7 +525,7 @@ textarea[readonly], textarea[disabled] {
 				<ul class="setting-box">
 					<li><i class="fas fa-ellipsis-h"></i></li>
 					<ul class="setting-items">
-						<li><a href="#" class="red">사용자 차단</a></li>
+						<li><a href="#" class="red" onclick="blockWhoClickedUser(this);">사용자 차단</a></li>
 						<li><a href="../article/detail?id=${article.id}" class="msgSubmit">게시물로 이동하기</a></li>
 						<li><a href="#">공유하기</a></li>
 					</ul>
@@ -484,11 +533,12 @@ textarea[readonly], textarea[disabled] {
 				</div>
 				<div class="article-body-box">
 				<p class="article-body">${article.body}</p>
+				<p class="regDate">${article.regDateFormat}</p>
 				</div>
 				
 				<div class="article-sub">
-				<i class="fas fa-heart like"></i>	
-				<i class="far fa-comment-dots"></i>
+				<i class="fas fa-heart like"></i> 1개	
+				<i class="far fa-comment-dots"></i> 1개
 				</div>
 				</nav>
 			</div>

@@ -115,11 +115,20 @@
 		AND relId = #{memberId}
 	</select>
 
-	<update id="doUpdateLevel">
+	<update id="doUpdateLevel5">
 		UPDATE member
 		SET updateDate = NOW(),
 		level = 5
 		WHERE id
+		= #{memberId}
+	</update>
+
+	<update id="doUpdateLevel10">
+		UPDATE member
+		SET updateDate = NOW(),
+		level = 10
+		WHERE
+		id
 		= #{memberId}
 	</update>
 
@@ -175,6 +184,18 @@
 		AL.readStatus = 0
 	</select>
 
+	<select id="getForPrintNotFollow" resultMap="member">
+		SELECT M.*,
+		M.nickname AS extra__writer
+		FROM `member` AS M
+		INNER JOIN friend AS F
+		ON M.id = F.followerId
+		WHERE F.followerId != #{loginedMemberId}
+		AND M.delStatus = 0
+		ORDER BY M.id DESC
+		LIMIT 5;
+	</select>
+
 	<select id="getRepliesCountByMe" resultType="int">
 		SELECT COUNT(*),
 		A.body AS extra__body
@@ -199,27 +220,32 @@
 	<update id="updateActReadStatus">
 		UPDATE articleLike AS AL
 		INNER JOIN article AS A
-		ON AL.articleId = A.id
+		ON
+		AL.articleId = A.id
 		INNER JOIN member AS M
 		ON M.id = AL.memberId
-		SET AL.readStatus = 1
+		SET
+		AL.readStatus = 1
 		WHERE A.memberId = #{loginedMemberId}
 	</update>
 
 	<update id="updateActReadStatusInReply">
 		UPDATE articleReply AS AR
 		INNER JOIN article AS A
-		ON AR.articleId = A.id
+		ON
+		AR.articleId = A.id
 		INNER JOIN member AS M
 		ON M.id = AR.memberId
-		SET AR.readStatus = 1
+		SET
+		AR.readStatus = 1
 		WHERE A.memberId = #{loginedMemberId}
 	</update>
 
 	<insert id="doActionFollow">
 		INSERT INTO friend
 		SET regDate = NOW(),
-		followId = #{followId},
+		followId =
+		#{followId},
 		followerId = #{followerId},
 		readStatus = 0
 	</insert>
@@ -227,11 +253,13 @@
 	<delete id="doDeleteFollow">
 		DELETE FROM friend
 		WHERE followId = #{followId}
-		AND followerId = #{followerId}
+		AND
+		followerId = #{followerId}
 	</delete>
 
 	<select id="getMyFollowerCount" resultType="int">
-		SELECT COUNT(*) AS cnt
+		SELECT COUNT(*) AS
+		cnt
 		FROM friend
 		WHERE followId = #{loginedMemberId}
 		AND readStatus = 0
@@ -242,33 +270,41 @@
 		M.nickname AS extra__writer
 		FROM friend AS F
 		INNER JOIN `member` AS M
-		ON M.id = F.followerId
+		ON
+		M.id = F.followerId
 		WHERE F.followId = #{loginedMemberId}
-		AND F.readStatus = 0
+		AND
+		F.readStatus = 0
 	</select>
-	
+
 	<update id="updateActReadStatusInFollow">
-	UPDATE friend 
-	SET readStatus = 1
-	WHERE followId = #{loginedMemberId}
+		UPDATE friend
+		SET readStatus = 1
+		WHERE followId = #{loginedMemberId}
 	</update>
-	
+
 	<select id="getFollowCount" resultType="int">
-	SELECT COUNT(*) AS cnt
-	FROM friend WHERE followId = #{memberId}
+		SELECT COUNT(*) AS cnt
+		FROM friend WHERE followId = #{memberId}
 	</select>
-	
+
 	<select id="getFollowerCount" resultType="int">
-	SELECT COUNT(*) AS cnt
-	FROM friend WHERE followerId = #{memberId}
+		SELECT COUNT(*) AS cnt
+		FROM friend WHERE followerId = #{memberId}
+	</select>
+
+	<select id="getFollowingConfirm" resultType="int">
+		SELECT COUNT(*) AS cnt
+		FROM friend WHERE followerId = #{loginedMemberId}
+		AND followId = #{memberId}
 	</select>
 	
-	<select id="getFollowingConfirm" resultType="int">
-	SELECT COUNT(*) AS cnt
-	FROM friend WHERE followerId = #{loginedMemberId}
-	AND followId = #{memberId}
- 	</select>
-	
+	<select id="getFollowCross" resultType="int">
+		SELECT COUNT(*) AS cnt
+		FROM friend WHERE followerId = #{memberId}
+		AND followId = #{loginedMemberId} 
+	</select>
+
 	<resultMap type="Friend" id="friend">
 		<id property="id" column="id" />
 		<id property="regDate" column="regDate" />

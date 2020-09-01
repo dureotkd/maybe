@@ -41,6 +41,8 @@ public class AttrService {
 	public void remove(String relTypeCode, int relId, String typeCode, String type2Code) {
 		attrDao.remove(relTypeCode, relId, typeCode, type2Code);		
 	}
+
+	
 	
 	
 

@@ -55,6 +55,10 @@
 	margin: 60px auto;
 }
 
+.msg-notice {
+	display:none;
+}
+
 .msg-box {
 	display: flex;
 	height: 500px;

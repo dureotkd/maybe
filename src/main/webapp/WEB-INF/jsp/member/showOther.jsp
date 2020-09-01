@@ -147,6 +147,45 @@
 			reader.readAsDataURL(f);
 		});
 	}
+
+	function doDeleteFollow(el) {
+		if (confirm("팔로우를 취소하시겠습니까 ?") == true) {
+
+			$.post('../member/doDeleteFollow', {
+				followId : followId,
+				followerId : followerId
+			}, function(data) {
+				if (data.msg) {
+					alert(data.msg);
+				}
+
+			}, 'json');
+		} else {
+			return;
+		}
+	}
+
+	function usePriavetAccount() {
+		if (confirm("계정을 비공개모드로 전환하시겠습니까 ?") == true) {
+			$.post('../member/usePrivateMode', {
+				id : id
+			}, function(data) {
+			}, 'json');
+		} else {
+			return;
+		}
+	}
+
+	function disAblePrivateMode() {
+		if (confirm("계정을 비공개모드를 해제하시겠습니까? ?") == true) {
+			$.post('../member/disAblePrivateMode', {
+				id : id
+			}, function(data) {
+			}, 'json');
+		} else {
+			return;
+		}
+	}
 </script>
 
 
@@ -166,7 +205,6 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	width: 400px;
 }
 
 .other-follow-box {
@@ -208,6 +246,25 @@
 	opacity: 0;
 	cursor: pointer;
 }
+.video-x {
+	position:absolute;
+	top:10px;
+	padding:5px;
+	right:10px;
+	background:#fff;
+	border-radius:50%;
+}
+
+.video {
+	width:100%;
+	height:100%;
+	object-fit:cover;
+}
+
+.images-wrap:hover .video-x {
+	display:none;
+}
+
 
 .articles-box>ul {
 	display: flex;
@@ -239,7 +296,7 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	height: 500px;
+	height: 100%;
 }
 
 .other-nick {
@@ -636,6 +693,13 @@ textarea[readonly], textarea[disabled] {
 	cursor: pointer;
 }
 
+.empty-text {
+	padding: 100px;
+	font-family: 'Nanum Myeongjo', serif;
+	font-weight: normal;
+	line-height: 50px;
+}
+
 input[type="file"] {
 	position: absolute;
 	width: 1px;
@@ -667,6 +731,8 @@ input[type="file"] {
 	}
 	.articles-box {
 		box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 20px 0px;
+		padding-bottom: 20px;
+		box-sizing: border-box;
 	}
 	.images-wrap {
 		width: 90%;
@@ -693,6 +759,10 @@ input[type="file"] {
 	}
 	.other-show-box {
 		margin-bottom: 50px;
+	}
+	.other-text-box {
+		justify-content: space-between;
+		width: 500px;
 	}
 }
 
@@ -726,6 +796,7 @@ input[type="file"] {
 	}
 	.other-text-box {
 		margin-top: 20px;
+		padding: 20px;
 	}
 }
 </style>
@@ -759,23 +830,55 @@ input[type="file"] {
 
 				<c:if test="${loginedMemberId != member.id }">
 					<a href="#" class="msgSubmit">메시지 보내기</a>
-					<a href="#" class="submit-item" onclick="doFollow(this);">팔로우</a>
+					<c:if test="${following == 0 }">
+					<c:if test="${followCross == 0 }">
+						<a href="#" class="submit-item" onclick="doFollow(this);">팔로우</a>
+						</c:if>
+						<c:if test="${followCross == 1 }">
+						<a href="#" class="submit-item" onclick="doFollow(this);">맞팔로우</a>
+					</c:if>
+					</c:if>
+
+					<c:if test="${following == 1 }">
+						<a href="#" class="submit-item" onclick="doDeleteFollow(this);">언팔로우</a>
+					</c:if>
+					
+					
 				</c:if>
 
 				<c:if test="${loginedMemberId == member.id }">
 					<a href="./myInfoEdit" class="edit-btn">프로필 편집</a>
 				</c:if>
 
-				<ul class="setting-box">
+				<c:if test="${loginedMemberId != member.id }">
+					<ul class="setting-box">
 						<li><i class="fas fa-ellipsis-h"></i></li>
 						<ul class="setting-items">
 							<li><a href="#" class="red">사용자 차단</a></li>
 						</ul>
 					</ul>
+				</c:if>
+
+				<c:if test="${loginedMemberId == member.id }">
+					<ul class="setting-box">
+						<li><i class="fas fa-ellipsis-h"></i></li>
+						<ul class="setting-items">
+							<c:if test="${usePrivateAccount == false }">
+								<li><a href="#" class="red"
+									onclick="usePriavetAccount(this);">계정 비공개모드</a></li>
+							</c:if>
+							<c:if test="${usePrivateAccount == true }">
+								<li><a href="#" class="red"
+									onclick="disAblePrivateMode(this);">계정 비공개모드 해제</a></li>
+							</c:if>
+						</ul>
+					</ul>
+				</c:if>
 			</div>
 			<div class="other-followBox">
 				<span class="article-count">게시글 ${articleCount}</span> <span
-					class="">팔로워 ${followerCount}</span> <span> 팔로우 ${followCount}</span>
+					class="">팔로워 ${followCount}</span> <span> 팔로우
+					${followerCount}</span>
 			</div>
 			<div class="other-introduce">
 				<p>${member.introduce}</p>
@@ -826,8 +929,42 @@ input[type="file"] {
 
 <div class="articles-box">
 	<ul>
-		<c:forEach items="${articles}" var="article">
-			<!--  
+		<c:if test="${usePrivateAccount == false }">
+			<c:if test="${articleCount == 0 }">
+				<c:if test="${member.id != loginedMemberId }">
+					<div class="empty-text">
+						<h2>게시글은 멋지지만,</h2>
+						<h2>텅 비어있음.</h2>
+					</div>
+				</c:if>
+			</c:if>
+		</c:if>
+
+		<c:if test="${usePrivateAccount == true }">
+			<c:if test="${member.id != loginedMemberId}">
+				<div class="empty-text">
+					<h2>
+						비밀소녀 <i class="fas fa-lock"></i>
+					</h2>
+				</div>
+			</c:if>
+		</c:if>
+
+		<c:if test="${articleCount == 0 }">
+			<c:if test="${member.id == loginedMemberId }">
+				<li>
+					<div class="img-wrap2">
+						<a href="../article/write" class="empty-img"><i
+							class="fas fa-camera-retro"></i></a>
+						<p>소중한 순간을 공유해보세요.</p>
+						<span>${member.nickname}님의 첫 사진을 기다리고 있습니다.</span>
+					</div>
+				</li>
+			</c:if>
+		</c:if>
+		<c:if test="${usePrivateAccount == false}">
+			<c:forEach items="${articles}" var="article">
+				<!--  
 		<c:if test="${article.extra.file__common__attachment['1'] != null}">
 		<li>
 		<div class="img-wrap">
@@ -849,22 +986,39 @@ input[type="file"] {
 		</li>
 	</c:if>
 	 -->
-			<!--  이미지  	 -->
-			<c:if test="${article.extra.file__common__attachment['3'] != null}">
+				<!--  이미지  	 -->
+
 				<li data-id="${article.id}">
 					<div class="images-wrap">
-						<a href="../article/detail?id=${article.id}"> <img
-							class="other-articleImg"
-							src="/file/showImg?id=${article.extra.file__common__attachment['3'].id}&updateDate=${article.extra.file__common__attachment['3'].updateDate}"
-							alt="" /></a> <a onclick="callDoLike(this);"><i
+						<a href="../article/detail?id=${article.id}"><c:if
+								test="${article.extra.file__common__attachment['3'] != null}">
+								<img class="other-articleImg"
+									src="/file/showImg?id=${article.extra.file__common__attachment['3'].id}&updateDate=${article.extra.file__common__attachment['3'].updateDate}"
+									alt="" />
+							</c:if>
+							<c:if test="${article.extra.file__common__attachment['1'] != null}">
+								<video class="video"  controls src="/file/streamVideo?id=${article.extra.file__common__attachment['1'].id}&updateDate=${article.extra.file__common__attachment['1'].updateDate}"></video>
+							</c:if>
+							
+							<c:if test="${article.extra.file__common__attachment['1'] == null }">
+							<c:if test="${article.extra.file__common__attachment['3'] == null }">
+							<span>${article.body}</span>
+							</c:if>
+							</c:if>
+							 </a> <a onclick="callDoLike(this);"><i
 							class="fas fa-heart good-item "></i></a> <i
 							class="fas fa-comment-dots "></i> <img src="#" alt=""
 							usemap="#map" />
+							<c:if test="${article.extra.file__common__attachment['1'] != null}">
+							<div class="video-x"><i class="fas fa-video"></i></div>
+							</c:if>
+							
+							
 
 					</div>
 				</li>
-			</c:if>
-		</c:forEach>
+			</c:forEach>
+		</c:if>
 
 		<!-- 	<c:if test="${article.extra.file__common__attachment['3'] == null }">
 			<li>
