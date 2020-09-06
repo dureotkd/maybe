@@ -21,4 +21,6 @@ public interface ReplyDao {
 
 	Map<String, Object> updateReadStatus(int id);
 
+	void increaseReplyCount(@RequestParam Map<String, Object> param);
+
 }

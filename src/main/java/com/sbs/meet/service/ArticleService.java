@@ -233,6 +233,15 @@ public class ArticleService {
 		 articleDao.doDeleteReplyAjax(id);
 	}
 
+
+
+	public List<Article> getForPrintArticleByLikeKing(int memberId) {
+		return articleDao.getForPrintArticleByLikeKing(memberId);
+	}
+
+
+
+
 	
 	
 }

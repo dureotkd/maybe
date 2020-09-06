@@ -1,0 +1,13 @@
+
+ 회원한테 온 팔로우 regDate   < 회원이 쓴 마지막 게시글  regDate  <  회원한테 온 팔로우 regDate
+
+
+SELECT COUNT(*),
+A.body AS extra__body
+FROM friend AS F
+INNER JOIN article AS A
+ON A.id = F.id
+WHERE F.followId = 3
+AND (SELECT MAX(regDate) FROM article WHERE memberId = 2) < (SELECT F.regDate WHERE followId = 2)
+
+

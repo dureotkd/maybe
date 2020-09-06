@@ -11,9 +11,6 @@
 <!-- 모바일에서 사이트가 PC에서의 픽셀크기 기준으로 작동하게 하기(반응형 하려면 필요) -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-
-<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" rel="stylesheet">
-
 <!-- 폰트어썸 불러오기 -->
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
@@ -21,90 +18,21 @@
 <!--  구글 폰트 로고  -->
 <link href="https://fonts.googleapis.com/css2?family=Courgette&display=swap" rel="stylesheet">
 
-
 <!-- 제이쿼리 불러오기 -->
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		
 <!-- 구글 폰트 불러오기 -->
 <!-- rotobo(400/700/900), notosanskr(400/600/900) -->
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" rel="stylesheet">
 
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
-<script
-	src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
-
+<!--  이미지 슬라이더 라이브러리  -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
+<script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
 
 <script>
-	function loginNotify() {
-		// Let's check if the browser supports notifications
-		if (!("Notification" in window)) {
-			alert("This browser does not support desktop notification");
-		}
+	
 
-		// Let's check whether notification permissions have already been granted
-		else if (Notification.permission === "granted") {
-
-			var options = {
-				icon : 'https://img1.yna.co.kr/etc/inner/KR/2018/08/29/AKR20180829033700009_02_i_P2.jpg',
-				body : '로그인 되었습니다.',
-				data : 'Meet In here'
-			}
-
-			var n = new Notification('Meet In here', options);
-
-			console.log(n.data)
-
-		}
-
-		// Otherwise, we need to ask the user for permission
-		else if (Notification.permission !== "denied") {
-			Notification.requestPermission().then(function(permission) {
-				// If the user accepts, let's create a notification
-				if (permission === "granted") {
-					var notification = new Notification("Hi there!");
-				}
-			});
-		}
-	}
-
-	function logOutNotify() {
-		// Let's check if the browser supports notifications
-		if (!("Notification" in window)) {
-			alert("This browser does not support desktop notification");
-		}
-
-		// Let's check whether notification permissions have already been granted
-		else if (Notification.permission === "granted") {
-			// If it's okay let's create a notification
-			var notification = new Notification("로그아웃 되었습니다.");
-		}
-
-		// Otherwise, we need to ask the user for permission
-		else if (Notification.permission !== "denied") {
-			Notification.requestPermission().then(function(permission) {
-				// If the user accepts, let's create a notification
-				if (permission === "granted") {
-					var notification = new Notification("Hi there!");
-				}
-			});
-		}
-		// At last, if the user has denied notifications, and you 
-		// want to be respectful there is no need to bother them any more.
-	}
-
-	function articleWriteNotify() {
-		// Let's check if the browser supports notifications
-		if (!("Notification" in window)) {
-			alert("This browser does not support desktop notification");
-		}
-
-		// Let's check whether notification permissions have already been granted
-		else if (Notification.permission === "granted") {
-			// If it's okay let's create a notification
-			var notification = new Notification("게시글이 등록되었습니다.");
-		}
-	}
 
 	function btnToggleDropMenu__init() {
 		var $btnToggleDropMenu = $('.myinfo');
@@ -148,24 +76,6 @@ function ViewActivity__updateAct(newAct) {
 	$('.msg-notice').empty().append(newAct);
 }
 
-function btnToggleDot__init(){
-	var $btnToggleDot = $('.fa-ellipsis-h');
-
-	$btnToggleDot.click(function(){
-		if ($(this).hasClass('opnbox')){
-			$(this).removeClass('opnbox');
-			$('.setting-items').removeClass('opnbox');
-			} else {
-				$(this).addClass('opnbox');
-				$('.setting-items').addClass('opnbox');
-				}
-	});
-}
-
-$(function(){
-	btnToggleDot__init();
-});
-
 function readAct(){
 	$.post('../member/readAct',{
 	
@@ -174,6 +84,35 @@ function readAct(){
 	},
 	'json');
 }
+
+
+function btnToggleDot__init() {
+	var $btnToggleDot = $('.fa-ellipsis-h');
+
+	$btnToggleDot
+			.click(function() {
+				if ($(this).hasClass('opnbox')) {
+					
+				} else {
+					$('.opnbox').removeClass('opnbox');
+					$(this).addClass('opnbox');
+					var $settingItems = $(this).parent().siblings(
+							'.setting-items');
+					$settingItems.addClass('opnbox');
+
+					return false;
+				}
+			});
+
+	$('body').click(function() {
+		$('.opnbox').removeClass('opnbox');
+	});
+}
+
+$(function() {
+	btnToggleDot__init();
+});
+
 </script>
 
 <%="<script>"%>
@@ -634,9 +573,9 @@ h1 {
 	<div class="logo-box">
 	<a href="../home/main"><h1 class="logo">Meet In here</h1></a>
 	</div>
-	
+
 	<div class="search-box visible-on-sm-up">
-	<input type="search" class="search" placeholder="검색"/>
+	<input type="search" class="search" name="searchKeyword" placeholder="검색" value="${param.searchKeyword}"/>
 	</div>
 	
 	<div class="menu-box">
@@ -737,6 +676,7 @@ h1 {
 		  <ul class="dropdown-menu">
 		 <li><a href="../article/write">글쓰기</a></li>
 		 <li><a href="../member/showOther?id=${loginedMemberId}">프로필</a></li>
+		 <li><a href="../member/mystatistics?id=${loginedMemberId}">통계</a></li>
 		 <li><a href="../member/doLogout" onclick="logOutNotify()">로그아웃</a></li>
 		 </ul>
 		 </c:if>

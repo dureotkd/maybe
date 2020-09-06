@@ -58,7 +58,12 @@
 	readStatus = 1
 	WHERE id = #{id}
 	</update>
-
+	
+	<update id="increaseReplyCount">
+	UPDATE article
+	SET replyCnt = replyCnt + 1
+	WHERE id = #{articleId}
+	</update>
 
 	<resultMap type="ArticleReply" id="articleReply">
 		<id property="id" column="id" />

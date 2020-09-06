@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.WebUtils;
 
 import com.sbs.meet.dto.Article;
+import com.sbs.meet.dto.ArticleLike;
 import com.sbs.meet.dto.File;
 import com.sbs.meet.dto.Member;
 import com.sbs.meet.service.ArticleService;
@@ -427,21 +428,42 @@ public class MemberController {
 
 		return "common/redirect";
 	}
-
+	
+	@RequestMapping("/member/registory")
+	@ResponseBody
+	public Map<String, Object> showRegistory(String searchKeyword) {
+		
+		List<Member> members = memberService.getMemberBySearch(searchKeyword);
+		
+		Map<String, Object> rs = new HashMap<>();
+		
+		for ( Member member : members ) {
+			rs.put("pagination",false);
+			rs.put("results",member);
+			rs.put("total_count",members.size());
+		}
+		
+		return rs;
+	} 
+	
+	
 	// 다른 회원 화면 보여주기
 
 	@RequestMapping("/member/showOther")
 	public String showOther(@RequestParam Map<String, Object> param, Model model, int id, HttpServletRequest req) {
-
+		
 		Member member = memberService.getMemberById(id);
-
+		
 		int memberId = member.getId();
 		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
-
+		
+		
+		// 로그인 한 본인이 팔로우 중.
 		int following = memberService.getFollowingConfirm(memberId, loginedMemberId);
 		
+		// 상대방이 날 팔로우 한걸 확인
 		int followCross = memberService.getFollowCross(memberId,loginedMemberId);
-
+				
 		// 회원이 쓴 게시글 카운트
 		int articleCount = articleService.getArticleCount(memberId);
 		// 회원 팔로우 카운트
@@ -488,8 +510,17 @@ public class MemberController {
 	}
 
 	@RequestMapping("/member/doActionFollow")
-	public void doActionFollow(HttpServletRequest req, int followId, int followerId) {
-		memberService.doActionFollow(followId, followerId);
+	public Map<String, Object> doActionFollow(HttpServletRequest req, int followId, int followerId) {
+		
+		Map<String, Object> rs = new HashMap<>();
+	
+		Map<String,Object> followRs = memberService.doActionFollow(followId, followerId);
+		
+		
+		String resultCode = (String) followRs.get("resultCode");
+		rs.put("resultCode",resultCode);
+		
+		return rs;
 	}
 
 	@RequestMapping("/member/doDeleteFollow")
@@ -532,7 +563,59 @@ public class MemberController {
 		//memberService.blockWhoClickUsers(id,loginedMemberId);
 	}
 	
-	
+	@RequestMapping("/member/mystatistics")
+	public String showMystatistics(@RequestParam Map<String, Object> param, Model model, int id, HttpServletRequest req) {
+		
+			Member member = memberService.getMemberById(id);
+			
+			int memberId = member.getId();
+			int loginedMemberId = (int) req.getAttribute("loginedMemberId");
+			
+			// 이전 게시글로 인한 팔로우 증가 숫자
+			int beforeFollowCount = memberService.getBeforeFollowCount(memberId);
+			
+			// 총 댓글 받은 숫자
+			int totalReplyCount = memberService.getTotalReplyCount(memberId);
+			// 총 좋아요 숫자
+			int totalLikeCount = memberService.getTotalLikeCount(memberId);
+			//	하루 게시글
+			int articleCountBeforeDay = memberService.getArticleCountBeforeDay(memberId);
+			// 일주일 게시글
+			int articleCountBeforeWeek = memberService.getArticleCountBeforeWeek(memberId);
+			// 한달 게시글
+			int articleCountBeforeMonth = memberService.getArticleCountBeforeMonth(memberId);
+			
+			// 나의 최고로 많이받은 좋아요 숫자 + article
+			List<Article> articles = articleService.getForPrintArticleByLikeKing(memberId);
+			
+			for ( Article article : articles ) {
+				List<File> files = fileService.getFiles("article", article.getId(), "common", "attachment");
+				Map<String, File> filesMap = new HashMap<>();
+
+				for (File file : files) {
+					filesMap.put(file.getFileNo() + "", file);
+				}
+				Util.putExtraVal(article, "file__common__attachment", filesMap);
+			}
+			
+			for ( Article article : articles ) {
+				int articleId = article.getId();
+				ArticleLike articleLike = memberService.getArticleKingLikeCount(articleId);
+				
+				model.addAttribute("articleLike",articleLike);
+			}
+			
+			
+			model.addAttribute("articleCountBeforeMonth",articleCountBeforeMonth);
+			model.addAttribute("articleCountBeforeWeek",articleCountBeforeWeek);
+			model.addAttribute("articleCountBeforeDay",articleCountBeforeDay);
+			model.addAttribute("totalReplyCount",totalReplyCount);
+			model.addAttribute("totalLikeCount",totalLikeCount);
+			model.addAttribute("beforeFollowCount",beforeFollowCount);
+			model.addAttribute("member", member);
+			model.addAttribute("articles", articles);
+		return "member/mystatistics";
+	}
 	
 	
 	@RequestMapping("/member/changeProfile")

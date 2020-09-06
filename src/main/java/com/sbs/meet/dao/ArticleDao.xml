@@ -214,6 +214,23 @@
 		DELETE FROM articleReply
 		WHERE id = #{id}
 	</delete>
+	
+	<select id="getForPrintArticleByLikeKing" resultMap="article">
+		SELECT A.*,
+		A.body AS
+		extra__body
+		FROM article AS A
+		INNER JOIN
+		articleLike AS AL
+		ON A.id =
+		AL.articleId
+		WHERE A.displayStatus = 1
+		AND A.memberId = #{memberId}
+		ORDER BY AL.point DESC
+		LIMIT 1;
+	</select>
+	
+	
 
 	<resultMap type="ArticleLike" id="articleLike">
 		<id property="id" column="id" />

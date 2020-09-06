@@ -660,11 +660,8 @@ textarea[readonly], textarea[disabled] {
 		$.post('../member/doActionFollow', {
 			followId : followId,
 			followerId : followerId
-		}, function(data) {
-			if (data.msg) {
-				alert(data.msg);
-			}
 		}, 'json');
+		location.reload();
 	}
 
 	$(document).ready(function() {
@@ -783,12 +780,8 @@ textarea[readonly], textarea[disabled] {
 		$.post('../member/doDeleteFollow', {
 			followId : followId,
 			followerId : followerId
-		}, function(data) {
-			if (data.msg) {
-				alert(data.msg);
-			}
-
-			}, 'json');
+		},'json');
+		location.reload();
 		} else {
 			return;
 		}

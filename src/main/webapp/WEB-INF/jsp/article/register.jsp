@@ -177,6 +177,8 @@ textarea {
 <label for="">Video</label>
 <input type="file" accept="video/*"  name="file__article__0__common__attachment__1" />
 <input type="hidden" accept="video/*"  name="file__article__0__common__attachment__2" />
+
+
 <label for="">Image</label>
 <input type="file" accept="image/*" name="file__article__0__common__attachment__3">
 <input type="file" accept="image/*" name="file__article__0__common__attachment__4">

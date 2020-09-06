@@ -185,7 +185,7 @@
 								alt="" />
 							</a> <a onclick="callDoLike(this);"><i
 								class="fas fa-heart good-item "></i></a> <i
-								class="fas fa-comment-dots "></i> <img src="#" alt=""
+								class="fas fa-comment-dots ">${article.replyCnt}</i> <img src="#" alt=""
 								usemap="#map" />
 							<c:set var="articleReplyCount" value="0" />
 							<c:forEach var="articleReply" items="${articleReply}">

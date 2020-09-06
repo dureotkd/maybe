@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.sbs.meet.dao.MemberDao;
+import com.sbs.meet.dto.ArticleLike;
 import com.sbs.meet.dto.File;
 import com.sbs.meet.dto.Friend;
 import com.sbs.meet.dto.Member;
@@ -214,8 +215,17 @@ public class MemberService {
 		 memberDao.updateActReadStatusInReply(loginedMemberId);
 	}
 
-	public void doActionFollow(int followId, int followerId) {
+	public Map<String, Object> doActionFollow(int followId, int followerId) {
+		
+		
 		memberDao.doActionFollow(followId,followerId);
+		
+		Map<String, Object> rs = new HashMap<>();
+		
+		rs.put("resultCode","S-1");
+		rs.put("msg", "팔로우 성공");
+		
+		return rs;
 	}
 
 	public void doDeleteFollow(int followId, int followerId) {
@@ -279,5 +289,37 @@ public class MemberService {
 
 	public int getFollowCross(int memberId, int loginedMemberId) {
 		return memberDao.getFollowCross(memberId,loginedMemberId);
+	}
+
+	public List<Member> getMemberBySearch(String searchKeyword) {
+		return memberDao.getMemberBySearch(searchKeyword);
+	}
+
+	public int getBeforeFollowCount(int memberId) {
+		return memberDao.getBeforeFollowCount(memberId);
+	}
+
+	public int getTotalReplyCount(int memberId) {
+		return memberDao.getTotalReplyCount(memberId);
+	}
+
+	public int getTotalLikeCount(int memberId) {
+		return memberDao.getTotalLikeCount(memberId);
+	}
+
+	public ArticleLike getArticleKingLikeCount(int articleId) {
+		return memberDao.getArticleKingLikeCount(articleId);
+	}
+
+	public int getArticleCountBeforeDay(int memberId) {
+		return memberDao.getArticleCountBeforeDay(memberId);
+	}
+
+	public int getArticleCountBeforeWeek(int memberId) {
+		return memberDao.getArticleCountBeforeWeek(memberId);
+	}
+
+	public int getArticleCountBeforeMonth(int memberId) {
+		return memberDao.getArticleCountBeforeMonth(memberId);
 	}
 }

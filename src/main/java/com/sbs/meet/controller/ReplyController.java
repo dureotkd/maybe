@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.sbs.meet.dto.ArticleReply;
 import com.sbs.meet.dto.File;
 import com.sbs.meet.dto.ResultData;
+import com.sbs.meet.service.ArticleService;
 import com.sbs.meet.service.FileService;
 import com.sbs.meet.service.ReplyService;
 
@@ -33,6 +34,7 @@ public class ReplyController {
 		param.put("memberId", req.getAttribute("loginedMemberId"));
 
 		replyService.writeReply(param);
+		replyService.increaseReplyCount(param);
 	}
 
 	@RequestMapping("/reply/getForPrintRepliesAjax")
@@ -43,19 +45,19 @@ public class ReplyController {
 
 		for (ArticleReply articleReply : articleReplies) {
 			List<File> files = fileService.getFiles("member", articleReply.getMemberId(), "common", "attachment");
-			if ( files.size() > 0 ) {
+			if (files.size() > 0) {
 				File file = files.get(0);
-				
-				if ( articleReply.getExtra() == null ) {
+
+				if (articleReply.getExtra() == null) {
 					articleReply.setExtra(new HashMap<>());
 				}
-				
-				articleReply.getExtra().put("writerAvatarImgUrl", "/file/showImg?id=" + file.getId() + "&updateDate=" + file.getUpdateDate());				
-			}
-			else {
+
+				articleReply.getExtra().put("writerAvatarImgUrl",
+						"/file/showImg?id=" + file.getId() + "&updateDate=" + file.getUpdateDate());
+			} else {
 				articleReply.getExtra().put("writerAvatarImgUrl", "/resource/img/avatar_no.jpg");
 			}
-			
+
 			Map<String, File> filesMap = new HashMap<>();
 
 			for (File file : files) {

@@ -5,89 +5,81 @@
 <script>
 	var followId = parseInt('${article.memberId}');
 	var followerId = parseInt('${loginedMemberId}');
-
-	alert(data-id);
 </script>
 
 
 <script>
-$(document).ready(function() {
-	$(".direct").on('click', function() {
-		$(".popup").show();
-		$(".dim").show();
+	$(document).ready(function() {
+		$(".direct").on('click', function() {
+			$(".popup").show();
+			$(".dim").show();
+		});
+		$(".popup .close").on('click', function() {
+			$(this).parent().hide();
+			$(".dim").hide();
+		});
 	});
-	$(".popup .close").on('click', function() {
-		$(this).parent().hide();
-		$(".dim").hide();
-	});
-});
 
-function WriteMessage__submitForm(form) {
-	form.body.value = form.body.value.trim();
-	if (form.body.value.length == 0) {
-		alert('메세지를 입력해주세요.');
-		form.body.focus();
-		return;
-	}
-	$.post('../message/doWriteMessageAjax', {
-		fromId : form.fromId.value,
-		toId : form.toId.value,
-		body : form.body.value,
-		redirectUri : form.redirectUri.value
-	}, function(data) {
-		if (data.msg) {
-			alert(data.msg);
+	function WriteMessage__submitForm(form) {
+		form.body.value = form.body.value.trim();
+		if (form.body.value.length == 0) {
+			alert('메세지를 입력해주세요.');
+			form.body.focus();
+			return;
 		}
-		if (data.resultCode.substr(0, 2) == 'S-') {
-			location.reload(); // 임시
-		}
-	}, 'json');
-	form.body.value = '';
-}
-
-
-function doDeleteFollow(el) {
-	if ( confirm ("팔로우를 취소하시겠습니까 ?") == true ){
-	var $div = $(el).closest('.articles-item');
-	// 가장 가까운 li를 찾아라
-	var followId = parseInt($div.attr('data-id'));
-	// 정수화 -> data-id
-	
-	$.post('../member/doDeleteFollow', {
-		followId : followId,
-		followerId : followerId
-	}, function(data) {
-		if (data.msg) {
-			alert(data.msg);
-		}
-
+		$.post('../message/doWriteMessageAjax', {
+			fromId : form.fromId.value,
+			toId : form.toId.value,
+			body : form.body.value,
+			redirectUri : form.redirectUri.value
+		}, function(data) {
+			if (data.msg) {
+				alert(data.msg);
+			}
+			if (data.resultCode.substr(0, 2) == 'S-') {
+				location.reload(); // 임시
+			}
 		}, 'json');
-	} else {
-		return;
+		form.body.value = '';
 	}
-}
 
-$(document).ready(function() {
-	$('.slider').bxSlider({
-		mode : 'fade'
+	function doDeleteFollow(el) {
+		if (confirm("팔로우를 취소하시겠습니까 ?") == true) {
+			var $div = $(el).closest('.articles-item');
+			// 가장 가까운 li를 찾아라
+			var followId = parseInt($div.attr('data-id'));
+			// 정수화 -> data-id
+
+			$.post('../member/doDeleteFollow', {
+				followId : followId,
+				followerId : followerId
+			}, 'json');
+			location.reload();
+		} else {
+			return;
+		}
+	}
+
+	$(document).ready(function() {
+		$('.slider').bxSlider({
+			mode : 'fade'
+		});
 	});
-});
 
-function blockWhoClickedUser(){
-	if (confirm('사용자를 차단하시겠습니까? \n차단하면 팔로우가 끊기며 피드를 접할 수 없습니다.') == true ){
-	}
-	else {
-		return;
-	}
-}
+	function blockWhoClickedUser() {
+		if (confirm('사용자를 차단하시겠습니까? \n차단하면 팔로우가 끊기며 피드를 접할 수 없습니다.') == true) {
+		} else {
+			return;
+		}
 
+		location.reload();
+	}
 </script>
 
 <style>
 .fa-home {
-	color:#484848;
+	color: #484848;
 }
-
 
 .popup {
 	display: none;
@@ -332,163 +324,180 @@ textarea[readonly], textarea[disabled] {
 	font-size: 14px;
 	transition: all 0.5s;
 }
+
 .total-box {
 	max-width: 940px;
 	align-items: center;
 	justify-content: center;
 	margin: 100px auto;
 }
+
 .article-img {
-	width:300px;
+	width: 300px;
 }
 
 .articles-box {
-	width:100%;
+	width: 100%;
 }
+
 .article-img {
-	object-fit:cover;
-	width:100%;
-	height:100%;
+	object-fit: cover;
+	width: 100%;
+	height: 100%;
 }
+
 .article-writer-Avatar {
-	width:100%;
-	height:100%;
-	object-fit:cover;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
+
 .article-info-box {
-	display:flex;
-	justify-content:space-between;
-	align-items:center;
-	padding:15px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 15px;
 }
-.writer-wrap{
-	width:50px;
-	height:50px;
-	border-radius:50%;
-	overflow:hidden;
+
+.writer-wrap {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	overflow: hidden;
 }
+
 .article-info-wrap {
-	display:flex;
-	flex-direction:column;
+	display: flex;
+	flex-direction: column;
 }
-.writer-center > span {
-	margin-left:15px;
+
+.writer-center>span {
+	margin-left: 15px;
 }
+
 .writer-center {
-	display:flex;
-	align-items:center;
+	display: flex;
+	align-items: center;
 }
+
 .article-body-box {
-	padding:20px;
-	overflow:scroll;
-	height:200px;
+	padding: 20px;
+	overflow: scroll;
+	height: 200px;
 }
+
 .article-body-box::-webkit-scrollbar {
-	display:none;
+	display: none;
 }
 
 .article-body {
-	line-height:25px;
+	line-height: 25px;
 }
+
 .article-sub {
-	font-size:15px;
-	padding:20px;
+	font-size: 15px;
+	padding: 20px;
 }
+
 .like {
-	color:#d81b60;
+	color: #d81b60;
 }
+
 .gogo {
 	padding: 20px;
-    text-align: center;
-    border: 1px solid #d81b60;
-    width: 200px;
-    height: 20px;
-    display: flex;
-    /* text-align: center; */
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
-    color: #d81b60;
+	text-align: center;
+	border: 1px solid #d81b60;
+	width: 200px;
+	height: 20px;
+	display: flex;
+	/* text-align: center; */
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto;
+	color: #d81b60;
 }
+
 .direct {
-	width:30px;
-	border-radius:50%;
-	cursor:pointer;
+	width: 30px;
+	border-radius: 50%;
+	cursor: pointer;
 }
+
 .following {
-	color:#0d47a1;
+	color: #0d47a1;
 }
 
 .regDate {
-	color:#bdbdbd;
-	margin-top:10px;
-	font-size:12px;
+	color: #bdbdbd;
+	margin-top: 10px;
+	font-size: 12px;
 }
 
 .recomend-con {
-	display:flex;
-	flex-direction:column;
-	box-shadow:rgba(0, 0, 0, 0.1) 0px 1px 20px 0px;
+	display: flex;
+	flex-direction: column;
+	box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 20px 0px;
 	box-sizing: border-box;
-	width:50%;
-	margin-bottom:50px;
-	position:relative;
+	width: 50%;
+	margin-bottom: 50px;
+	position: relative;
 }
 
 .recomend-text {
-	display:flex;
-	justify-content:space-between;
+	display: flex;
+	justify-content: space-between;
 }
-.recomend-text > p {
-	padding:15px;
+
+.recomend-text>p {
+	padding: 15px;
 }
-.recomend-text > a {
-	padding:15px;
+
+.recomend-text>a {
+	padding: 15px;
 }
-	.video {
-	width:483px;
-	height:500px;
-	outline:none;
+
+.video {
+	width: 483px;
+	height: 500px;
+	outline: none;
 }
-@media ( max-width:800px ){
+
+@media ( max-width :800px ) {
 	.articles-item {
-		display:flex;
-		flex-direction:column;
-		align-items:center;
-		width:100%;
-		margin-bottom:50px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		width: 100%;
+		margin-bottom: 50px;
 	}
 	.article-info-wrap {
-		width:100%;
-		height:300px;
+		width: 100%;
+		height: 300px;
 	}
 	.article-img-box {
-	height:500px;
-	width:500px;
-	overflow:hidden;
+		height: 500px;
+		width: 500px;
+		overflow: hidden;
 	}
 }
 
-@media ( min-width:801px ){
+@media ( min-width :801px ) {
 	.articles-item {
-	display:flex;
-	box-shadow:rgba(0, 0, 0, 0.1) 0px 1px 20px 0px;
-	align-items: center;
-	width: 100%;
-	margin-bottom:50px;
+		display: flex;
+		box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 20px 0px;
+		align-items: center;
+		width: 100%;
+		margin-bottom: 50px;
 	}
-	
 	.article-info-wrap {
-		width:50%;
-		height:500px;
+		width: 50%;
+		height: 500px;
 	}
-	
 	.article-img-box {
-	width:500px;
-	height:500px;
-	overflow:hidden;
+		width: 500px;
+		height: 500px;
+		overflow: hidden;
 	}
-	
 }
 </style>
 
@@ -497,49 +506,51 @@ textarea[readonly], textarea[disabled] {
 		<c:forEach items="${articles}" var="article">
 			<div class="articles-item" data-id="${article.memberId}">
 				<c:if test="${article.extra.file__common__attachment['3'] != null}">
-				<div class="article-img-box">
-					<img class="article-img"
-						src="/file/showImg?id=${article.extra.file__common__attachment['3'].id}&updateDate=${article.extra.file__common__attachment['3'].updateDate}"
-						alt="" />
-				</div>
+					<div class="article-img-box">
+						<img class="article-img"
+							src="/file/showImg?id=${article.extra.file__common__attachment['3'].id}&updateDate=${article.extra.file__common__attachment['3'].updateDate}"
+							alt="" />
+					</div>
 				</c:if>
 				<c:if test="${article.extra.file__common__attachment['1'] != null}">
-				<div class="article-img-box">
-				<video class="video" controls
-				src="/file/streamVideo?id=${article.extra.file__common__attachment['1'].id}&updateDate=${article.extra.file__common__attachment['1'].updateDate}"
-				class="article-video"></video>
-				</div>
+					<div class="article-img-box">
+						<video class="video" controls
+							src="/file/streamVideo?id=${article.extra.file__common__attachment['1'].id}&updateDate=${article.extra.file__common__attachment['1'].updateDate}"
+							class="article-video"></video>
+					</div>
 				</c:if>
 				<nav class="article-info-wrap">
-				<div class="article-info-box">
-				<a href="../member/showOther?id=${article.memberId}"
-					class="writer-center">
-					<div class="writer-wrap">
-						<img class="article-writer-Avatar"
-							src="${article.extra.writerAvatarImgUrl}">
-							</div>
-						<span>${article.extra.writer}</span>
-				</a>
-				<a href="#" onclick="doDeleteFollow(this);" class="following" >언팔로우</a>
-				<img class="direct" src="https://i.pinimg.com/originals/7b/66/ac/7b66ac2787335ebcb565960d482f0846.png" alt="" />
-				<ul class="setting-box">
-					<li><i class="fas fa-ellipsis-h"></i></li>
-					<ul class="setting-items">
-						<li><a href="#" class="red" onclick="blockWhoClickedUser(this);">사용자 차단</a></li>
-						<li><a href="../article/detail?id=${article.id}" class="msgSubmit">게시물로 이동하기</a></li>
-						<li><a href="#">공유하기</a></li>
-					</ul>
-				</ul>
-				</div>
-				<div class="article-body-box">
-				<p class="article-body">${article.body}</p>
-				<p class="regDate">${article.regDateFormat}</p>
-				</div>
-				
-				<div class="article-sub">
-				<i class="fas fa-heart like"></i> 1개	
-				<i class="far fa-comment-dots"></i> 1개
-				</div>
+					<div class="article-info-box">
+						<a href="../member/showOther?id=${article.memberId}"
+							class="writer-center">
+							<div class="writer-wrap">
+								<img class="article-writer-Avatar"
+									src="${article.extra.writerAvatarImgUrl}">
+							</div> <span>${article.extra.writer}</span>
+						</a> <a href="#" onclick="doDeleteFollow(this);" class="following">언팔로우</a>
+						<img class="direct"
+							src="https://i.pinimg.com/originals/7b/66/ac/7b66ac2787335ebcb565960d482f0846.png"
+							alt="" />
+						<ul class="setting-box">
+							<li><i class="fas fa-ellipsis-h" data-id="${article.id}"></i></li>
+							<ul class="setting-items">
+								<li><a href="#" class="red"
+									onclick="blockWhoClickedUser(this);">사용자 차단</a></li>
+								<li><a href="../article/detail?id=${article.id}"
+									class="msgSubmit">게시물로 이동하기</a></li>
+								<li><a href="#">공유하기</a></li>
+							</ul>
+						</ul>
+					</div>
+					<div class="article-body-box">
+						<p class="article-body">${article.body}</p>
+						<p class="regDate">${article.regDateFormat}</p>
+					</div>
+
+					<div class="article-sub">
+						<i class="fas fa-heart like"></i> 1 개 ,
+						<i class="far fa-comment-dots"></i> ${article.replyCnt} 개
+					</div>
 				</nav>
 			</div>
 		</c:forEach>

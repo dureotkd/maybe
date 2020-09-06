@@ -16,6 +16,7 @@ public class Article {
 	private int id;
 	private int memberId;
 	private int displayStatus;
+	private int replyCnt;
 	private String regDate;
 	private String tag;
 	private String updateDate;

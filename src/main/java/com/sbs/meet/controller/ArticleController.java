@@ -39,7 +39,14 @@ public class ArticleController {
 	//  write.jsp 연결
 	
 	@RequestMapping("article/write")
-	public String showWriteForm() {
+	public String showWriteForm(Model model,HttpServletRequest request) {
+		
+		
+		int memberId = (int) request.getAttribute("loginedMemberId");
+		
+		int articleIdCount = articleService.getArticleCount(memberId);
+		
+		model.addAttribute("articleIdCount",articleIdCount);
 		return "article/write";
 	}
 	

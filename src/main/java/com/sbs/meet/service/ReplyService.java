@@ -37,6 +37,8 @@ public class ReplyService {
 		return replyDao.updateReadStatus(id);
 	}
 
-	
+	public void increaseReplyCount(Map<String, Object> param) {
+		replyDao.increaseReplyCount(param);
+	}	
 	
 }	

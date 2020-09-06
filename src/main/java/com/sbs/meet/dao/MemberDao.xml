@@ -136,7 +136,11 @@
 		SELECT * FROM member
 		ORDER BY
 		id DESC
-		LIMIT 3;
+	</select>
+
+	<select id="getMemberBySearch" resultMap="member">
+		SELECT * FROM member
+		WHERE nickname LIKE CONCAT('%',#{searchKeyword},'%')
 	</select>
 
 	<select id="getMsgNoticeCount" resultType="int">
@@ -189,9 +193,11 @@
 		M.nickname AS extra__writer
 		FROM `member` AS M
 		INNER JOIN friend AS F
-		ON M.id = F.followerId
+		ON
+		M.id = F.followerId
 		WHERE F.followerId != #{loginedMemberId}
-		AND M.delStatus = 0
+		AND
+		M.delStatus = 0
 		ORDER BY M.id DESC
 		LIMIT 5;
 	</select>
@@ -280,7 +286,8 @@
 	<update id="updateActReadStatusInFollow">
 		UPDATE friend
 		SET readStatus = 1
-		WHERE followId = #{loginedMemberId}
+		WHERE followId =
+		#{loginedMemberId}
 	</update>
 
 	<select id="getFollowCount" resultType="int">
@@ -294,16 +301,95 @@
 	</select>
 
 	<select id="getFollowingConfirm" resultType="int">
-		SELECT COUNT(*) AS cnt
+		SELECT COUNT(*) AS
+		cnt
 		FROM friend WHERE followerId = #{loginedMemberId}
-		AND followId = #{memberId}
+		AND followId =
+		#{memberId}
 	</select>
-	
+
 	<select id="getFollowCross" resultType="int">
 		SELECT COUNT(*) AS cnt
 		FROM friend WHERE followerId = #{memberId}
-		AND followId = #{loginedMemberId} 
+		AND followId =
+		#{loginedMemberId}
 	</select>
+
+	<select id="getBeforeFollowCount" resultType="int">
+	<![CDATA[
+	SELECT COUNT(*),
+	A.body AS extra__body
+	FROM friend AS F
+	INNER JOIN article AS A
+	ON A.id = F.id
+	WHERE F.followId = #{memberId}
+	AND  
+	(SELECT MAX(regDate) FROM article WHERE memberId = #{memberId}) < 
+	(SELECT F.regDate WHERE followId = #{memberId})
+	]]>
+	</select>
+
+	<select id="getTotalReplyCount" resultType="int">
+		SELECT COUNT(*),
+		A.body AS extra__body
+		FROM articleReply AS AR
+		INNER JOIN article AS A
+		ON
+		A.id = AR.id
+		WHERE A.displayStatus = 1
+		AND AR.displayStatus = 1
+		AND
+		A.memberId = #{memberId}
+	</select>
+
+	<select id="getTotalLikeCount" resultType="int">
+		SELECT SUM(POINT),
+		IFNULL(SUM(AL.point), 0) AS extra__point
+		FROM articleLike AS AL
+		INNER
+		JOIN article AS A
+		ON A.id = AL.id
+		WHERE A.displayStatus = 1
+		AND
+		A.memberId = #{memberId}
+	</select>
+
+	<select id="getArticleKingLikeCount" resultType="ArticleLike">
+		SELECT * FROM
+		articleLike
+		WHERE articleId = #{articleId}
+	</select>
+
+	<select id="getArticleCountBeforeDay" resultType="int">
+		<![CDATA[
+		SELECT COUNT(*)
+		AS cnt
+		FROM article
+		WHERE memberId = #{memberId}
+		AND DATE_SUB(NOW(), INTERVAL 1 DAY) <= regDate
+		]]>
+	</select>
+	
+	<select id="getArticleCountBeforeWeek" resultType="int">
+		<![CDATA[
+		SELECT COUNT(*)
+		AS cnt
+		FROM article
+		WHERE memberId = #{memberId}
+		AND DATE_SUB(NOW(), INTERVAL 7 DAY) <= regDate
+		]]>
+	</select>
+	
+	<select id="getArticleCountBeforeMonth" resultType="int">
+		<![CDATA[
+		SELECT COUNT(*)
+		AS cnt
+		FROM article
+		WHERE memberId = #{memberId}
+		AND DATE_SUB(NOW(), INTERVAL 1 MONTH) <= regDate
+		]]>
+	</select>
+
 
 	<resultMap type="Friend" id="friend">
 		<id property="id" column="id" />

@@ -38,7 +38,9 @@ public class HomeController {
 		
 		// 팔로우한 애들 게시글
 		List<Article> articles = articleService.getForPrintArticlesInFollow(loginedMemberId);
-		
+		for ( Article article : articles ) {
+			System.out.println("시발아 : " + article.getId());
+		}
 		// 추천 멤버들 ( follow가 된 애들 말고 다른애들 전부 )
 		
 		List<Member> members = memberService.getForPrintNotFollow(loginedMemberId);
@@ -108,6 +110,12 @@ public class HomeController {
 		model.addAttribute("members",members);
 		model.addAttribute("articles",articles);
 		return "home/main";
+	}
+	
+	@RequestMapping("home/test")
+	public String showTest(String nickname) {
+			
+		return "home/test";
 	}
 	
 	

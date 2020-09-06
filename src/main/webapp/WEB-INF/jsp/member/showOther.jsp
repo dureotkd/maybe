@@ -6,6 +6,7 @@
 	var id = parseInt('${loginedMemberId}');
 	var followId = parseInt('${member.id}');
 	var followerId = parseInt('${loginedMemberId}');
+	var nickname = parseInt('${member.nickname}');
 </script>
 
 <script>
@@ -13,11 +14,8 @@
 		$.post('../member/doActionFollow', {
 			followId : followId,
 			followerId : followerId
-		}, function(data) {
-			if (data.msg) {
-				alert(data.msg);
-			}
 		}, 'json');
+		location.reload();
 	}
 	var ProfileChangeForm__submitDone = false;
 
@@ -163,6 +161,8 @@
 		} else {
 			return;
 		}
+
+		location.reload();
 	}
 
 	function usePriavetAccount() {
@@ -174,10 +174,11 @@
 		} else {
 			return;
 		}
+		location.reload();
 	}
 
 	function disAblePrivateMode() {
-		if (confirm("계정을 비공개모드를 해제하시겠습니까? ?") == true) {
+		if (confirm("계정을 비공개모드를 해제하시겠습니까 ?") == true) {
 			$.post('../member/disAblePrivateMode', {
 				id : id
 			}, function(data) {
@@ -185,6 +186,7 @@
 		} else {
 			return;
 		}
+		location.reload();
 	}
 </script>
 
@@ -246,25 +248,25 @@
 	opacity: 0;
 	cursor: pointer;
 }
+
 .video-x {
-	position:absolute;
-	top:10px;
-	padding:5px;
-	right:10px;
-	background:#fff;
-	border-radius:50%;
+	position: absolute;
+	top: 10px;
+	padding: 5px;
+	right: 10px;
+	background: #fff;
+	border-radius: 50%;
 }
 
 .video {
-	width:100%;
-	height:100%;
-	object-fit:cover;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 
 .images-wrap:hover .video-x {
-	display:none;
+	display: none;
 }
-
 
 .articles-box>ul {
 	display: flex;
@@ -688,6 +690,9 @@ textarea[readonly], textarea[disabled] {
 	border-radius: 50%;
 	overflow: hidden;
 }
+.ef5350 {
+	color:#ef5350;
+}
 
 #img {
 	cursor: pointer;
@@ -718,6 +723,15 @@ input[type="file"] {
 
 .images-wrap:hover .other-articleImg {
 	opacity: 0.8;
+}
+
+.secret {
+	text-align:center;
+}
+
+.secret > p {
+	font-size:17px;
+	color:#bdbdbd;
 }
 
 @media ( min-width :800px ) {
@@ -817,7 +831,13 @@ input[type="file"] {
 		</div>
 		<div class="other-text-box">
 			<div class="other-info-box">
-				<div class="other-nick">${member.nickname}</div>
+				
+				<div class="other-nick">
+				<c:if test="${ usePrivateAccount == true }">
+				<i class="fas fa-lock ef5350"></i>
+				</c:if>
+				${member.nickname} 
+				</div>
 				<c:if test="${member.level == 10 }">
 					<i class="fas fa-crown level10"></i>
 				</c:if>
@@ -831,19 +851,19 @@ input[type="file"] {
 				<c:if test="${loginedMemberId != member.id }">
 					<a href="#" class="msgSubmit">메시지 보내기</a>
 					<c:if test="${following == 0 }">
-					<c:if test="${followCross == 0 }">
-						<a href="#" class="submit-item" onclick="doFollow(this);">팔로우</a>
+						<c:if test="${followCross == 0 }">
+							<a href="#" class="submit-item" onclick="doFollow(this);">팔로우</a>
 						</c:if>
 						<c:if test="${followCross == 1 }">
-						<a href="#" class="submit-item" onclick="doFollow(this);">맞팔로우</a>
-					</c:if>
+							<a href="#" class="submit-item" onclick="doFollow(this);">맞팔로우</a>
+						</c:if>
 					</c:if>
 
 					<c:if test="${following == 1 }">
 						<a href="#" class="submit-item" onclick="doDeleteFollow(this);">언팔로우</a>
 					</c:if>
-					
-					
+
+
 				</c:if>
 
 				<c:if test="${loginedMemberId == member.id }">
@@ -940,15 +960,54 @@ input[type="file"] {
 			</c:if>
 		</c:if>
 
-		<c:if test="${usePrivateAccount == true }">
-			<c:if test="${member.id != loginedMemberId}">
-				<div class="empty-text">
-					<h2>
-						비밀소녀 <i class="fas fa-lock"></i>
-					</h2>
-				</div>
+		<c:if test="${usePrivateAccount == true && articlesCount != 0 }">
+			<c:if test="${following + followCross == 1 }">
+					<c:if test="${member.id != loginedMemberId}">
+						<div class="empty-text">
+							<h2 class="secret">
+								비밀소녀 <i class="fas fa-lock"></i>
+								<p>게시글을 볼려면 서로 팔로우 상태여야 해요.</p>
+							</h2>
+						</div>
+					</c:if>
+				</c:if>
 			</c:if>
-		</c:if>
+		
+			<c:if test="${following + followCross == 2 && member.id != loginedMemberId && usePrivateAccount == true}">
+					<c:if test="${member.id != loginedMemberId}">
+						<c:forEach items="${articles}" var="article">
+						<li data-id="${article.id}">
+					<div class="images-wrap">
+						<a href="../article/detail?id=${article.id}"><c:if
+								test="${article.extra.file__common__attachment['3'] != null}">
+								<img class="other-articleImg"
+									src="/file/showImg?id=${article.extra.file__common__attachment['3'].id}&updateDate=${article.extra.file__common__attachment['3'].updateDate}"
+									alt="" />
+							</c:if> <c:if
+								test="${article.extra.file__common__attachment['1'] != null}">
+								<video class="video" controls
+									src="/file/streamVideo?id=${article.extra.file__common__attachment['1'].id}&updateDate=${article.extra.file__common__attachment['1'].updateDate}"></video>
+							</c:if> <c:if
+								test="${article.extra.file__common__attachment['1'] == null }">
+								<c:if
+									test="${article.extra.file__common__attachment['3'] == null }">
+									<span>${article.body}</span>
+								</c:if>
+							</c:if> </a> <a onclick="callDoLike(this);"><i
+							class="fas fa-heart good-item "></i></a> <i
+							class="fas fa-comment-dots "></i> <img src="#" alt=""
+							usemap="#map" />
+						<c:if
+							test="${article.extra.file__common__attachment['1'] != null}">
+							<div class="video-x">
+								<i class="fas fa-video"></i>
+							</div>
+						</c:if>
+					</div>
+				</li>
+						</c:forEach>
+					</c:if>
+			</c:if>
 
 		<c:if test="${articleCount == 0 }">
 			<c:if test="${member.id == loginedMemberId }">
@@ -962,74 +1021,78 @@ input[type="file"] {
 				</li>
 			</c:if>
 		</c:if>
-		<c:if test="${usePrivateAccount == false}">
-			<c:forEach items="${articles}" var="article">
-				<!--  
-		<c:if test="${article.extra.file__common__attachment['1'] != null}">
-		<li>
-		<div class="img-wrap">
-		<video controls class="other-articleVideo"
-			src="/file/streamVideo?id=${article.extra.file__common__attachment['1'].id}&updateDate=${article.extra.file__common__attachment['1'].updateDate}">video
-			not supported
-		</video>
-		</div>
-		</li>
-	</c:if>
-	<c:if test="${article.extra.file__common__attachment['2'] != null}">
-		<li>
-		<div class="img-wrap">
-		<video controls class="other-articleVideo"
-			src="/file/streamVideo?id=${article.extra.file__common__attachment['2'].id}&updateDate=${article.extra.file__common__attachment['2'].updateDate}">video
-			not supported
-		</video>
-		</div>
-		</li>
-	</c:if>
-	 -->
-				<!--  이미지  	 -->
+		
+		
 
-				<li data-id="${article.id}">
+			<c:if test="${ usePrivateAccount == false || member.id == loginedMemberId }">
+		<c:forEach items="${articles}" var="article">
+						<li data-id="${article.id}">
 					<div class="images-wrap">
 						<a href="../article/detail?id=${article.id}"><c:if
 								test="${article.extra.file__common__attachment['3'] != null}">
 								<img class="other-articleImg"
 									src="/file/showImg?id=${article.extra.file__common__attachment['3'].id}&updateDate=${article.extra.file__common__attachment['3'].updateDate}"
 									alt="" />
-							</c:if>
-							<c:if test="${article.extra.file__common__attachment['1'] != null}">
-								<video class="video"  controls src="/file/streamVideo?id=${article.extra.file__common__attachment['1'].id}&updateDate=${article.extra.file__common__attachment['1'].updateDate}"></video>
-							</c:if>
-							
-							<c:if test="${article.extra.file__common__attachment['1'] == null }">
-							<c:if test="${article.extra.file__common__attachment['3'] == null }">
-							<span>${article.body}</span>
-							</c:if>
-							</c:if>
-							 </a> <a onclick="callDoLike(this);"><i
+							</c:if> <c:if
+								test="${article.extra.file__common__attachment['1'] != null}">
+								<video class="video" controls
+									src="/file/streamVideo?id=${article.extra.file__common__attachment['1'].id}&updateDate=${article.extra.file__common__attachment['1'].updateDate}"></video>
+							</c:if> <c:if
+								test="${article.extra.file__common__attachment['1'] == null }">
+								<c:if
+									test="${article.extra.file__common__attachment['3'] == null }">
+									<span>${article.body}</span>
+								</c:if>
+							</c:if> </a> <a onclick="callDoLike(this);"><i
 							class="fas fa-heart good-item "></i></a> <i
 							class="fas fa-comment-dots "></i> <img src="#" alt=""
 							usemap="#map" />
-							<c:if test="${article.extra.file__common__attachment['1'] != null}">
-							<div class="video-x"><i class="fas fa-video"></i></div>
-							</c:if>
-							
-							
-
+						<c:if
+							test="${article.extra.file__common__attachment['1'] != null}">
+							<div class="video-x">
+								<i class="fas fa-video"></i>
+							</div>
+						</c:if>
 					</div>
 				</li>
-			</c:forEach>
-		</c:if>
-
-		<!-- 	<c:if test="${article.extra.file__common__attachment['3'] == null }">
-			<li>
-				<div class="img-wrap2">
-				<a href="../article/register" class="empty-img"><i class="fas fa-camera-retro"></i></a>
-				<p>소중한 순간을 공유해보세요.</p>
-				<span>${member.nickname}님의 첫 사진을 기다리고 있습니다.</span>
-				</div>
+						</c:forEach>
+						</c:if>
+	
+		<!--  맞팔 상태 + 비공계 true -->
+					<c:if test="${usePriavteAccount == true && member.id != loginedMemberId && followCross + following = 2 }">
+						<c:forEach items="${articles}" var="article">
+						<li data-id="${article.id}">
+					<div class="images-wrap">
+						<a href="../article/detail?id=${article.id}"><c:if
+								test="${article.extra.file__common__attachment['3'] != null}">
+								<img class="other-articleImg"
+									src="/file/showImg?id=${article.extra.file__common__attachment['3'].id}&updateDate=${article.extra.file__common__attachment['3'].updateDate}"
+									alt="" />
+							</c:if> <c:if
+								test="${article.extra.file__common__attachment['1'] != null}">
+								<video class="video" controls
+									src="/file/streamVideo?id=${article.extra.file__common__attachment['1'].id}&updateDate=${article.extra.file__common__attachment['1'].updateDate}"></video>
+							</c:if> <c:if
+								test="${article.extra.file__common__attachment['1'] == null }">
+								<c:if
+									test="${article.extra.file__common__attachment['3'] == null }">
+									<span>${article.body}</span>
+								</c:if>
+							</c:if> </a> <a onclick="callDoLike(this);"><i
+							class="fas fa-heart good-item "></i></a> <i
+							class="fas fa-comment-dots "></i> <img src="#" alt=""
+							usemap="#map" />
+						<c:if
+							test="${article.extra.file__common__attachment['1'] != null}">
+							<div class="video-x">
+								<i class="fas fa-video"></i>
+							</div>
+						</c:if>
+					</div>
 				</li>
-			</c:if>
-			 -->
+						</c:forEach>
+					
+					</c:if>
 	</ul>
 </div>
 
