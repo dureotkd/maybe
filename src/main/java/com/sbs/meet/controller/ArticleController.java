@@ -187,6 +187,10 @@ public class ArticleController {
 		articleService.doDeleteReplyAjax(id);
 	}
 	
+	@RequestMapping("article/doDeleteArticleAjax")
+	public void doDeleteArticleAjax(int id){
+		articleService.doDeleteArticleAjax(id);
+	}
 	
 	
 	// text 만 할지 안할지 고민중.

@@ -108,6 +108,9 @@
 .articlestatBox {
 	background:#ede7f6;
 }
+.greenC {
+	background:#8bc34a;
+}
 </style>
 
 <div class="total-wrap">
@@ -128,7 +131,7 @@
 	
 	<ul class="replyBox statBox">
 		<li class="border50 greenB"><i class="fas fa-comment-dots icons"></i></li>
-		<li class="font04">${beforeFollowCount}</li>
+		<li class="font04">${totalReplyCount}</li>
 		<li class="silver">전체 댓글 +</li>
 	</ul>
 	
@@ -140,20 +143,20 @@
 	
 	
 	<ul class="articlestatBox statBox">
-		<li class="border50"><i class="fas fa-sticky-note icons"></i><i class="fas fa-plus icons2"></i></li>
+		<li class="border50 greenC"><i class="fas fa-sticky-note icons"></i><i class="fas fa-plus icons2"></i></li>
 		<li class="font04">${articleCountBeforeDay}</li>
 		<li class="silver">오늘 게시글 +</li>
 	</ul>
 	
 	<ul class="articlestatBox statBox">
-		<li class="border50"><i class="fas fa-sticky-note icons"></i><i class="fas fa-plus icons2"></i></li>
+		<li class="border50 greenC"><i class="fas fa-sticky-note icons"></i><i class="fas fa-plus icons2"></i></li>
 		<li class="font04">${articleCountBeforeWeek}</li>
 		<li class="silver">이번주 게시글 +</li>
 	</ul>
 	
 	<ul class="articlestatBox statBox">
-		<li class="border50"><i class="fas fa-sticky-note icons"></i><i class="fas fa-plus icons2"></i></li>
-		<li class="font04">${articleCountBeforeMonth}</li>
+		<li class="border50 greenC"><i class="fas fa-sticky-note icons"></i><i class="fas fa-plus icons2"></i></li>
+		<li class="font04 ">${articleCountBeforeMonth}</li>
 		<li class="silver">이번달 게시글 +</li>
 	</ul>	
 	

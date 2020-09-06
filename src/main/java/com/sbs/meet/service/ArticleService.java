@@ -241,6 +241,12 @@ public class ArticleService {
 
 
 
+	public void doDeleteArticleAjax(int id) {
+		articleDao.doDeleteArticleAjax(id);
+	}
+
+
+
 
 	
 	

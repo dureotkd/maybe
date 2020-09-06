@@ -801,6 +801,20 @@ textarea[readonly], textarea[disabled] {
 		}
 	}
 
+	function Article__Delete() {
+		if ( confirm ("게시글을 삭제하시겠습니까 ?") == true ){
+			var id = parseInt('${article.id}');
+		$.post('../article/doDeleteArticleAjax', {
+			id : id
+			}, 'json');
+		alert('삭제가 완료되었습니다.')
+		// reload 후 -> 전페이지로 이동
+		window.location=document.referrer;	
+			} else {
+				return;
+			}
+		}
+
 </script>
 <div class="total-wrap">
 	<div class="detail-box" data-id="${article.memberId}">
@@ -917,7 +931,7 @@ textarea[readonly], textarea[disabled] {
 						</c:if>
 						<c:if test="${loginedMemberId == article.memberId }">
 						<ul class="setting-items">
-							<li><a href="#" class="red">게시글 삭제</a></li>
+							<li><a href="#" class="red" onclick="Article__Delete(this);" >게시글 삭제</a></li>
 							<li><a href="#" class="msgSubmit">게시글 수정</a></li>
 						</ul>
 						</c:if>

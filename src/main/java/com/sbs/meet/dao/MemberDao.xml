@@ -335,7 +335,7 @@
 		FROM articleReply AS AR
 		INNER JOIN article AS A
 		ON
-		A.id = AR.id
+		A.id = AR.articleId
 		WHERE A.displayStatus = 1
 		AND AR.displayStatus = 1
 		AND
@@ -343,15 +343,13 @@
 	</select>
 
 	<select id="getTotalLikeCount" resultType="int">
-		SELECT SUM(POINT),
-		IFNULL(SUM(AL.point), 0) AS extra__point
+		SELECT 
+		IFNULL(SUM(POINT), 0) AS extra__point
 		FROM articleLike AS AL
-		INNER
-		JOIN article AS A
-		ON A.id = AL.id
+		INNER JOIN article AS A
+		ON A.id = AL.articleId
 		WHERE A.displayStatus = 1
-		AND
-		A.memberId = #{memberId}
+		AND A.memberId = #{memberId}
 	</select>
 
 	<select id="getArticleKingLikeCount" resultType="ArticleLike">

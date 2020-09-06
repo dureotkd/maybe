@@ -58,5 +58,7 @@ public interface ArticleDao  {
 
 	List<Article> getForPrintArticleByLikeKing(int memberId);
 
+	void doDeleteArticleAjax(int id);
+
 
 }
