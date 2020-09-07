@@ -322,4 +322,8 @@ public class MemberService {
 	public int getArticleCountBeforeMonth(int memberId) {
 		return memberDao.getArticleCountBeforeMonth(memberId);
 	}
+
+	public List<Friend> getMemberByOldFriend(int memberId) {
+		return memberDao.getMemberByOldFriend(memberId);
+	}
 }

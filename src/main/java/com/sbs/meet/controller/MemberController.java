@@ -25,6 +25,7 @@ import org.springframework.web.util.WebUtils;
 import com.sbs.meet.dto.Article;
 import com.sbs.meet.dto.ArticleLike;
 import com.sbs.meet.dto.File;
+import com.sbs.meet.dto.Friend;
 import com.sbs.meet.dto.Member;
 import com.sbs.meet.service.ArticleService;
 import com.sbs.meet.service.FileService;
@@ -457,6 +458,7 @@ public class MemberController {
 		int memberId = member.getId();
 		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
 		
+		System.out.println("확인 : " + member.getId());
 		
 		// 로그인 한 본인이 팔로우 중.
 		int following = memberService.getFollowingConfirm(memberId, loginedMemberId);
@@ -585,9 +587,13 @@ public class MemberController {
 			// 한달 게시글
 			int articleCountBeforeMonth = memberService.getArticleCountBeforeMonth(memberId);
 			
+			// 팔로우 확인
+			
+
 			// 나의 최고로 많이받은 좋아요 숫자 + article
 			List<Article> articles = articleService.getForPrintArticleByLikeKing(memberId);
 			
+	
 			for ( Article article : articles ) {
 				List<File> files = fileService.getFiles("article", article.getId(), "common", "attachment");
 				Map<String, File> filesMap = new HashMap<>();
@@ -598,13 +604,57 @@ public class MemberController {
 				Util.putExtraVal(article, "file__common__attachment", filesMap);
 			}
 			
-			for ( Article article : articles ) {
+			for ( Article article : articles ) {	
 				int articleId = article.getId();
 				ArticleLike articleLike = memberService.getArticleKingLikeCount(articleId);
 				
 				model.addAttribute("articleLike",articleLike);
 			}
 			
+			// 가장 오래된 팔로우들
+			List<Friend> friends = memberService.getMemberByOldFriend(memberId);
+			
+			for ( Friend oldFriend : friends) {
+				
+				// 로그인 한 본인이 팔로우 중.
+				
+				int following = memberService.getFollowingConfirm(oldFriend.getFollowerId(), loginedMemberId);
+				
+				System.out.println("확인좀하자 : " + oldFriend.getFollowerId());
+				
+				// 상대방이 날 팔로우 한걸 확인
+				int followCross = memberService.getFollowCross(oldFriend.getFollowerId(),loginedMemberId);
+				
+				System.out.println("확인좀하자2 : " + oldFriend.getFollowId());
+				
+				model.addAttribute("following",following);
+				model.addAttribute("followCross",followCross);
+
+				
+				System.out.println("확인 좀 : " + oldFriend.getId() + oldFriend.getRegDate() );
+				
+				List<File> files = fileService.getFiles("member",oldFriend.getFollowerId(), "common", "attachment");
+				
+				if (files.size() > 0) {
+					File file = files.get(0);
+
+					if (oldFriend.getExtra() == null) {
+						oldFriend.setExtra(new HashMap<>());
+					}
+
+					oldFriend.getExtra().put("writerAvatarImgUrl",
+							"/file/showImg?id=" + file.getId() + "&updateDate=" + file.getUpdateDate());
+				} else {
+					oldFriend.getExtra().put("writerAvatarImgUrl", "/resource/img/avatar_no.jpg");
+				}
+
+				Map<String, File> filesMap = new HashMap<>();
+
+				for (File file : files) {
+					filesMap.put(file.getFileNo() + "", file);
+				}
+
+			}
 			
 			model.addAttribute("articleCountBeforeMonth",articleCountBeforeMonth);
 			model.addAttribute("articleCountBeforeWeek",articleCountBeforeWeek);
@@ -613,6 +663,7 @@ public class MemberController {
 			model.addAttribute("totalLikeCount",totalLikeCount);
 			model.addAttribute("beforeFollowCount",beforeFollowCount);
 			model.addAttribute("member", member);
+			model.addAttribute("friends",friends);
 			model.addAttribute("articles", articles);
 		return "member/mystatistics";
 	}

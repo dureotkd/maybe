@@ -343,13 +343,15 @@
 	</select>
 
 	<select id="getTotalLikeCount" resultType="int">
-		SELECT 
+		SELECT
 		IFNULL(SUM(POINT), 0) AS extra__point
 		FROM articleLike AS AL
-		INNER JOIN article AS A
+		INNER JOIN
+		article AS A
 		ON A.id = AL.articleId
 		WHERE A.displayStatus = 1
-		AND A.memberId = #{memberId}
+		AND
+		A.memberId = #{memberId}
 	</select>
 
 	<select id="getArticleKingLikeCount" resultType="ArticleLike">
@@ -367,7 +369,7 @@
 		AND DATE_SUB(NOW(), INTERVAL 1 DAY) <= regDate
 		]]>
 	</select>
-	
+
 	<select id="getArticleCountBeforeWeek" resultType="int">
 		<![CDATA[
 		SELECT COUNT(*)
@@ -377,7 +379,7 @@
 		AND DATE_SUB(NOW(), INTERVAL 7 DAY) <= regDate
 		]]>
 	</select>
-	
+
 	<select id="getArticleCountBeforeMonth" resultType="int">
 		<![CDATA[
 		SELECT COUNT(*)
@@ -386,6 +388,17 @@
 		WHERE memberId = #{memberId}
 		AND DATE_SUB(NOW(), INTERVAL 1 MONTH) <= regDate
 		]]>
+	</select>
+
+	<select id="getMemberByOldFriend" resultMap="friend">
+		SELECT F.*,
+		M.nickname AS extra__writer
+		FROM friend AS F
+		INNER JOIN `member` AS M
+		ON M.id = F.followerId
+		WHERE F.followId = #{memberId}
+		ORDER BY F.regDate ASC
+		LIMIT 3;
 	</select>
 
 

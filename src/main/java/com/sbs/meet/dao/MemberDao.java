@@ -109,4 +109,6 @@ public interface MemberDao {
 
 	int getArticleCountBeforeMonth(int memberId);
 
+	List<Friend> getMemberByOldFriend(int memberId);
+
 }
