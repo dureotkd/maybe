@@ -41,6 +41,7 @@
 }
 .silver {
 	color:#262626;
+	margin-bottom:15px;
 }
 .w100 {
 	width:100%;
@@ -50,7 +51,7 @@
 }
 .inputItem {
 	width:320px;
-	height:32px;
+	height:20px;
 	border:1px solid #bdbdbd;
 	border-radius:3px;
 	padding:10px;
@@ -87,6 +88,15 @@ label {
 	border-radius:3px;
 	background:#0095f6;
 }
+.column > p {
+	padding:15px;
+}
+.column > h2 {
+	padding:15px;
+}
+span {
+	padding:15px;
+}
 </style>
 
 <div class="wrap margin-bottom30">
@@ -98,24 +108,19 @@ label {
 	<li><a href="#" class="padding25 silver">계정 삭제</a></li>
 </ul>
 <form action="doMyInfoEdit" method="POST" onsubmit="" class="w100">
-<div class="imgBox">
-<img class="profile" src="/file/showImg?id=${loginedMember.extra.file__common__attachment['1'].id}&updateDate=${loginedMember.extra.file__common__attachment['1'].updateDate}" />
-</div>
 
 <div class="column">
-<input class="inputItem" type="hidden" name="redirectUri" value="myInfoEdit" />
-<input class="inputItem" type="hidden" name="id" value="${loginedMember.id}" />
-<label for="">이메일</label>
-<input class="inputItem" type="email"  name="email" value="${loginedMember.email}"/>
-<label for="">이름</label>
-<input class="inputItem" type="text"  name="name" value="${loginedMember.name}"/>
-<label for="">사용자 이름</label>
-<input class="inputItem" type="text" name="nickname"  value="${loginedMember.nickname}" />
-<label for="">소개</label>
-<textarea class="inputItem Big" type="text" name="introduce" id="" cols="30" rows="10" name="introduce">${loginedMember.introduce}</textarea>
+<h2>계정 비활성화</h2>
+<p>${loginedMember.nickname}님, 안녕하세요</p>
+<p>계정을 삭제하지 않고 비활성화할 수 있습니다. 비활성화하면 다시 로그인하여 재활성화할 때까지 계정이 숨겨집니다.
+</p>
+<span>계정은 일주일에 한 번만 비활성화할 수 있습니다.</span>
+<div class="row">
+<span class="silver ">계속 하려면 비밀번호를 입력해주세요</span>
+<input type="text" class="inputItem" placeholder="비밀번호" />
+</div>
 <div class="row sp-b">
-<input type="submit" class="submit margin-bottom30 w100px " value="저장" />
-<a href="./showDisAbledForm" class="blue size14 size" onclick="">계정을 일시적으로 비활성화</a>
+<input type="submit" class="submit margin-bottom30 w100px " value="계정 비활성화 " />
 </div>
 </div>
 </form>

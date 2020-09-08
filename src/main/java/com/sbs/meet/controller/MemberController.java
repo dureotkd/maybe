@@ -668,6 +668,32 @@ public class MemberController {
 		return "member/mystatistics";
 	}
 	
+	@RequestMapping("/member/showDisAbledForm")
+	public String showDisAbledForm() {
+		return "member/showDisAbledForm";
+	}
+	
+	@RequestMapping("/member/disAbledAccount")
+	public String disAbledAccount(int id,HttpServletRequest req,String loginPwReal,Model model) {
+		
+		String loginPw = loginPwReal;
+		
+		Member member = memberService.getMemberById(id);
+		
+		
+		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
+		
+		if (member.getLoginPw().equals(loginPw) == false) {
+			model.addAttribute("historyBack", true);
+			model.addAttribute("alertMsg", "비밀번호가 일치하지 않습니다.");
+			return "common/redirect";
+		}
+		
+		
+		return "common/redirect";
+		
+	}
+	
 	
 	@RequestMapping("/member/changeProfile")
 	@ResponseBody
@@ -676,6 +702,5 @@ public class MemberController {
 		Map<String, Object> newParam = Util.getNewMapOf(param, "fileIdsStr", "id");
 
 		int loginedMemberId = (int) request.getAttribute("loginedMemberId");
-
 	}
 }
