@@ -192,6 +192,14 @@ public class MemberController {
 		}
 
 		int loginedMemberId = member.getId();
+		
+		
+		int memberId = member.getId();
+		
+		if ( member.getDelStatus() == 1 ) {
+			memberService.ableAccount(memberId);
+		}
+		
 
 		// nullPointer
 		//
@@ -201,8 +209,7 @@ public class MemberController {
 
 		if (isNeedToChangePwPass3Months) {
 			model.addAttribute("redirectUri", redirectUri);
-			model.addAttribute("alertMsg", "비밀번호를 변경안한지 3개월이 되었습니다. 변경해주세요^^");
-			return "common/redirect";
+			return "member/changePassword";
 		}
 
 		boolean isNeedToChangePasswordForTemp = memberService.isNeedToChangeaPasswordForTemp(loginedMemberId);
@@ -674,14 +681,11 @@ public class MemberController {
 	}
 	
 	@RequestMapping("/member/disAbledAccount")
-	public String disAbledAccount(int id,HttpServletRequest req,String loginPwReal,Model model) {
-		
-		String loginPw = loginPwReal;
+	public String disAbledAccount(int id,String redirectUri,HttpServletRequest req,String loginPwReal,Model model,HttpSession session) {
 		
 		Member member = memberService.getMemberById(id);
 		
-		
-		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
+		String loginPw = loginPwReal;
 		
 		if (member.getLoginPw().equals(loginPw) == false) {
 			model.addAttribute("historyBack", true);
@@ -689,11 +693,51 @@ public class MemberController {
 			return "common/redirect";
 		}
 		
+		int memberId = member.getId();
+		
+		memberService.disAbleAccount(memberId);
+		
+		// 세션 종료
+		session.invalidate();
+		
+		if (redirectUri == null || redirectUri.length() == 0) {
+			redirectUri = "../member/login";
+		}
+
+		model.addAttribute("redirectUri", redirectUri);
+		
+
+		return "common/redirect";
+	}
+	
+	@RequestMapping("/member/doChangePassword")
+	public String doChangePassword(int id,String loginPwReal,Model model,String redirectUri) {
+		
+		Member member = memberService.getMemberById(id);
+		
+		int memberId = member.getId();
+		
+		String loginPw = loginPwReal;
+		
+		if ( member.getLoginPw().equals(loginPw) == false ) {
+			model.addAttribute("historyBack",true);
+			model.addAttribute("alertMsg", "비밀번호가 일치하지 않습니다.");
+			return "common/redirect";
+		}
+		
+		memberService.doChangePassword(loginPw,memberId);
+		
+		
+		if (redirectUri == null || redirectUri.length() == 0) {
+			redirectUri = "../home/main";
+		}
+
+		model.addAttribute("redirectUri", redirectUri);
+		
 		
 		return "common/redirect";
 		
 	}
-	
 	
 	@RequestMapping("/member/changeProfile")
 	@ResponseBody

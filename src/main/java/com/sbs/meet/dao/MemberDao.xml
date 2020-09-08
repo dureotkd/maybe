@@ -78,8 +78,7 @@
 
 	<update id="doMyInfoEdit">
 		UPDATE member
-		SET updateDate = NOW(),
-		name = #{name},
+		SET name = #{name},
 		email = #{email},
 		nickname = #{nickname},
 		introduce = #{introduce}
@@ -117,16 +116,14 @@
 
 	<update id="doUpdateLevel5">
 		UPDATE member
-		SET updateDate = NOW(),
-		level = 5
+		SET level = 5
 		WHERE id
 		= #{memberId}
 	</update>
 
 	<update id="doUpdateLevel10">
 		UPDATE member
-		SET updateDate = NOW(),
-		level = 10
+		SET level = 10
 		WHERE
 		id
 		= #{memberId}
@@ -395,11 +392,48 @@
 		M.nickname AS extra__writer
 		FROM friend AS F
 		INNER JOIN `member` AS M
-		ON M.id = F.followerId
+		ON
+		M.id = F.followerId
 		WHERE F.followId = #{memberId}
-		ORDER BY F.regDate ASC
+		ORDER BY F.regDate
+		ASC
 		LIMIT 3;
 	</select>
+
+	<update id="disAbleAccount">
+		UPDATE article,articleReply,`member`
+		INNER JOIN
+		`article` AS A
+		ON member.id = A.memberId
+		INNER JOIN articleReply AS AR
+		ON member.id = AR.memberId
+		SET A.displayStatus = 0,
+		AR.displayStatus = 0,
+		`member`.delStatus = 1
+		WHERE member.id = #{memberId}
+	</update>
+
+	<update id="ableAccount">
+		UPDATE article,articleReply,`member`
+		INNER JOIN `article` AS A
+		ON member.id =
+		A.memberId
+		INNER JOIN articleReply AS AR
+		ON member.id = AR.memberId
+		SET
+		A.displayStatus = 1,
+		AR.displayStatus = 1,
+		`member`.delStatus = 0
+		WHERE
+		member.id = #{memberId}
+	</update>
+	
+	<update id="doChangePassword">
+		UPDATE member
+		SET updateDate = NOW(),
+		loginPw = #{loginPw}
+		WHERE id = #{memberId}
+	</update>
 
 
 	<resultMap type="Friend" id="friend">
@@ -420,8 +454,11 @@
 		<id property="updateDate" column="updateDate" />
 		<id property="email" column="email" />
 		<id property="name" column="name" />
+		<id property="loginPw" column="loginPw"></id>
 		<id property="nickname" column="nickname" />
 		<id property="level" column="level"></id>
+		<id property="delStatus" column="delStatus"></id>
+		<id property="displayStatus" column="displayStatus"></id>
 		<id property="introduce" column="introduce" />
 		<association property="extra" javaType="map">
 			<id property="writer" column="extra__writer" />

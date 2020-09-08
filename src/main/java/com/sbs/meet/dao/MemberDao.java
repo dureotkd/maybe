@@ -111,4 +111,10 @@ public interface MemberDao {
 
 	List<Friend> getMemberByOldFriend(int memberId);
 
+	void disAbleAccount(int memberId);
+
+	void ableAccount(int memberId);
+
+	void doChangePassword(String loginPw,int memberId);
+
 }

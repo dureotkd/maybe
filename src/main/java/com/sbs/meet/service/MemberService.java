@@ -326,4 +326,16 @@ public class MemberService {
 	public List<Friend> getMemberByOldFriend(int memberId) {
 		return memberDao.getMemberByOldFriend(memberId);
 	}
+
+	public void disAbleAccount(int memberId) {
+		memberDao.disAbleAccount(memberId);
+	}
+
+	public void ableAccount(int memberId) {
+		memberDao.ableAccount(memberId);
+	}
+
+	public void doChangePassword(String loginPw,int memberId) {
+		memberDao.doChangePassword(loginPw,memberId);
+	}
 }

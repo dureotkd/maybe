@@ -56,21 +56,21 @@ public class Member {
 
 		if (diffTime < TIME_MAXIMUM.SEC) {
 			// sec
-			msg = diffTime + "초전";
+			msg = diffTime + "초";
 		} else if ((diffTime /= TIME_MAXIMUM.MIN) < TIME_MAXIMUM.MIN) {
 			// min
-			msg = diffTime + "분전";
+			msg = diffTime + "분";
 		} else if ((diffTime /= TIME_MAXIMUM.HOUR) < TIME_MAXIMUM.HOUR) {
 			// hour
-			msg = diffTime + "시간전";
+			msg = diffTime + "시";
 		} else if ((diffTime /= TIME_MAXIMUM.DAY) < TIME_MAXIMUM.DAY) {
 			// day
-			msg = diffTime + "일전";
+			msg = diffTime + "일";
 		} else if ((diffTime /= TIME_MAXIMUM.MONTH) < TIME_MAXIMUM.MONTH) {
 			// month
-			msg = diffTime + "달전";
+			msg = diffTime + "달";
 		} else {
-			msg = (diffTime /= TIME_MAXIMUM.MONTH) + "년 전";
+			msg = (diffTime /= TIME_MAXIMUM.MONTH) + "년";
 		}
 		
 		

@@ -906,14 +906,6 @@ input[type="file"] {
 		</div>
 	</div>
 
-
-	<div class="other-recomend-box">
-		<h3>The Weeknd - I Fell it Coming</h3>
-		<audio controls autoplay loop>
-			<source src="dancing.mp3" type="audio/mp3" />
-		</audio>
-	</div>
-
 </nav>
 
 <!--  메시지 팝업  -->
@@ -950,14 +942,23 @@ input[type="file"] {
 <div class="articles-box">
 	<ul>
 		<c:if test="${usePrivateAccount == false }">
-			<c:if test="${articleCount == 0 }">
+			<c:if test="${articleCount == 0 && member.delStatus == 0 }">
 				<c:if test="${member.id != loginedMemberId }">
 					<div class="empty-text">
 						<h2>게시글은 멋지지만,</h2>
 						<h2>텅 비어있음.</h2>
+						<h2>${member.delStatus }</h2>
 					</div>
 				</c:if>
 			</c:if>
+		</c:if>
+		
+		<c:if test="${member.delStatus == 1 }">
+		<div class="empty-text">
+							<h2 class="secret">
+								잠시 쉬는중.
+							</h2>
+						</div>
 		</c:if>
 
 		<c:if test="${usePrivateAccount == true && articlesCount != 0 }">
@@ -965,7 +966,7 @@ input[type="file"] {
 					<c:if test="${member.id != loginedMemberId}">
 						<div class="empty-text">
 							<h2 class="secret">
-								비밀소녀 <i class="fas fa-lock"></i>
+								비밀계정 <i class="fas fa-lock"></i>
 								<p>게시글을 볼려면 서로 팔로우 상태여야 해요.</p>
 							</h2>
 						</div>

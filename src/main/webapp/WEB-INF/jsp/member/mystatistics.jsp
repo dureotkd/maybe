@@ -229,6 +229,7 @@ function doDeleteFollow(el) {
 }
 .nick {
 	width:150px;
+	margin-left:15px;
 }
 
 </style>
@@ -304,22 +305,12 @@ function doDeleteFollow(el) {
 		<li class="silver oldfont">가장 오래된 팔로우</li>
 		<c:forEach items="${friends}" var="oldFriend">
 		<c:if test="${oldFriend.followerId != loginedMemberId }">
+		<a href="../member/showOther?id=${oldFriend.followerId}" class="link row">
 		<ul class="row justi-sb" data-id="${oldFriend.id}">
 		<li class="img-hidden"><img class="oldMemberProfile" src="${oldFriend.extra.writerAvatarImgUrl}" alt="" /></li>
 		<li class="nick">${oldFriend.extra.writer}</li>
 		<li>${oldFriend.regDateFormat}</li>
-		<li><img class="direct" src="https://i.pinimg.com/originals/7b/66/ac/7b66ac2787335ebcb565960d482f0846.png" alt="" /></li>
-		
-		<c:if test="${following == 0}">
-		<c:if test="${followCross == 1}">
-		<li><a href="#" class="follow-btn" onclick="doFollow(this);">맞팔로우</a></li>
-		</c:if>
-		</c:if>
-		
-
-		<c:if test="${following == 1 && followCross == 1 }">
-		<li><a href="#" class="follow-btn" onclick="doDeleteFollow(this);">언팔로우</a></li>
-		</c:if>
+		</a>
 		</ul>
 		</c:if>
 		</c:forEach>
