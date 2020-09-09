@@ -62,5 +62,7 @@ public interface ArticleDao  {
 
 	List<Article> getForPrintArticles3(int memberId);
 
+	void cancleLikeAction(int id, int loginedMemberId);
+
 
 }

@@ -147,9 +147,6 @@ public class ArticleService {
 		if (article.getMemberId() == loginedMemberId) {
 			rs.put("resultCode", "F-1");
 			rs.put("msg", "본인은 추천 할 수 없습니다.");
-			
-			
-
 			return rs;
 		}
 		
@@ -159,10 +156,7 @@ public class ArticleService {
 		
 		if (likePoint > 0) {
 			rs.put("resultCode", "F-2");
-			rs.put("msg", "이미 좋아요를 하셨습니다.");
-			
-			System.out.println("먼데 : " + likePoint );
-
+			articleDao.cancleLikeAction(id,loginedMemberId);
 			return rs;
 		}
 		
@@ -266,6 +260,41 @@ public class ArticleService {
 			Util.putExtraVal(article, "file__common__attachment", filesMap);
 		}		
 		return articles;
+	}
+
+
+
+	public Map<String, Object> cancleLike(int id, int loginedMemberId) {
+		
+		
+		articleDao.cancleLikeAction(id,loginedMemberId);
+		
+		Map<String, Object> rs = new HashMap<>();
+		
+		rs.put("resultCode","S-1");
+		
+		return rs;
+	}
+
+
+
+	public Map<String, Object> getArticleCancelLikeAvailable(int id, int loginedMemberId) {
+		// 게시글 하나 가저와서
+		Article article = articleDao.getForPrintOneArticle(id);
+
+		Map<String, Object> rs = new HashMap<>();
+		
+		// 가능
+		rs.put("resultCode", "S-1");
+		rs.put("msg", "가능합니다.");
+
+		return rs;
+	}
+
+
+
+	public int getLikePointByMe(int id, int loginedMemberId) {
+		return articleDao.getLikePointByMemberId(id, loginedMemberId);
 	}
 
 

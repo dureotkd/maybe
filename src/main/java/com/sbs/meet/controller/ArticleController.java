@@ -132,6 +132,9 @@ public class ArticleController {
 		int following = memberService.getFollowingConfirm(memberId,loginedMemberId);
 		int followCross = memberService.getFollowCross(memberId,loginedMemberId);
 		
+		int confirmLikePoint = articleService.getLikePointByMe(id,loginedMemberId);
+		
+		model.addAttribute("confirmLikePoint",confirmLikePoint);
 		
 		Member member = memberService.getMemberById(memberId);
 		
@@ -175,6 +178,38 @@ public class ArticleController {
 
 		return rs;
 	}
+	
+	@RequestMapping("article/cancleLike")
+	@ResponseBody
+	public Map<String, Object> cancleLike(int id,HttpServletRequest request) {
+		
+		Map<String, Object> rs = new HashMap<>();
+		int loginedMemberId = (int) request.getAttribute("loginedMemberId");
+
+		Map<String, Object> articleCancelLikeAvailableRs = articleService.getArticleCancelLikeAvailable(id,
+				loginedMemberId);
+
+		if (((String) articleCancelLikeAvailableRs.get("resultCode")).startsWith("F-")) {
+			rs.put("resultCode", articleCancelLikeAvailableRs.get("resultCode"));
+			rs.put("msg", articleCancelLikeAvailableRs.get("msg"));
+
+			return rs;
+		}
+
+		Map<String, Object> cancelLikeArticleRs = articleService.cancleLike(id, loginedMemberId);
+
+		String resultCode = (String) cancelLikeArticleRs.get("resultCode");
+		String msg = (String) cancelLikeArticleRs.get("msg");
+
+		int likePoint = articleService.getLikePoint(id);
+
+		rs.put("resultCode", resultCode);
+		rs.put("msg", msg);
+		rs.put("likePoint", likePoint);
+
+		return rs;
+	}
+	
 	
 	@RequestMapping("article/getLikeCount")
 	@ResponseBody

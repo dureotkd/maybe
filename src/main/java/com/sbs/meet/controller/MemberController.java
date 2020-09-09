@@ -4,7 +4,6 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -193,13 +192,6 @@ public class MemberController {
 		}
 
 		int loginedMemberId = member.getId();
-		
-		
-		int memberId = member.getId();
-		
-		if ( member.getDelStatus() == 1 ) {
-			memberService.ableAccount(memberId);
-		}
 
 		// nullPointer
 		//
@@ -209,14 +201,16 @@ public class MemberController {
 
 		if (isNeedToChangePwPass3Months) {
 			model.addAttribute("redirectUri", redirectUri);
-			return "member/changePassword";
+			model.addAttribute("alertMsg", "비밀번호를 변경안한지 3개월이 되었습니다. 변경해주세요^^");
+			return "common/redirect";
 		}
 
 		boolean isNeedToChangePasswordForTemp = memberService.isNeedToChangeaPasswordForTemp(loginedMemberId);
 
 		if (isNeedToChangePasswordForTemp) {
 			model.addAttribute("redirectUri", redirectUri);
-			return "member/changePassword";
+			model.addAttribute("alertMsg", "현재 임시패스워드를 사용중입니다. 비밀번호를 변경해주세요");
+			return "common/redirect";
 		}
 
 		model.addAttribute("redirectUri", redirectUri);
@@ -272,7 +266,7 @@ public class MemberController {
 	@RequestMapping("/member/doMyInfoEdit")
 	public String doMyInfoEdit(String email, String name, String nickname, String introduce, int id, Model model,
 			String redirectUri) {
-		
+
 		memberService.doMyInfoEdit(email, name, nickname, introduce, id);
 
 		model.addAttribute("redirectUri", redirectUri);
@@ -441,38 +435,14 @@ public class MemberController {
 	public Map<String, Object> showRegistory(String searchKeyword) {
 		
 		List<Member> members = memberService.getMemberBySearch(searchKeyword);
-	
-		List<String> list = new ArrayList<>();
 		
 		Map<String, Object> rs = new HashMap<>();
 		
-		Map<String, Object> pagination = new HashMap<>();
-		
-
-		
 		for ( Member member : members ) {
-			Map<String, Object> results = new HashMap<>();
-			results.put("id", member.getId());
-			results.put("nickname", member.getNickname());
-			
-			
-			
-			
-			
-			list.add(results.toString());
+			rs.put("pagination",false);
+			rs.put("results",member);
+			rs.put("total_count",members.size());
 		}
-		System.out.println("왜안와");
-		System.out.println("list~~ : " + list);
-		
-		pagination.put("more",false);
-		
-		for ( Member member : members ) {
-			//rs.put("results", results);
-			rs.put("results",list);
-			rs.put("pagination", pagination);
-		}
-		
-	
 		
 		return rs;
 	} 
@@ -487,6 +457,8 @@ public class MemberController {
 		
 		int memberId = member.getId();
 		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
+		
+		System.out.println("확인 : " + member.getId());
 		
 		// 로그인 한 본인이 팔로우 중.
 		int following = memberService.getFollowingConfirm(memberId, loginedMemberId);
@@ -702,11 +674,14 @@ public class MemberController {
 	}
 	
 	@RequestMapping("/member/disAbledAccount")
-	public String disAbledAccount(int id,String redirectUri,HttpServletRequest req,String loginPwReal,Model model,HttpSession session) {
+	public String disAbledAccount(int id,HttpServletRequest req,String loginPwReal,Model model) {
+		
+		String loginPw = loginPwReal;
 		
 		Member member = memberService.getMemberById(id);
 		
-		String loginPw = loginPwReal;
+		
+		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
 		
 		if (member.getLoginPw().equals(loginPw) == false) {
 			model.addAttribute("historyBack", true);
@@ -714,51 +689,13 @@ public class MemberController {
 			return "common/redirect";
 		}
 		
-		int memberId = member.getId();
 		
-		memberService.disAbleAccount(memberId);
 		
-		// 세션 종료
-		session.invalidate();
 		
-		if (redirectUri == null || redirectUri.length() == 0) {
-			redirectUri = "../member/login";
-		}
-
-		model.addAttribute("redirectUri", redirectUri);
-		
-
 		return "common/redirect";
+		
 	}
 	
-	@RequestMapping("/member/doChangePassword")
-	public String doChangePassword(int id,String loginPwReal,Model model,String redirectUri) {
-		
-		Member member = memberService.getMemberById(id);
-		
-		int memberId = member.getId();
-		
-		String loginPw = loginPwReal;
-		
-		if ( member.getLoginPw().equals(loginPw) == false ) {
-			model.addAttribute("historyBack",true);
-			model.addAttribute("alertMsg", "비밀번호가 일치하지 않습니다.");
-			return "common/redirect";
-		}
-		
-		memberService.doChangePassword(loginPw,memberId);
-		
-		
-		if (redirectUri == null || redirectUri.length() == 0) {
-			redirectUri = "../home/main";
-		}
-
-		model.addAttribute("redirectUri", redirectUri);
-		
-		
-		return "common/redirect";
-		
-	}
 	
 	@RequestMapping("/member/changeProfile")
 	@ResponseBody

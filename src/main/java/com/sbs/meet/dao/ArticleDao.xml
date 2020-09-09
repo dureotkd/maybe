@@ -260,6 +260,12 @@
 		ORDER BY A.id DESC
 		LIMIT 7
 	</select>
+	
+	<delete id="cancleLikeAction">
+	DELETE FROM articleLike
+	WHERE articleId = #{id}
+	AND memberId = #{loginedMemberId}
+	</delete>
 
 
 
