@@ -68,6 +68,10 @@ label {
 	color:#757575;
 	margin-bottom:10px;
 }
+.label{
+	font-size:14px;
+	color:#757575;
+}
 .margin-bottom30 {
 	margin-bottom:30px;
 }
@@ -86,6 +90,10 @@ label {
 .submit {
 	border-radius:3px;
 	background:#0095f6;
+}
+.mini {
+	font-size:13px;
+	margin-bottom:10px;
 }
 </style>
 
@@ -109,7 +117,8 @@ label {
 <input class="inputItem" type="email"  name="email" value="${loginedMember.email}"/>
 <label for="">이름</label>
 <input class="inputItem" type="text"  name="name" value="${loginedMember.name}"/>
-<label for="">사용자 이름</label>
+<label for="" class="label">사용자 이름</label>
+<span class="mini red">*사용자 이름은 14일 안에 두 번만 변경할 수 있습니다.</span>
 <input class="inputItem" type="text" name="nickname"  value="${loginedMember.nickname}" />
 <label for="">소개</label>
 <textarea class="inputItem Big" type="text" name="introduce" id="" cols="30" rows="10" name="introduce">${loginedMember.introduce}</textarea>

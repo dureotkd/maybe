@@ -147,17 +147,21 @@ public class ArticleService {
 		if (article.getMemberId() == loginedMemberId) {
 			rs.put("resultCode", "F-1");
 			rs.put("msg", "본인은 추천 할 수 없습니다.");
+			
+			
 
 			return rs;
 		}
 		
-		//  좋아요 중복 방지 체크.
-		int likePoint = articleDao.getLikePointByMemberId(id, loginedMemberId);
 		
-		// likePoint 0 보다크면 이미 좋아요 누른거 . 기존은 0 좋아요 누르면 1이 되는거같음?
+		//  좋아요 중복 방지 체크.
+		int likePoint = articleDao.getLikePointByMemberId(id,loginedMemberId);
+		
 		if (likePoint > 0) {
 			rs.put("resultCode", "F-2");
 			rs.put("msg", "이미 좋아요를 하셨습니다.");
+			
+			System.out.println("먼데 : " + likePoint );
 
 			return rs;
 		}
@@ -243,6 +247,25 @@ public class ArticleService {
 
 	public void doDeleteArticleAjax(int id) {
 		articleDao.doDeleteArticleAjax(id);
+	}
+
+
+
+	public List<Article> getForPrintArticles3(int memberId) {
+		List<Article> articles = articleDao.getForPrintArticles3(memberId);
+		
+		for ( Article article : articles ) {
+			
+			List<File> files = fileService.getFiles("article", article.getId(), "common", "attachment");
+			Map<String, File> filesMap = new HashMap<>();
+
+			for (File file : files) {
+				filesMap.put(file.getFileNo() + "", file);
+			}
+
+			Util.putExtraVal(article, "file__common__attachment", filesMap);
+		}		
+		return articles;
 	}
 
 

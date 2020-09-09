@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -199,7 +200,6 @@ public class MemberController {
 		if ( member.getDelStatus() == 1 ) {
 			memberService.ableAccount(memberId);
 		}
-		
 
 		// nullPointer
 		//
@@ -216,8 +216,7 @@ public class MemberController {
 
 		if (isNeedToChangePasswordForTemp) {
 			model.addAttribute("redirectUri", redirectUri);
-			model.addAttribute("alertMsg", "현재 임시패스워드를 사용중입니다. 비밀번호를 변경해주세요");
-			return "common/redirect";
+			return "member/changePassword";
 		}
 
 		model.addAttribute("redirectUri", redirectUri);
@@ -273,7 +272,7 @@ public class MemberController {
 	@RequestMapping("/member/doMyInfoEdit")
 	public String doMyInfoEdit(String email, String name, String nickname, String introduce, int id, Model model,
 			String redirectUri) {
-
+		
 		memberService.doMyInfoEdit(email, name, nickname, introduce, id);
 
 		model.addAttribute("redirectUri", redirectUri);
@@ -442,14 +441,38 @@ public class MemberController {
 	public Map<String, Object> showRegistory(String searchKeyword) {
 		
 		List<Member> members = memberService.getMemberBySearch(searchKeyword);
+	
+		List<String> list = new ArrayList<>();
 		
 		Map<String, Object> rs = new HashMap<>();
 		
+		Map<String, Object> pagination = new HashMap<>();
+		
+
+		
 		for ( Member member : members ) {
-			rs.put("pagination",false);
-			rs.put("results",member);
-			rs.put("total_count",members.size());
+			Map<String, Object> results = new HashMap<>();
+			results.put("id", member.getId());
+			results.put("nickname", member.getNickname());
+			
+			
+			
+			
+			
+			list.add(results.toString());
 		}
+		System.out.println("왜안와");
+		System.out.println("list~~ : " + list);
+		
+		pagination.put("more",false);
+		
+		for ( Member member : members ) {
+			//rs.put("results", results);
+			rs.put("results",list);
+			rs.put("pagination", pagination);
+		}
+		
+	
 		
 		return rs;
 	} 
@@ -464,8 +487,6 @@ public class MemberController {
 		
 		int memberId = member.getId();
 		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
-		
-		System.out.println("확인 : " + member.getId());
 		
 		// 로그인 한 본인이 팔로우 중.
 		int following = memberService.getFollowingConfirm(memberId, loginedMemberId);

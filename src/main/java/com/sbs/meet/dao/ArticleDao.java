@@ -60,5 +60,7 @@ public interface ArticleDao  {
 
 	void doDeleteArticleAjax(int id);
 
+	List<Article> getForPrintArticles3(int memberId);
+
 
 }

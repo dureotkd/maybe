@@ -218,6 +218,14 @@ to {
 	.article-img {
 		height: 500px;
 	}
+	.articles-box>ul>li {
+		width: calc(100%/ 3 - ( 0px * ( 3 - 1)/3));
+		height: 200px;
+	}
+	.img-wrap {
+		width: 99%;
+		height: 99%;
+	}
 }
 
 /* 800px 이상이면 안보이게 ( pc 버전 ) */
@@ -226,7 +234,7 @@ to {
 		display: none !important;
 	}
 	.reply-list-box {
-		border: 1px solid #eee;
+		border: 1px solid #e0e0e0;
 	}
 	.total-wrap {
 		padding-top: 20px;
@@ -234,9 +242,8 @@ to {
 	.detail-box {
 		display: flex;
 		max-width: 940px;
-		border: 1px solid #eee;
-		border-radius: 20px;
-		box-shadow: 3px 3px 3px #ccc;
+		border: 1px solid #e0e0e0;
+		border-radius: 3px;
 		box-sizing:border-box;
 		align-items: center;
 		padding: 20px;
@@ -263,6 +270,17 @@ to {
 	.article-img {
 		height: 525px;
 	}
+	
+		.articles-box>ul>li {
+		margin-top: 20px;
+		width: calc(100%/ 3 - ( 20px * ( 3 - 1)/3));
+		height:300px;
+	}
+	.img-wrap {
+		width: 90%;
+		height: 100%;
+	}
+	
 }
 
 .reply-btn {
@@ -321,7 +339,7 @@ button, submit {
 
 .article-video {
 	outline: none;
-	border: 1px solid #eee;
+	border: 1px solid #e0e0e0;
 }
 
 .regDate {
@@ -365,6 +383,19 @@ button, submit {
 .active, .dot:hover {
 	background-color: #d81b60;
 }
+
+.other-articleImg {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: all.3s;
+}
+
+
+.cursor1 {
+	cursor: zoom-in;
+}
+
 
 /* 800px 이하면 안보이게 ( 모바일 버전 ) */
 @media ( max-width :799px ) {
@@ -647,6 +678,59 @@ textarea[readonly], textarea[disabled] {
 	font-size: 14px;
 	transition: all 0.5s;
 }
+.con {
+	max-width:940px;
+	margin: 0px  auto;
+}
+
+.articles-box>ul {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+}
+.articles-box {
+	border:1px solid #e0e0e0;
+	box-sizing:border-box;
+	border-radius:3px;
+	margin-top:50px;
+}
+.silver {
+	color:#8e8e8e;
+}
+.margin10 {
+	margin-left:10px;
+}
+.blue {
+	color:#0d47a1;
+}
+.heart {
+  cursor:pointer;
+  color:#aaa;
+  transition:.2s;
+}
+
+.heart:hover {
+  color:#666;
+}
+
+
+.heart.press {
+  color:#e23b3b;
+}
+
+
+@keyframes fade {
+  0% {color:#transparent;}
+  50% {color:#e23b3b;}
+  100% {color:#transparent;}
+}
+
+@keyframes size {
+  0% {padding:10px 12px 8px;}
+  50% {padding:14px 16px 12px;  
+    margin-top:-4px;}
+  100% {padding:10px 12px 8px;}
+}
 </style>
 
 <script>
@@ -656,6 +740,14 @@ textarea[readonly], textarea[disabled] {
 </script>
 
 <script>
+
+	$(function() {
+    $( ".heart" ).click(function() {
+      $( ".heart" ).toggleClass( "press", 1000 );
+    });
+  });
+
+
 	function doFollow() {
 		$.post('../member/doActionFollow', {
 			followId : followId,
@@ -815,6 +907,7 @@ textarea[readonly], textarea[disabled] {
 			}
 		}
 
+
 </script>
 <div class="total-wrap">
 	<div class="detail-box" data-id="${article.memberId}">
@@ -943,7 +1036,7 @@ textarea[readonly], textarea[disabled] {
 				<p class="regDate">${article.regDateFormat}</p>
 				<div class="like-wrap">
 					<a href="#" onclick="callDoLike();"> <i
-						class="fas fa-heart like"></i>
+						class="fas fa-heart heart"></i>
 					</a>
 					<p class="like-point">${article.extra.likePoint}</p>
 					개
@@ -967,7 +1060,8 @@ textarea[readonly], textarea[disabled] {
 				</form>
 			</c:if>
 		</div>
-
+		
+		
 		<!--  메시지 팝업  -->
 		<div class="popup">
 			<h2>Meet In Direct</h2>
@@ -999,8 +1093,6 @@ textarea[readonly], textarea[disabled] {
 
 
 
-
-
 		<script>
 			
 			var id = parseInt('${loginedMemberId}');
@@ -1009,7 +1101,9 @@ textarea[readonly], textarea[disabled] {
 			var ReplyList__lastLodedId = 0;
 
 			// 6초댓글불러오기
-			ReplyList__loadMoreInterval = 1 * 1000
+			ReplyList__loadMoreInterval = 1 * 1000;
+
+			ReplyList__loadMoreInterval = 10 * 1000; // 임시
 
 			function ReplyList__loadMoreCallback(data) {
 				if (data.body.articleReplies
@@ -1078,6 +1172,34 @@ textarea[readonly], textarea[disabled] {
 
 
 	</div>
+	
+	
+		<div class="con">
+		<span class="silver">${member.nickname}</span><span class="silver">님의 게시글 더보기</span><i class="fas fa-plus margin10 blue"></i>
+		<div class="articles-box">
+		<ul>
+			<c:forEach items="${articles}" var="article">
+				<c:if test="${article.extra.file__common__attachment['3'] != null}">
+					<li data-id="${article.id}">
+						<div class="img-wrap">
+							<a class="cursor1" href="../article/detail?id=${article.id}">
+								<img class="other-articleImg"
+								src="/file/showImg?id=${article.extra.file__common__attachment['3'].id}&updateDate=${article.extra.file__common__attachment['3'].updateDate}"
+								alt="" />
+							</a>
+							<c:set var="articleReplyCount" value="0" />
+							<c:forEach var="articleReply" items="${articleReply}">
+								<c:if test="${articleReply.articleId == article.id}">
+								</c:if>
+							</c:forEach>
+						</div>
+					</li>
+				</c:if>
+			</c:forEach>
+		</ul>
+		</div>
+		</div>
+		
 </div>
 
 

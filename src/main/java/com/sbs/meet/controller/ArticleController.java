@@ -120,22 +120,27 @@ public class ArticleController {
 		
 		
 		Article article = articleService.getForPrintOneArticle(id);
+		
+		int memberId = article.getMemberId();
+		
+		List<Article> articles = articleService.getForPrintArticles3(memberId);
 	
 		int loginedMemberId = (int) request.getAttribute("loginedMemberId");
-		// 게시글
-		int memberId = article.getMemberId();
+	
 		
 		// 팔로잉중인지 확인
 		int following = memberService.getFollowingConfirm(memberId,loginedMemberId);
 		int followCross = memberService.getFollowCross(memberId,loginedMemberId);
-
+		
 		
 		Member member = memberService.getMemberById(memberId);
 		
 		model.addAttribute("followCross",followCross);
 		model.addAttribute("following",following);
 		model.addAttribute("article",article);
+		model.addAttribute("articles",articles);
 		model.addAttribute("member",member);
+		
 		return "article/detail";
 	}
 	

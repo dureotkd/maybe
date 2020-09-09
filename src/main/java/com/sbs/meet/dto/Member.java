@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionBindingEvent;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,6 +31,16 @@ public class Member {
 	private String introduce;
 	private String level;
 	private Map<String, Object> extra;
+	
+	public void valueBound(HttpSessionBindingEvent event) {
+		Member member = (Member)event.getValue();
+		HttpSession session = event.getSession();
+		
+		member.email = session.getId();
+		member.session = session;
+		
+		member.setSession(session);
+	}
 	
 	private static class TIME_MAXIMUM {
 		public static final int SEC = 60;

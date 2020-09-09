@@ -247,6 +247,19 @@
 		WHERE a.id = #{id}
 		AND f.relTypeCode = 'article';
 	</delete>
+	
+	<select id="getForPrintArticles3" resultMap="article">
+		SELECT A.*,
+		M.nickname AS extra__writer
+		FROM article AS A
+		INNER JOIN member AS M
+		ON
+		A.memberId = M.id
+		WHERE displayStatus = 1
+		AND A.memberId = #{memberId}
+		ORDER BY A.id DESC
+		LIMIT 7
+	</select>
 
 
 

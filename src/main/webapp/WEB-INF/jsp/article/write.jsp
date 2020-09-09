@@ -288,7 +288,6 @@ input[type="file"] {
 		</div>
 		<div class="login-reco">
 		<h2 class="font3">${loginedMember.nickname}님의 ${articleIdCount+1}번째 글입니다 .</h2>
-		<h2 class="font3 small-font"> 이전 게시글에서 팔로우가 ${beforeFollowCount}명 늘었습니다 .</h2>
 		</div>
 	</div>
 
