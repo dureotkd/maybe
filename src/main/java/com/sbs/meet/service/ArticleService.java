@@ -293,6 +293,10 @@ public class ArticleService {
 
 
 
+	public List<Integer> getLikePointByMeAndList(int id, int loginedMemberId) {
+		return articleDao.getLikePointByMemberIdAndList(id, loginedMemberId);
+	}
+	
 	public int getLikePointByMe(int id, int loginedMemberId) {
 		return articleDao.getLikePointByMemberId(id, loginedMemberId);
 	}

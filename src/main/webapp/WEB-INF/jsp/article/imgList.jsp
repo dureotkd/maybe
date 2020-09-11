@@ -305,13 +305,7 @@ px
 								alt="" />
 
 							</a>
-							<c:if test="${confirmLikePoint == 1}">
-								<i class="fas fa-heart heart press " onclick="cancleLike(this);"></i>
-							</c:if>
-							<p>${confirmLikePoint}</p>
-							<c:if test="${confirmLikePoint == 0}">
-								<i class="fas fa-heart heart" onclick="callDoLike(this);"></i>
-							</c:if>
+							<i class="fas fa-heart heart" onclick="callDoLike(this);"></i>
 							<c:set var="articleReplyCount" value="0" />
 							<c:forEach var="articleReply" items="${articleReply}">
 								<c:if test="${articleReply.articleId == article.id}">

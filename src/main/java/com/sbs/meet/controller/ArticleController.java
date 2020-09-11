@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sbs.meet.dto.Article;
-import com.sbs.meet.dto.ArticleLike;
-import com.sbs.meet.dto.ArticleReply;
 import com.sbs.meet.dto.File;
 import com.sbs.meet.dto.Member;
 import com.sbs.meet.service.ArticleService;
@@ -86,11 +84,11 @@ public class ArticleController {
 		
 		int id = article.getId();
 		
-		int confirmLikePoint = articleService.getLikePointByMe(id,loginedMemberId);
+		List<Integer> confirmLikePointList = articleService.getLikePointByMeAndList(id,loginedMemberId);
 		
-		System.out.println("확인"+confirmLikePoint);
+		System.out.println("제발 " + confirmLikePointList);
 		
-		model.addAttribute("confirmLikePoint",confirmLikePoint);
+		model.addAttribute("confirmLikePointList",confirmLikePointList);
 
 		Util.putExtraVal(article, "file__common__attachment", filesMap);
 		}

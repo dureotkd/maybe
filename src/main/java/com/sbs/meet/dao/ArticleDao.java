@@ -64,5 +64,7 @@ public interface ArticleDao  {
 
 	void cancleLikeAction(int id, int loginedMemberId);
 
+	List<Integer> getLikePointByMemberIdAndList(int id, int loginedMemberId);
+
 
 }

@@ -39,14 +39,18 @@
 
 		$btnToggleDropMenu.click(function() {
 			if ($(this).hasClass('open')) {
-				$(this).removeClass('open');
-				$('.dropdown-menu').removeClass('open');
-				$('.caret').removeClass('open');
 			} else {
+				$('.open').removeClass('open');
 				$(this).addClass('open');
 				$('.dropdown-menu').addClass('open');
 				$('.caret').addClass('open');
+
+				return false;
 			}	
+		});
+
+		$('body').click(function() {
+			$('.open').removeClass('open');
 		});
 	}
 	$(function() {
@@ -59,15 +63,22 @@ function btnToggleDropMenu2__init(){
 
 	$btnToggleDropMenu2.click(function(){
 		if ($(this).hasClass('drop')){
-			$(this).removeClass('drop');
-			$('.dropdown-menu2').removeClass('drop');
 			} else {
+				$('.drop').removeClass('drop');
 				$(this).addClass('drop');
 				$('.dropdown-menu2').addClass('drop');
 				$('.msg-notice2').addClass('none');	
+
+				return false;
 			}
 		});
+
+	$('body').click(function() {
+		$('.drop').removeClass('drop');
+	});
 }
+
+
 $(function(){
 	btnToggleDropMenu2__init();
 });
