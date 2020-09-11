@@ -95,6 +95,8 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
 		</dependency>
+		
+		
 
 		<!-- 메일 보내기 위한 -->
 		<dependency>

@@ -66,9 +66,12 @@ public class ArticleController {
 	// 
 	
 	@RequestMapping("/article/imgList")
-	public String showImgList(Model model,@RequestParam Map<String, Object> param) {
+	public String showImgList(Model model,HttpServletRequest request,@RequestParam Map<String, Object> param) {
 		
 		List<Article>  articles = articleService.getForPrintArticles();
+		
+		int loginedMemberId = (int) request.getAttribute("loginedMemberId");
+			
 		
 		// 게시글 사진 불러오기 relid = article.getId()  
 		
@@ -80,6 +83,14 @@ public class ArticleController {
 		for (File file : files) {
 			filesMap.put(file.getFileNo() + "", file);
 		}
+		
+		int id = article.getId();
+		
+		int confirmLikePoint = articleService.getLikePointByMe(id,loginedMemberId);
+		
+		System.out.println("확인"+confirmLikePoint);
+		
+		model.addAttribute("confirmLikePoint",confirmLikePoint);
 
 		Util.putExtraVal(article, "file__common__attachment", filesMap);
 		}

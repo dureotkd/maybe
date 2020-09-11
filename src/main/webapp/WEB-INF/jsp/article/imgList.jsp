@@ -4,18 +4,43 @@
 <%@ include file="../part/head.jspf"%>
 
 <script>
-	// article.id를 어떻게줘여하나..
-</script>
+$(function() {
+	$(".heart").click(function() {
+		$(".heart").toggleClass("press", 1000);
+		if ($(".heart").hasClass('press')) {
+			callDoLike();
+			
+		} else {
+			cancleLike();
+		}
+	});
+});
 
-
-<script>
 	function callDoLike(el) {
 		var $li = $(el).closest('li');
 		// 가장 가까운 li를 찾아라
 		var id = parseInt($li.attr('data-id'));
 		// 정수화 -> data-id
-
 		$.post('./doLike', {
+			id : id
+		}, function(data) {
+			if (data.msg) {
+				alert(data.msg);
+			}
+			if (data.resultCode.substr(0, 2) == "S-") {
+				ViewArticle1__updateLikePoint(data.likePoint);
+			}
+		}, 'json');
+	}
+
+	function cancleLike(el) {
+
+		var $li = $(el).closest('li');
+		// 가장 가까운 li를 찾아라
+		var id = parseInt($li.attr('data-id'));
+		// 정수화 -> data-id
+
+		$.post('./cancleLike', {
 			id : id
 		}, function(data) {
 			if (data.msg) {
@@ -26,13 +51,12 @@
 				ViewArticle1__updateLikePoint(data.likePoint);
 			}
 		}, 'json');
-
 	}
+
 </script>
 
 
 <style>
-
 .articles-box>ul {
 	display: flex;
 	flex-flow: row wrap;
@@ -46,11 +70,7 @@
 	transition: all.3s;
 }
 
-.img-wrap:hover .good-item {
-	opacity: 1;
-}
-
-.img-wrap:hover .fa-comment-dots {
+.img-wrap:hover .heart {
 	opacity: 1;
 }
 
@@ -61,8 +81,9 @@
 .other-articleVideo {
 	height: 300px;
 }
+
 .fa-compass {
-	color:#484848;
+	color: #484848;
 }
 
 .img-wrap {
@@ -90,23 +111,6 @@
 		rgba(0, 0, 0, 0.12), 0 8px 10px -10px rgba(0, 0, 0, 0.2);
 }
 
-.good-item {
-	position: absolute;
-	color: #d81b60;
-	top: 10px; transition : all.3s;
-	opacity: 0;
-	cursor: pointer;
-	transition: all.3s;
-}
-
-.fa-comment-dots {
-	position: absolute;
-	color: white;
-	top: 10px;
-	opacity: 0;
-	cursor: pointer;
-}
-
 .action {
 	color: #d81b60;
 }
@@ -115,6 +119,120 @@
 	cursor: zoom-in;
 }
 
+.heart {
+	cursor: pointer;
+	color: #aaa;
+	transition: .2s;
+	position: absolute;
+	top: 10px;
+	left:10px;
+	opacity: 0;
+}
+.heart:hover {
+	color: #666;
+}
+
+.heart.press {
+	color: #e23b3b;
+}
+
+@
+keyframes fade { 0% {
+	color: #transparent;
+}
+
+50
+%
+{
+color
+
+
+:
+
+
+#e23b3b
+;
+
+
+}
+100
+%
+{
+color
+
+
+:
+
+
+#transparent
+;
+
+
+}
+}
+@
+keyframes size { 0% {
+	padding: 10px 12px 8px;
+}
+
+50
+%
+{
+padding
+
+
+:
+
+
+14
+px
+
+
+16
+px
+
+
+12
+px
+;
+
+
+margin-top
+
+
+:
+
+
+-4
+px
+;
+
+
+}
+100
+%
+{
+padding
+
+
+:
+
+
+10
+px
+
+
+12
+px
+
+
+8
+px
+;
+
+
+}
+}
 @media ( max-width :799px) {
 	.img-wrap {
 		width: 99%;
@@ -147,7 +265,7 @@
 	.articles-box>ul>li {
 		margin-top: 20px;
 		width: calc(100%/ 3 - ( 20px * ( 3 - 1)/3));
-		height:300px;
+		height: 300px;
 	}
 	.articles-box {
 		max-width: 940px;
@@ -155,7 +273,9 @@
 		box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 20px 0px;
 	}
 	.articles-box>ul {
-		margin-left: 20px; } .fa-comment-dots , .good-item {
+		margin-left: 20px;
+	}
+	.fa-comment-dots, .good-item {
 		font-size: 25px;
 	}
 	.fa-comment-dots {
@@ -169,8 +289,8 @@
 </style>
 <div class="total-wrap">
 	<div class="board-bar">
-		<a class="board action" href="imgList"><i class="fas fa-image"></i></a> <a
-			class="board" href="videoList"><i class="fas fa-video"></i></a> <a
+		<a class="board action" href="imgList"><i class="fas fa-image"></i></a>
+		<a class="board" href="videoList"><i class="fas fa-video"></i></a> <a
 			class="board" href="textList"><i class="fas fa-quote-left"></i></a>
 	</div>
 	<div class="articles-box">
@@ -183,10 +303,15 @@
 								<img class="other-articleImg"
 								src="/file/showImg?id=${article.extra.file__common__attachment['3'].id}&updateDate=${article.extra.file__common__attachment['3'].updateDate}"
 								alt="" />
-							</a> <a onclick="callDoLike(this);"><i
-								class="fas fa-heart good-item "></i></a> <i
-								class="fas fa-comment-dots ">${article.replyCnt}</i> <img src="#" alt=""
-								usemap="#map" />
+
+							</a>
+							<c:if test="${confirmLikePoint == 1}">
+								<i class="fas fa-heart heart press " onclick="cancleLike(this);"></i>
+							</c:if>
+							<p>${confirmLikePoint}</p>
+							<c:if test="${confirmLikePoint == 0}">
+								<i class="fas fa-heart heart" onclick="callDoLike(this);"></i>
+							</c:if>
 							<c:set var="articleReplyCount" value="0" />
 							<c:forEach var="articleReply" items="${articleReply}">
 								<c:if test="${articleReply.articleId == article.id}">

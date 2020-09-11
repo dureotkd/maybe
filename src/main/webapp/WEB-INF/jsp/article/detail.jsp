@@ -1282,5 +1282,14 @@ padding
 
 
 
+<script>
+$(".textarea").keypress(function(e) { 
+    if (e.keyCode == 13){
+    	WriteReply__submitForm(this); 
+    	return false;
+    }    
+});
+</script>
+
 
 <%@ include file="../part/foot.jspf"%>
